@@ -1,0 +1,306 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+#: import Factory kivy.factory.Factory
+
+<MyLabel>
+    md_bg_color: 0, 0.5, 0, 0.5
+
+WindowManager:
+    LoginWindow:
+    CreateUser:
+    PLTable:
+    Bet:
+    MainWindow:
+
+<LoginWindow>
+    name: 'LoginWindow'
+
+    MDFloatLayout:
+        orientation: 'vertical'
+        spacing: 10
+
+        MDLabel:
+            text: 'LOGIN'
+            bold: True
+            font_size: 25
+            #md_bg_color: 0.1, 0.1, 0.1, 0.1
+            halign: 'center'                  #Centers the text only
+            size_hint_y: None
+            height: self.texture_size[1] * 4
+            pos_hint: {"center_x": 0.5, "top": 0.95}
+
+        MDTextField:
+            id: login
+            size_hint_x: None
+            width: root.width * 0.7
+            pos_hint: {"center_x": 0.5}
+            icon_left: 'account'
+            hint_text: 'Username'
+            text: 'adam'
+            halign: 'left'
+            pos_hint: {"center_x": 0.5, "top": 0.75}
+        
+        MDTextField:
+            id: password
+            size_hint_x: None
+            width: root.width * 0.7
+            pos_hint: {"center_x": 0.5}
+            icon_left: 'eye-off'
+            hint_text: 'Password'
+            password: True
+            text: '1234'
+            halign: 'left'
+            pos_hint: {"center_x": 0.5, "top": 0.65}
+        
+        MDRectangleFlatButton:
+            id: icon
+            pos_hint: {"x": (root.width * 0.15) / root.width, "center_y": password.center_y / root.height}
+            md_bg_color: 0, 0, 0, 0
+            line_color: 0, 0, 0, 0
+            ripple_scale: 0
+            size_hint_x: None
+            width: dp(25)
+            size_hint_y: None
+            height: password.height * 0.75
+            on_release:
+                root.password()
+
+
+        MDFillRoundFlatButton:
+            text: 'Log in'
+            size_hint_x: 0.6
+            pos_hint: {"center_x": 0.5, "top": 0.52}
+            on_release:
+                root.log_in()
+
+        MDLabel:
+            
+        MDLabel:
+            text: "Or"
+            font_size: 13
+            color: 0.1, 0.1, 0.1, 0.7
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1] * 1.5
+            pos_hint: {"center_x": 0.5, "top": 0.3}
+        
+        MDFlatButton:
+            text: 'SIGN UP'
+            bold: True
+            size_hint_x: 0.6
+            pos_hint: {'center_x': 0.5}
+            pos_hint: {"center_x": 0.5, "top": 0.25}
+            on_release:
+                root.manager.transition = NoTransition()
+                app.root.current = 'CreateUser'
+
+        MDLabel:
+
+<CreateUser>
+    name: 'CreateUser'
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+
+        MDLabel:
+            text: 'SIGN UP'
+            bold: True
+            font_size: 25
+            #md_bg_color: 0.1, 0.1, 0.1, 0.1
+            halign: 'center'                  #Centers the text only
+            size_hint_y: None
+            height: self.texture_size[1] * 4
+
+        MDTextField:
+            id: login
+            size_hint_x: 0.7
+            pos_hint: {"center_x": 0.5}
+            icon_left: 'account'
+            hint_text: 'Username'
+            text: 'adam'
+            halign: 'left'
+        
+        MDTextField:
+            id: password
+            size_hint_x: 0.7
+            pos_hint: {"center_x": 0.5}
+            icon_left: 'eye-off'
+            hint_text: 'Password'
+            password: True
+            text: '1234'
+            halign: 'left'
+        
+        MDTextField:
+            id: confirm_password
+            size_hint_x: 0.7
+            pos_hint: {"center_x": 0.5}
+            icon_left: 'eye-off'
+            hint_text: 'Confirm password'
+            password: True
+            text: '1234'
+            halign: 'left'
+
+        MDFillRoundFlatButton:
+            text: 'Sign up'
+            size_hint_x: 0.6
+            pos_hint: {'center_x': 0.5}
+            on_release:
+                root.create_user_app()
+
+        MDLabel:
+            
+        MDLabel:
+            text: "Or"
+            font_size: 13
+            color: 0.1, 0.1, 0.1, 0.7
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1] * 1.5
+        
+        MDFlatButton:
+            text: 'LOG IN'
+            bold: True
+            size_hint_x: 0.6
+            pos_hint: {'center_x': 0.5}
+            on_release:
+                root.manager.transition = NoTransition()
+                app.root.current = 'LoginWindow'
+
+        MDLabel:
+    
+<PLTable>
+    name: 'PLTable'
+    on_enter: root.table()
+
+    MDGridLayout:
+        cols: 9
+        size_hint_y: None
+        height: self.minimum_height
+        pos_hint: {'left': 0, 'top': 0.9}
+
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: name
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: matches_played
+            size_hint_y: None
+            size_hint_x: None
+            width: root.width/10
+            height: self.texture_size[1]
+
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: wins
+            size_hint_y: None
+            size_hint_x:None
+            width: root.width/10
+            height: self.texture_size[1]
+
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: draws
+            size_hint_y: None
+            size_hint_x:None
+            width: root.width/10
+            height: self.texture_size[1]
+
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: losses
+            size_hint_y: None
+            size_hint_x:None
+            width: root.width/10
+            height: self.texture_size[1]
+
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: goals_scored
+            size_hint_y: None
+            size_hint_x:None
+            width: root.width/10
+            height: self.texture_size[1]
+
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: goals_conceded
+            size_hint_y: None
+            size_hint_x:None
+            width: root.width/10
+            height: self.texture_size[1]
+
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: goals_balance
+            size_hint_y: None
+            size_hint_x:None
+            width: root.width/10
+            height: self.texture_size[1]
+        
+        MDLabel:
+            text_color: 1, 1, 1, 1
+            id: points
+            size_hint_y: None
+            size_hint_x:None
+            width: root.width/10
+            height: self.texture_size[1]
+    
+    MDRoundFlatButton:
+        size_hint_x: 0.5
+        text: 'Back'
+        pos_hint: {'center_x': 0.25}
+        on_release:
+            root.manager.transition = NoTransition()
+            app.root.current = 'LoginWindow'
+    
+    MDRoundFlatButton:
+        size_hint_x: 0.5
+        text: 'Bet'
+        pos_hint: {'center_x': 0.75}
+        on_release:
+            root.manager.transition = NoTransition()
+            app.root.current = 'Bet'
+
+<Bet>
+    name: 'Bet'
+    on_enter: root.bets()
+
+    MDBoxLayout:
+        #id: mylayout
+        orientation: 'vertical'
+        md_bg_color: 0, 0.3, 0, 0.3
+        size_hint_y: 1
+        pos_hint: {"top": 1}
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+
+            MDBoxLayout:
+                id: mylayout
+                padding: 20
+                orientation: 'vertical'
+                size_hint_y: None
+                adaptive_height: True
+    
+        MDFlatButton:
+            text: 'BET'
+            on_press:
+                root.do_bets()
+
+<MainWindow>
+    name: 'MainWindow'
+
+    Label:
+        text: 'Hi'
+
+    MDRoundFlatButton:
+        size_hint_x: 0.5
+        text: 'Back'
+        pos_hint: {'center_x': 0.5}
+        on_release:
+            root.manager.transition = NoTransition()
+            app.root.current = 'LoginWindow'
