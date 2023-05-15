@@ -29,6 +29,7 @@ for i in response["teams"]:
     teams[i['id']]['goals_conceded'] = 0
     teams[i['id']]['goals_balance'] = 0
     teams[i['id']]['points'] = 0
+    
 
 matches = {}
 for i in range(1, 39):
