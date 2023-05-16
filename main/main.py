@@ -12,14 +12,12 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import NoTransition
 from kivy.clock import Clock
-
+from datetime import datetime
 
 class MyLabel(MDLabel):
     pass
 
 class LoginWindow(Screen):
-    def on_entry(self):
-        on_entry()
 
     def log_in(self):
         username = self.ids.login.text
@@ -107,10 +105,7 @@ class PLTable(Screen):
         self.ids.points.text = points
 
 class Bet(Screen):
-    pass
-
     def bets(self):
-        
         b = 0
         for i in matches.keys():
             for i2 in matches[i].keys():
@@ -136,40 +131,32 @@ class Bet(Screen):
         self.codes["codes"] = {}
 
         for i in list1:
-            
-            gridlayout = MDGridLayout(size_hint_y = None, height = layout_height, cols = 6)
-
+            gridlayout = MDGridLayout(size_hint_y = None,
+                                      height = layout_height,
+                                      cols = 6,
+                                      spacing = 10)
             self.team1 = MyLabel(text = str(teams[matches[a][i]["team1"]]["name"]),
                                  valign = "middle",
                                  halign = "center")
             gridlayout.add_widget(self.team1)
-
-
             self.goal1 = MyLabel(text = str(matches[a][i]["goals1"]),
                                  valign = "middle",
                                  halign = "center")
             gridlayout.add_widget(self.goal1)
-
-
             self.guess1 = MDTextField(size_hint = [0.5, 1],
                                       multiline = False,
                                       input_type = 'number')
             gridlayout.add_widget(self.guess1)
             self.entries.append(self.guess1)
-
             self.guess2 = MDTextField(size_hint = [0.5, 1],
                                       multiline = False,
                                       input_type = 'number')
             gridlayout.add_widget(self.guess2)
             self.entries.append(self.guess2)
-            
-
             self.goal2 = MyLabel(text = str(matches[a][i]["goals2"]),
                                  valign = "middle",
                                  halign = "center")
             gridlayout.add_widget(self.goal2)
-
-
             self.team2 = MyLabel(text=str(teams[matches[a][i]["team2"]]["name"]),
                                  valign = "middle",
                                  halign = "center")
@@ -181,6 +168,17 @@ class Bet(Screen):
             self.codes["codes"][i]["guess2"] = self.guess2
 
             layout.add_widget(gridlayout)
+        
+        user = my_user_info(app.access_token, app.user_id)
+        t = False
+        for i in user["bets"]:
+            if i["match_id"] in list1:
+                t = True
+        if t == True:
+            for i in user["bets"]:
+                self.codes["codes"][i["match_id"]]["guess1"].text = str(i["goal1"])
+                self.codes["codes"][i["match_id"]]["guess2"].text = str(i["goal2"])
+
     
     def do_bets(self):
         for i in self.entries:
@@ -188,7 +186,6 @@ class Bet(Screen):
                 i.text = '0'
         app = MDApp.get_running_app()
         for i in self.codes["codes"].keys():
-            print(i)
             guess1 = int(self.codes["codes"][i]["guess1"].text)
             guess2 = int(self.codes["codes"][i]["guess2"].text)
             post_bet(str(app.access_token), str(i), guess1, guess2, int(app.user_id))
@@ -206,7 +203,6 @@ class WindowManager(ScreenManager):
 class AwesomeApp(MDApp):
     def build(self):
         kv = Builder.load_file('user.kv')
-        LoginWindow.on_entry(LoginWindow)
         #Window.clearcolor = (1, 1, 1, 1)
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'Teal'

@@ -74,7 +74,8 @@ for i in response_1:
         teams[i['team_h']]['goals_balance'] += i['team_h_score'] - i['team_a_score']
         teams[i['team_a']]['goals_balance'] += i['team_a_score'] - i['team_h_score']
     
-positions = {k: v for k, v in sorted(teams.items(), key=lambda item: (item[1]['points'], item[1]['goals_scored'], item[1]['goals_balance']), reverse=True)}
+positions = {k: v for k, v in sorted(teams.items(), key=lambda item: (item[1]['points'], item[1]['goals_balance'], item[1]['goals_scored']), reverse=True)}
+
 
         
 

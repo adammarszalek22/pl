@@ -50,3 +50,5 @@ def compare_two_passwords(password1, password2):
     hash2 = sha256(password2.encode('utf-8')).hexdigest()
     return hash == hash2
 
+on_entry()
+
