@@ -44,9 +44,11 @@ def get_bet(access_token, id):
     bet = requests.get(url + '/bet/' + str(id), headers={"Authorization": "Bearer " + access_token})
     return json.loads(bet.text)
 
-def update_bet(access_token, id, goal1, goal2):
-    new_bet = requests.put(url + '/bet/' + str(id), headers={"Authorization": "Bearer " + access_token},
-                           json={"goal1": goal1, "goal2": goal2})
+def update_bet(access_token, match_id, goal1, goal2, user_id):
+    new_bet = requests.put(url + '/bet',
+                           headers={"Authorization": "Bearer " + access_token},
+                           json={"match_id": match_id, "goal1": goal1,
+                                 "goal2": goal2, "user_id": user_id})
     return json.loads(new_bet.text)
 
 def delete_bet(access_token, id):

@@ -7,8 +7,6 @@
 WindowManager:
     LoginWindow:
     CreateUser:
-    PLTable:
-    Bet:
     MainWindow:
 
 <LoginWindow>
@@ -167,141 +165,128 @@ WindowManager:
                 app.root.current = 'LoginWindow'
 
         MDLabel:
-    
-<PLTable>
-    name: 'PLTable'
-    on_enter: root.table()
-
-    MDGridLayout:
-        cols: 9
-        size_hint_y: None
-        height: self.minimum_height
-        pos_hint: {'left': 0, 'top': 0.9}
-
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: name
-            size_hint_y: None
-            height: self.texture_size[1]
-
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: matches_played
-            size_hint_y: None
-            size_hint_x: None
-            width: root.width/10
-            height: self.texture_size[1]
-
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: wins
-            size_hint_y: None
-            size_hint_x:None
-            width: root.width/10
-            height: self.texture_size[1]
-
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: draws
-            size_hint_y: None
-            size_hint_x:None
-            width: root.width/10
-            height: self.texture_size[1]
-
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: losses
-            size_hint_y: None
-            size_hint_x:None
-            width: root.width/10
-            height: self.texture_size[1]
-
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: goals_scored
-            size_hint_y: None
-            size_hint_x:None
-            width: root.width/10
-            height: self.texture_size[1]
-
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: goals_conceded
-            size_hint_y: None
-            size_hint_x:None
-            width: root.width/10
-            height: self.texture_size[1]
-
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: goals_balance
-            size_hint_y: None
-            size_hint_x:None
-            width: root.width/10
-            height: self.texture_size[1]
-        
-        MDLabel:
-            text_color: 1, 1, 1, 1
-            id: points
-            size_hint_y: None
-            size_hint_x:None
-            width: root.width/10
-            height: self.texture_size[1]
-    
-    MDRoundFlatButton:
-        size_hint_x: 0.5
-        text: 'Back'
-        pos_hint: {'center_x': 0.25}
-        on_release:
-            root.manager.transition = NoTransition()
-            app.root.current = 'LoginWindow'
-    
-    MDRoundFlatButton:
-        size_hint_x: 0.5
-        text: 'Bet'
-        pos_hint: {'center_x': 0.75}
-        on_release:
-            root.manager.transition = NoTransition()
-            app.root.current = 'Bet'
-
-<Bet>
-    name: 'Bet'
-    on_enter: root.bets()
-
-    MDBoxLayout:
-        orientation: 'vertical'
-        md_bg_color: 0, 0, 0, 0
-        size_hint_y: 1
-        pos_hint: {"top": 1}
-
-        ScrollView:
-            do_scroll_x: False
-            do_scroll_y: True
-
-            MDBoxLayout:
-                id: mylayout
-                padding: 20
-                orientation: 'vertical'
-                size_hint_y: None
-                adaptive_height: True
-    
-        MDRoundFlatButton:
-            text: 'BET'
-            pos_hint: {"center_x": 0.5}
-            size_hint_x: 0.4
-            on_press:
-                root.do_bets()
 
 <MainWindow>
     name: 'MainWindow'
+    on_enter:
+        root.table()
+        root.bets()
 
-    Label:
-        text: 'Hi'
+    MDBottomNavigation:
 
-    MDRoundFlatButton:
-        size_hint_x: 0.5
-        text: 'Back'
-        pos_hint: {'center_x': 0.5}
-        on_release:
-            root.manager.transition = NoTransition()
-            app.root.current = 'LoginWindow'
+        MDBottomNavigationItem:
+            name: 'League Table'
+            text: 'Table'
+            icon: 'view-list'
+            on_enter: root.table()
+
+            MDGridLayout:
+                cols: 9
+                size_hint_y: None
+                height: self.minimum_height
+                pos_hint: {'left': 0, 'top': 0.9}
+
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: name
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: matches_played
+                    size_hint_y: None
+                    size_hint_x: None
+                    width: root.width/10
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: wins
+                    size_hint_y: None
+                    size_hint_x:None
+                    width: root.width/10
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: draws
+                    size_hint_y: None
+                    size_hint_x:None
+                    width: root.width/10
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: losses
+                    size_hint_y: None
+                    size_hint_x:None
+                    width: root.width/10
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: goals_scored
+                    size_hint_y: None
+                    size_hint_x:None
+                    width: root.width/10
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: goals_conceded
+                    size_hint_y: None
+                    size_hint_x:None
+                    width: root.width/10
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: goals_balance
+                    size_hint_y: None
+                    size_hint_x:None
+                    width: root.width/10
+                    height: self.texture_size[1]
+                
+                MDLabel:
+                    text_color: 1, 1, 1, 1
+                    id: points
+                    size_hint_y: None
+                    size_hint_x:None
+                    width: root.width/10
+                    height: self.texture_size[1]
+
+        MDBottomNavigationItem:
+            name: 'Post Bet'
+            text: 'Your predictions'
+            icon: 'notebook-edit'
+            on_enter: root.bets()
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                md_bg_color: 0, 0, 0, 0
+                size_hint_y: 1
+                pos_hint: {"top": 1}
+
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+
+                    MDBoxLayout:
+                        id: mylayout
+                        padding: 20
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        adaptive_height: True
+            
+                MDRoundFlatButton:
+                    text: 'BET'
+                    pos_hint: {"center_x": 0.5}
+                    size_hint_x: 0.4
+                    on_press:
+                        root.do_bets()
+        
+        MDBottomNavigationItem:
+            name: 'View Your Scores'
+            text: 'Your scores'
+            icon: 'view-split-vertical'
