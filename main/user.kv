@@ -4,6 +4,10 @@
 <MyLabel>
     md_bg_color: 0, 0, 0, 0
 
+<ScoresLabel@MDLabel>
+    halign: 'center'
+    valign: 'middle'
+
 WindowManager:
     LoginWindow:
     CreateUser:
@@ -171,6 +175,7 @@ WindowManager:
     on_enter:
         root.table()
         root.bets()
+        root.scores()
 
     MDBottomNavigation:
 
@@ -197,7 +202,7 @@ WindowManager:
                     id: matches_played
                     size_hint_y: None
                     size_hint_x: None
-                    width: root.width/10
+                    width: root.width/11
                     height: self.texture_size[1]
 
                 MDLabel:
@@ -205,7 +210,7 @@ WindowManager:
                     id: wins
                     size_hint_y: None
                     size_hint_x:None
-                    width: root.width/10
+                    width: root.width/11
                     height: self.texture_size[1]
 
                 MDLabel:
@@ -213,7 +218,7 @@ WindowManager:
                     id: draws
                     size_hint_y: None
                     size_hint_x:None
-                    width: root.width/10
+                    width: root.width/11
                     height: self.texture_size[1]
 
                 MDLabel:
@@ -221,7 +226,7 @@ WindowManager:
                     id: losses
                     size_hint_y: None
                     size_hint_x:None
-                    width: root.width/10
+                    width: root.width/11
                     height: self.texture_size[1]
 
                 MDLabel:
@@ -229,31 +234,31 @@ WindowManager:
                     id: goals_scored
                     size_hint_y: None
                     size_hint_x:None
-                    width: root.width/10
+                    width: root.width/11
                     height: self.texture_size[1]
 
                 MDLabel:
                     text_color: 1, 1, 1, 1
                     id: goals_conceded
                     size_hint_y: None
-                    size_hint_x:None
-                    width: root.width/10
+                    size_hint_x: None
+                    width: root.width/11
                     height: self.texture_size[1]
 
                 MDLabel:
                     text_color: 1, 1, 1, 1
                     id: goals_balance
                     size_hint_y: None
-                    size_hint_x:None
-                    width: root.width/10
+                    size_hint_x: None
+                    width: root.width/11
                     height: self.texture_size[1]
                 
                 MDLabel:
                     text_color: 1, 1, 1, 1
                     id: points
                     size_hint_y: None
-                    size_hint_x:None
-                    width: root.width/10
+                    size_hint_x: None
+                    width: root.width/11
                     height: self.texture_size[1]
 
         MDBottomNavigationItem:
@@ -278,15 +283,53 @@ WindowManager:
                         orientation: 'vertical'
                         size_hint_y: None
                         adaptive_height: True
+                
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: 0.2
+                    padding: 20
             
-                MDRoundFlatButton:
-                    text: 'BET'
-                    pos_hint: {"center_x": 0.5}
-                    size_hint_x: 0.4
-                    on_press:
-                        root.do_bets()
+                    MDRoundFlatButton:
+                        text: 'BET'
+                        pos_hint: {"center_x": 0.5}
+                        size_hint_x: 0.4
+                        on_press:
+                            root.do_bets()
         
         MDBottomNavigationItem:
             name: 'View Your Scores'
             text: 'Your scores'
             icon: 'view-split-vertical'
+
+            MDGridLayout:
+                cols: 2
+
+                ScoresLabel:
+                    text: 'Username'
+
+                ScoresLabel:
+                    id: username
+
+                ScoresLabel:
+                    text: 'League position'
+                
+                ScoresLabel:
+                    id: position
+
+                ScoresLabel:
+                    text: 'Points'
+                
+                ScoresLabel:
+                    id: points2
+
+                ScoresLabel:
+                    text: 'Three-pointers'
+
+                ScoresLabel:
+                    id: three_pointers
+
+                ScoresLabel:
+                    text: 'One-pointers'
+
+                ScoresLabel:
+                    id: one_pointers

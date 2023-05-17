@@ -64,7 +64,9 @@ class CreateUser(Screen):
         password = self.ids.password.text
         if check_password(username, password):
             create_user(username, password)
-            login(username, password)
+            create_user2(username, password)
+            app = MDApp.get_running_app()
+            app.access_token, app.refresh_token, app.user_id = login(username, password)
             #add_player(username)
             self.manager.current = 'MainWindow'
         else:
@@ -101,6 +103,7 @@ class MainWindow(Screen):
         self.ids.goals_conceded.text = goals_conceded
         self.ids.goals_balance.text = goals_balance
         self.ids.points.text = points
+
     def bets(self):
         b = 0
         for i in matches.keys():
@@ -136,7 +139,6 @@ class MainWindow(Screen):
                                  size_hint = (0.3, 1),
                                  valign = "bottom",
                                  halign = "center")
-            self.team1.font_size = '10dp'
             gridlayout.add_widget(self.team1)
             self.goal1 = MyLabel(text = str(matches[a][i]["goals1"]),
                                  size_hint = (0.1, 1),
@@ -193,6 +195,15 @@ class MainWindow(Screen):
             guess2 = int(self.codes["codes"][i]["guess2"].text)
             #This adds a bet or updates it if it already exists
             update_bet(str(app.access_token), str(i), guess1, guess2, int(app.user_id))
+    
+    def scores(self):
+        app = MDApp.get_running_app()
+        user_info = my_user_info(app.access_token, app.user_id)
+        self.ids.username.text = str(user_info["username"])
+        self.ids.position.text = str(user_info["position"])
+        self.ids.points2.text = str(user_info["points"])
+        self.ids.three_pointers.text = str(user_info["three_pointers"])
+        self.ids.one_pointers.text = str(user_info["one_pointers"])
 
 
 class WindowManager(ScreenManager):

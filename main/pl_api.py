@@ -1,5 +1,3 @@
-import os
-import pandas as pd
 import requests
 import json
 
@@ -76,7 +74,8 @@ for i in response_1:
     
 positions = {k: v for k, v in sorted(teams.items(), key=lambda item: (item[1]['points'], item[1]['goals_balance'], item[1]['goals_scored']), reverse=True)}
 
-
+for i in positions.keys():
+    print(positions[i])
         
 
 
