@@ -41,24 +41,9 @@ class LoginWindow(Screen):
     
     def focus(self, dt):
         self.ids.password.focus = True
-'''
-class LoginWindow1(Screen):
-    pass
 
-    def log_in(self):
-        username = self.ids.login.text
-        password = self.ids.password.text
-        if check_password(username, password) == True:
-            self.manager.transition = NoTransition()
-            self.manager.current = 'PLTable'
-        else:
-            pass
-            #self.ids.my_label.text = 'Failed to log in'
-            #self.ids.my_label.height = self.ids.my_label.texture_size[1]
-'''
 class CreateUser(Screen):
-    pass
-
+    ###TO BE FIXED
     def create_user_app(self):
         username = self.ids.login.text
         password = self.ids.password.text
