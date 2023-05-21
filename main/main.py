@@ -14,6 +14,10 @@ from kivy.uix.screenmanager import NoTransition
 from kivy.clock import Clock
 from datetime import datetime
 
+'''
+LOGIN AND CREATE USER NEED TO BE FIXED
+'''
+
 class MyLabel(MDLabel):
     pass
 
@@ -27,6 +31,9 @@ class LoginWindow(Screen):
             self.manager.current = 'MainWindow'
             app = MDApp.get_running_app()
             app.access_token, app.refresh_token, app.user_id = login(username, password)
+        elif check_password(username, password) == 'Username does not exist':
+            self.ids.username.helper_text = "Username does not exist"
+            self.ids.text_field_error.error = True
         else:
             print('Wrong password')
     def password(self):
