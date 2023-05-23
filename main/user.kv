@@ -17,21 +17,21 @@ WindowManager:
     name: 'LoginWindow'
 
     MDFloatLayout:
-        orientation: 'vertical'
         spacing: 10
 
         MDLabel:
             text: 'LOGIN'
             bold: True
-            font_size: 25
-            #md_bg_color: 0.1, 0.1, 0.1, 0.1
-            halign: 'center'                  #Centers the text only
+            font_size: "25sp"
+            halign: 'center'
             size_hint_y: None
             height: self.texture_size[1] * 4
             pos_hint: {"center_x": 0.5, "top": 0.95}
 
         MDTextField:
             id: login
+            helper_text: ""
+            helper_text_mode: "on_error"
             size_hint_x: None
             width: root.width * 0.7
             pos_hint: {"center_x": 0.5}
@@ -67,12 +67,18 @@ WindowManager:
             height: password.height * 0.75
             on_release:
                 root.password()
-
+        
+        MDLabel:
+            id: info
+            font_size: "15sp"
+            pos_hint: {"center_x": 0.5, "top": 0.56}
+            size_hint: 0.7, None
+            height: self.texture_size[1]
 
         MDFillRoundFlatButton:
             text: 'Log in'
             size_hint_x: 0.6
-            pos_hint: {"center_x": 0.5, "top": 0.52}
+            pos_hint: {"center_x": 0.5, "top": 0.5}
             on_release:
                 root.log_in()
 

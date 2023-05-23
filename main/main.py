@@ -1,4 +1,4 @@
-from login import *
+#from login import *
 from pl_api import *
 from db_api import *
 from kivy.uix.textinput import TextInput
@@ -22,20 +22,24 @@ class MyLabel(MDLabel):
     pass
 
 class LoginWindow(Screen):
-
     def log_in(self):
         username = self.ids.login.text
         password = self.ids.password.text
-        if check_password(username, password) == True:
-            self.manager.transition = NoTransition()
-            self.manager.current = 'MainWindow'
+        try:
             app = MDApp.get_running_app()
             app.access_token, app.refresh_token, app.user_id = login(username, password)
-        elif check_password(username, password) == 'Username does not exist':
-            self.ids.username.helper_text = "Username does not exist"
-            self.ids.text_field_error.error = True
-        else:
-            print('Wrong password')
+            self.manager.transition = NoTransition()
+            self.manager.current = 'MainWindow'
+        except requests.exceptions.ConnectionError:
+            self.ids.info.text = "There is a problem on our end. We are trying to fix it..."
+        except ValueError:
+            if login(username, password) == "User not found":
+                self.ids.login.helper_text = "User not found"
+                self.ids.login.error = True
+            elif login(username, password) == "Wrong password":
+                self.ids.password.helper_text = "Wrong password"
+                self.ids.password.error = True
+        
     def password(self):
         if self.ids.password.password == True:
             self.ids.password.password = False

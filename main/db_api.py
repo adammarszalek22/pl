@@ -1,7 +1,7 @@
 import requests
 import json
 
-url = "https://pl-server.onrender.com"
+url = "http://127.0.0.1:5000"
 
 def create_user2(username, password):
     user = requests.post(url + '/register', json={"username": username, "password": password})
@@ -9,10 +9,13 @@ def create_user2(username, password):
 
 def login(username, password):
     request = requests.post(url + '/login', json={"username": username, "password": password})
-    access_token = json.loads(request.text)["access_token"]
-    refresh_token = json.loads(request.text)["refresh_token"]
-    user_id = json.loads(request.text)["user_id"]
-    return [access_token, refresh_token, user_id]
+    try:
+        access_token = json.loads(request.text)["access_token"]
+        refresh_token = json.loads(request.text)["refresh_token"]
+        user_id = json.loads(request.text)["user_id"]
+        return [access_token, refresh_token, user_id]
+    except KeyError:
+        return json.loads(request.text)["message"]
 
 def revoke_jwt(username, password):
     user = requests.post(url + '/logout', json={"username": username, "password": password})

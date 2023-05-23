@@ -1,6 +1,10 @@
 from purehash import *
 import sqlite3
 
+'''
+NOT NEEDED
+'''
+
 def on_entry():
     conn = sqlite3.connect('login.db')
     c = conn.cursor()
