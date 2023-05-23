@@ -13,6 +13,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import NoTransition
 from kivy.clock import Clock
 from datetime import datetime
+import urllib3
 
 '''
 LOGIN AND CREATE USER NEED TO BE FIXED
@@ -58,16 +59,48 @@ class CreateUser(Screen):
     def create_user_app(self):
         username = self.ids.login.text
         password = self.ids.password.text
-        if check_password(username, password):
-            create_user(username, password)
-            create_user2(username, password)
-            app = MDApp.get_running_app()
-            app.access_token, app.refresh_token, app.user_id = login(username, password)
-            #add_player(username)
-            self.manager.current = 'MainWindow'
+        password2 = self.ids.password2.text
+        try:
+            if password == password2 and\
+                create_user(username, password)["code"] == 201:
+                app = MDApp.get_running_app()
+                app.access_token, app.refresh_token, app.user_id = login(username, password)
+                self.manager.current = 'MainWindow'
+            elif password != password2:
+                self.ids.password2.helper_text = "Passwords don't match."
+                self.ids.password2.error = True
+            else:
+                self.ids.login.helper_text = 'User already exists.'
+                self.ids.login.error = True
+        except requests.exceptions.ConnectionError:
+            self.ids.info.text = "There is a problem on our end. We are trying to fix it..."
+        
+
+    def password(self):
+        if self.ids.password.password == True:
+            self.ids.password.password = False
+            self.ids.password.icon_left = "eye"
+            Clock.schedule_once(self.focus1, 0.05)
         else:
-            self.ids.my_label.text = 'User already exists'
-            self.ids.my_label.height = self.ids.my_label.texture_size[1]
+            self.ids.password.password = True
+            self.ids.password.icon_left = "eye-off"
+            Clock.schedule_once(self.focus1, 0.05)
+    
+    def focus1(self, dt):
+        self.ids.password.focus = True
+    
+    def password2(self):
+        if self.ids.password2.password == True:
+            self.ids.password2.password = False
+            self.ids.password2.icon_left = "eye"
+            Clock.schedule_once(self.focus2, 0.05)
+        else:
+            self.ids.password2.password = True
+            self.ids.password2.icon_left = "eye-off"
+            Clock.schedule_once(self.focus2, 0.05)
+    
+    def focus2(self, dt):
+        self.ids.password2.focus = True
 
 class MainWindow(Screen):
     def table(self):

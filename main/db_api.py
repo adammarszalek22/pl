@@ -3,7 +3,7 @@ import json
 
 url = "http://127.0.0.1:5000"
 
-def create_user2(username, password):
+def create_user(username, password):
     user = requests.post(url + '/register', json={"username": username, "password": password})
     return json.loads(user.text)
 
