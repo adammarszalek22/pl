@@ -1,4 +1,3 @@
-#from login import *
 from pl_api import *
 from db_api import *
 from kivy.uix.textinput import TextInput
@@ -13,11 +12,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import NoTransition
 from kivy.clock import Clock
 from datetime import datetime
-import urllib3
-
-'''
-LOGIN AND CREATE USER NEED TO BE FIXED
-'''
+import hashlib
 
 class MyLabel(MDLabel):
     pass
@@ -26,20 +21,24 @@ class LoginWindow(Screen):
     def log_in(self):
         username = self.ids.login.text
         password = self.ids.password.text
-        try:
-            app = MDApp.get_running_app()
-            app.access_token, app.refresh_token, app.user_id = login(username, password)
-            self.manager.transition = NoTransition()
-            self.manager.current = 'MainWindow'
-        except requests.exceptions.ConnectionError:
-            self.ids.info.text = "There is a problem on our end. We are trying to fix it..."
-        except ValueError:
-            if login(username, password) == "User not found":
-                self.ids.login.helper_text = "User not found"
-                self.ids.login.error = True
-            elif login(username, password) == "Wrong password":
-                self.ids.password.helper_text = "Wrong password"
-                self.ids.password.error = True
+        if pl.connection == False:
+            self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
+            pl.get_data()
+        else:
+            try:
+                app = MDApp.get_running_app()
+                app.access_token, app.refresh_token, app.user_id = login(username, password)
+                self.manager.transition = NoTransition()
+                self.manager.current = 'MainWindow'
+            except requests.exceptions.ConnectionError:
+                self.ids.info.text = "There is a problem on our end. We are trying to fix it..."
+            except ValueError:
+                if login(username, password) == "User not found":
+                    self.ids.login.helper_text = "User not found"
+                    self.ids.login.error = True
+                elif login(username, password) == "Wrong password":
+                    self.ids.password.helper_text = "Wrong password"
+                    self.ids.password.error = True
         
     def password(self):
         if self.ids.password.password == True:
@@ -55,26 +54,28 @@ class LoginWindow(Screen):
         self.ids.password.focus = True
 
 class CreateUser(Screen):
-    ###TO BE FIXED
     def create_user_app(self):
         username = self.ids.login.text
         password = self.ids.password.text
         password2 = self.ids.password2.text
         try:
             if password == password2 and\
-                create_user(username, password)["code"] == 201:
+                create_user(username, password)["code"] == 201 and\
+                pl.connection == True:
                 app = MDApp.get_running_app()
                 app.access_token, app.refresh_token, app.user_id = login(username, password)
                 self.manager.current = 'MainWindow'
             elif password != password2:
                 self.ids.password2.helper_text = "Passwords don't match."
                 self.ids.password2.error = True
+            elif pl.connection == False:
+                self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
+                pl.get_data()
             else:
                 self.ids.login.helper_text = 'User already exists.'
                 self.ids.login.error = True
         except requests.exceptions.ConnectionError:
-            self.ids.info.text = "There is a problem on our end. We are trying to fix it..."
-        
+            self.ids.info.text = "There is a problem on our end. We are working hard to fix it"
 
     def password(self):
         if self.ids.password.password == True:
@@ -113,16 +114,16 @@ class MainWindow(Screen):
         goals_conceded = ''
         goals_balance = ''
         points = ''
-        for i in positions.keys():
-            name += positions[i]["name"] + '\n'
-            matches_played += str(positions[i]["matches_played"]) + '\n'
-            wins += str(positions[i]["wins"]) + '\n'
-            draws += str(positions[i]["draws"]) + '\n'
-            losses += str(positions[i]["losses"]) + '\n'
-            goals_scored += str(positions[i]["goals_scored"]) + '\n'
-            goals_conceded += str(positions[i]["goals_conceded"]) + '\n'
-            goals_balance += str(positions[i]["goals_balance"]) + '\n'
-            points += str(positions[i]["points"]) + '\n'
+        for i in pl.positions.keys():
+            name += pl.positions[i]["name"] + '\n'
+            matches_played += str(pl.positions[i]["matches_played"]) + '\n'
+            wins += str(pl.positions[i]["wins"]) + '\n'
+            draws += str(pl.positions[i]["draws"]) + '\n'
+            losses += str(pl.positions[i]["losses"]) + '\n'
+            goals_scored += str(pl.positions[i]["goals_scored"]) + '\n'
+            goals_conceded += str(pl.positions[i]["goals_conceded"]) + '\n'
+            goals_balance += str(pl.positions[i]["goals_balance"]) + '\n'
+            points += str(pl.positions[i]["points"]) + '\n'
         self.ids.name.text = name
         self.ids.matches_played.text = matches_played
         self.ids.wins.text = wins 
@@ -135,9 +136,9 @@ class MainWindow(Screen):
 
     def bets(self):
         b = 0
-        for i in matches.keys():
-            for i2 in matches[i].keys():
-                if matches[i][i2]["started"] == False:
+        for i in pl.matches.keys():
+            for i2 in pl.matches[i].keys():
+                if pl.matches[i][i2]["started"] == False:
                     a = i
                     b = 1
                     break
@@ -147,7 +148,7 @@ class MainWindow(Screen):
         list1 = []
         self.codes = {}
 
-        for i in matches[a].keys():
+        for i in pl.matches[a].keys():
             list1.append(i)
 
         app = MDApp.get_running_app()
@@ -164,12 +165,12 @@ class MainWindow(Screen):
                                       height = layout_height,
                                       cols = 6,
                                       spacing = 10)
-            self.team1 = MyLabel(text = str(teams[matches[a][i]["team1"]]["name"]),
+            self.team1 = MyLabel(text = str(pl.teams[pl.matches[a][i]["team1"]]["name"]),
                                  size_hint = (0.3, 1),
                                  valign = "bottom",
                                  halign = "center")
             gridlayout.add_widget(self.team1)
-            self.goal1 = MyLabel(text = str(matches[a][i]["goals1"]),
+            self.goal1 = MyLabel(text = str(pl.matches[a][i]["goals1"]),
                                  size_hint = (0.1, 1),
                                  valign = "middle",
                                  halign = "center")
@@ -184,12 +185,12 @@ class MainWindow(Screen):
                                       input_type = 'number')
             gridlayout.add_widget(self.guess2)
             self.entries.append(self.guess2)
-            self.goal2 = MyLabel(text = str(matches[a][i]["goals2"]),
+            self.goal2 = MyLabel(text = str(pl.matches[a][i]["goals2"]),
                                  size_hint = (0.1, 1),
                                  valign = "middle",
                                  halign = "center")
             gridlayout.add_widget(self.goal2)
-            self.team2 = MyLabel(text=str(teams[matches[a][i]["team2"]]["name"]),
+            self.team2 = MyLabel(text=str(pl.teams[pl.matches[a][i]["team2"]]["name"]),
                                  size_hint = (0.3, 1),
                                  valign = "middle",
                                  halign = "center")
