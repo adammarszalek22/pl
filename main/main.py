@@ -104,6 +104,29 @@ class CreateUser(Screen):
         self.ids.password2.focus = True
 
 class MainWindow(Screen):
+    def table1(self):
+        position = 1
+        for i in pl.positions.keys():
+            gridlayout = MDGridLayout(cols=2, adaptive_height=True)
+            gridlayout2 = MDGridLayout(cols=8, adaptive_height=True)
+            gridlayout.add_widget(MDLabel(text=str(position), adaptive_height=False))
+            gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
+                                          adaptive_height=False,
+                                          size_hint_x = 2))
+            for i2 in pl.positions[i].keys():
+                if i2 == "points":
+                    gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
+                                                  adaptive_height=False,
+                                                  bold=True))
+                elif i2 != "id" and i2 != "name": 
+                    # We do not need the team id when displaying premier league table.
+                    # Name column is already included.
+                    gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
+                                                  adaptive_height=False))
+            self.ids.boxlayout.add_widget(gridlayout)
+            self.ids.boxlayout2.add_widget(gridlayout2)
+            position += 1
+
     def table(self):
         name = ''
         matches_played = ''

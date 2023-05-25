@@ -29,10 +29,10 @@ class premier_league:
                 self.teams[i['id']]['wins'] = 0
                 self.teams[i['id']]['draws'] = 0
                 self.teams[i['id']]['losses'] = 0
+                self.teams[i['id']]['points'] = 0
                 self.teams[i['id']]['goals_scored'] = 0
                 self.teams[i['id']]['goals_conceded'] = 0
                 self.teams[i['id']]['goals_balance'] = 0
-                self.teams[i['id']]['points'] = 0
                 self.matches = {}
             for i in range(1, 39):
                 self.matches['Gameweek ' + str(i)] = {}

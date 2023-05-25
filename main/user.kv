@@ -227,8 +227,47 @@ WindowManager:
         root.table()
         root.bets()
         root.scores()
+        root.table1()
 
     MDBottomNavigation:
+
+        MDBottomNavigationItem:
+            name: 'League Table 1'
+            text: 'Table 1'
+            icon: 'view-list'
+            on_enter: root.table1()
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                md_bg_color: 0, 0, 0, 0
+                size_hint_y: 1
+                pos_hint: {"top": 1}
+                padding: 20
+
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        adaptive_height: True
+
+                        MDBoxLayout:
+                            id: boxlayout
+                            orientation: 'vertical'
+                            adaptive_height: True
+                            pos_hint: {"top": 1}
+                        
+                        ScrollView:
+                            do_scroll_x: True
+                            do_scroll_y: True
+
+                            MDBoxLayout:
+                                id: boxlayout2
+                                orientation: 'vertical'
+                                size_hint: None, None
+                                width: root.width * 0.7
+                                adaptive_height: True
 
         MDBottomNavigationItem:
             name: 'League Table'
