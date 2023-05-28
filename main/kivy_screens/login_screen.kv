@@ -1,0 +1,89 @@
+<LoginWindow>
+    name: 'LoginWindow'
+
+    MDFloatLayout:
+
+        MDLabel:
+            text: 'LOGIN'
+            bold: True
+            font_size: "25sp"
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1] * 4
+            pos_hint: {"center_x": 0.5, "top": 0.95}
+
+        MDTextField:
+            id: login
+            helper_text: ""
+            helper_text_mode: "on_error"
+            size_hint_x: None
+            width: root.width * 0.7
+            pos_hint: {"center_x": 0.5}
+            icon_left: 'account'
+            hint_text: 'Username'
+            text: 'adam'
+            halign: 'left'
+            pos_hint: {"center_x": 0.5, "top": 0.75}
+        
+        MDTextField:
+            id: password
+            helper_text: ""
+            helper_text_mode: "on_error"
+            size_hint_x: None
+            width: root.width * 0.7
+            pos_hint: {"center_x": 0.5}
+            icon_left: 'eye-off'
+            hint_text: 'Password'
+            password: True
+            text: '1234'
+            halign: 'left'
+            pos_hint: {"center_x": 0.5, "top": 0.65}
+        
+        MDRectangleFlatButton:
+            id: icon
+            pos_hint: {"x": (root.width * 0.15) / root.width, "center_y": password.center_y / root.height}
+            md_bg_color: 0, 0, 0, 0
+            line_color: 0, 0, 0, 0
+            ripple_scale: 0
+            size_hint_x: None
+            width: dp(25)
+            size_hint_y: None
+            height: password.height * 0.75
+            on_release:
+                root.password()
+        
+        MDLabel:
+            id: info
+            font_size: "15sp"
+            pos_hint: {"center_x": 0.5, "top": 0.56}
+            size_hint: 0.7, None
+            height: self.texture_size[1]
+
+        MDFillRoundFlatButton:
+            text: 'Log in'
+            size_hint_x: 0.6
+            pos_hint: {"center_x": 0.5, "top": 0.5}
+            on_release:
+                root.log_in()
+
+        MDLabel:
+            
+        MDLabel:
+            text: "Or"
+            font_size: "13sp"
+            color: 0.1, 0.1, 0.1, 0.7
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1] * 1.5
+            pos_hint: {"center_x": 0.5, "top": 0.3}
+        
+        MDFlatButton:
+            text: 'SIGN UP'
+            bold: True
+            size_hint_x: 0.6
+            pos_hint: {"center_x": 0.5, "top": 0.25}
+            on_release:
+                root.manager.transition = NoTransition()
+                app.root.current = 'CreateUser'
+
+        MDLabel:
