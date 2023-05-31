@@ -14,7 +14,7 @@ class MyLabel(MDLabel):
     pass
 
 class MainWindow(Screen):
-    def table1(self):
+    def table(self):
         position = 1
         app = MDApp.get_running_app()
         headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
@@ -69,37 +69,10 @@ class MainWindow(Screen):
             self.ids.boxlayout2.add_widget(gridlayout2)
             position += 1
 
-    def table(self):
-        name = ''
-        matches_played = ''
-        wins = ''
-        draws = ''
-        losses = ''
-        goals_scored = ''
-        goals_conceded = ''
-        goals_balance = ''
-        points = ''
-        for i in pl.positions.keys():
-            name += pl.positions[i]["name"] + '\n'
-            matches_played += str(pl.positions[i]["matches_played"]) + '\n'
-            wins += str(pl.positions[i]["wins"]) + '\n'
-            draws += str(pl.positions[i]["draws"]) + '\n'
-            losses += str(pl.positions[i]["losses"]) + '\n'
-            goals_scored += str(pl.positions[i]["goals_scored"]) + '\n'
-            goals_conceded += str(pl.positions[i]["goals_conceded"]) + '\n'
-            goals_balance += str(pl.positions[i]["goals_balance"]) + '\n'
-            points += str(pl.positions[i]["points"]) + '\n'
-        self.ids.name.text = name
-        self.ids.matches_played.text = matches_played
-        self.ids.wins.text = wins 
-        self.ids.draws.text = draws
-        self.ids.losses.text = losses
-        self.ids.goals_scored.text = goals_scored
-        self.ids.goals_conceded.text = goals_conceded
-        self.ids.goals_balance.text = goals_balance
-        self.ids.points.text = points
-
     def bets(self):
+
+        # A for loop to find a match that hasn't yet started.
+        # This will indicate the current gameweek number (a)
         b = 0
         for i in pl.matches.keys():
             for i2 in pl.matches[i].keys():
@@ -113,6 +86,7 @@ class MainWindow(Screen):
         list1 = []
         self.codes = {}
 
+        # A list of all match codes in the current gameweek
         for i in pl.matches[a].keys():
             list1.append(i)
 
@@ -120,10 +94,6 @@ class MainWindow(Screen):
         layout = self.ids.mylayout
         layout.clear_widgets()
         layout_height = app.root.height / (len(list1) - 2)
-
-        self.entries = []
-        self.codes["Gameweek"] = a
-        self.codes["codes"] = {}
 
         for i in list1:
             gridlayout = MDGridLayout(size_hint_y = None,
@@ -144,12 +114,10 @@ class MainWindow(Screen):
                                       multiline = False,
                                       input_type = 'number')
             gridlayout.add_widget(self.guess1)
-            self.entries.append(self.guess1)
             self.guess2 = MDTextField(size_hint = (0.05, 1),
                                       multiline = False,
                                       input_type = 'number')
             gridlayout.add_widget(self.guess2)
-            self.entries.append(self.guess2)
             self.goal2 = MyLabel(text = str(pl.matches[a][i]["goals2"]),
                                  size_hint = (0.1, 1),
                                  valign = "middle",
@@ -161,13 +129,13 @@ class MainWindow(Screen):
                                  halign = "center")
             gridlayout.add_widget(self.team2)
 
-            
-            self.codes["codes"][i] = {}
-            self.codes["codes"][i]["guess1"] = self.guess1
-            self.codes["codes"][i]["guess2"] = self.guess2
+            self.codes[i] = {}
+            self.codes[i]["guess1"] = self.guess1
+            self.codes[i]["guess2"] = self.guess2
 
             layout.add_widget(gridlayout)
         
+        # If scores have been previously guessed. They will be displayed.
         user = my_user_info(app.access_token, app.user_id)
         t = False
         for i in user["bets"]:
@@ -175,19 +143,20 @@ class MainWindow(Screen):
                 t = True
         if t == True:
             for i in user["bets"]:
-                self.codes["codes"][i["match_id"]]["guess1"].text = str(i["goal1"])
-                self.codes["codes"][i["match_id"]]["guess2"].text = str(i["goal2"])
+                self.codes[i["match_id"]]["guess1"].text = str(i["goal1"])
+                self.codes[i["match_id"]]["guess2"].text = str(i["goal2"])
 
     
     def do_bets(self):
         #Sending input to the server
-        for i in self.entries:
-            if i.text == '':
-                i.text = '0'
         app = MDApp.get_running_app()
-        for i in self.codes["codes"].keys():
-            guess1 = int(self.codes["codes"][i]["guess1"].text)
-            guess2 = int(self.codes["codes"][i]["guess2"].text)
+        for i in self.codes.keys():
+            if self.codes[i]["guess1"].text == "":
+                self.codes[i]["guess1"].text = 0
+            if self.codes[i]["guess2"].text == "":
+                self.codes[i]["guess2"].text = 0
+            guess1 = self.codes[i]["guess1"].text
+            guess2 = self.codes[i]["guess2"].text
             #This adds a bet or updates it if it already exists
             update_bet(str(app.access_token), str(i), guess1, guess2, int(app.user_id))
     

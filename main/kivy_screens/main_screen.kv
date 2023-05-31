@@ -1,7 +1,6 @@
 <MainWindow>
     name: 'MainWindow' 
     on_enter:
-        root.table1()
         root.table()
         #root.bets()
         root.scores()
@@ -9,10 +8,10 @@
     MDBottomNavigation:
 
         MDBottomNavigationItem:
-            name: 'League Table 1'
-            text: 'Table 1'
+            name: 'League Table'
+            text: 'Table'
             icon: 'view-list'
-            on_enter: root.table1()
+            on_enter: root.table()
 
             MDBoxLayout:
                 orientation: 'vertical'
@@ -22,7 +21,8 @@
                 ScrollView:
                     do_scroll_x: False
                     do_scroll_y: True
-                    #bar_color: 1, 1, 1, 1
+                    bar_color: 1, 1, 1, 1
+                    bar_inactive_color: 1, 1, 1, 1
 
                     MDBoxLayout:
                         id: main_box
@@ -40,6 +40,8 @@
                         ScrollView:
                             do_scroll_y: True
                             do_scroll_x: True
+                            bar_color: 1, 1, 1, 1
+                            bar_inactive_color: 1, 1, 1, 1
 
                             MDBoxLayout:
                                 id: boxlayout2
@@ -48,88 +50,6 @@
                                 size_hint_x: 2.1
                                 size_hint_y: 1.0000001
                                 spacing: 2
-
-        MDBottomNavigationItem:
-            name: 'League Table'
-            text: 'Table'
-            icon: 'view-list'
-            on_enter: root.table()
-
-            MDGridLayout:
-                cols: 9
-                size_hint_y: None
-                height: self.minimum_height
-                pos_hint: {'left': 0, 'top': 0.9}
-
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: name
-                    size_hint_y: None
-                    height: self.texture_size[1]
-
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: matches_played
-                    size_hint_y: None
-                    size_hint_x: None
-                    width: root.width/11
-                    height: self.texture_size[1]
-
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: wins
-                    size_hint_y: None
-                    size_hint_x:None
-                    width: root.width/11
-                    height: self.texture_size[1]
-
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: draws
-                    size_hint_y: None
-                    size_hint_x:None
-                    width: root.width/11
-                    height: self.texture_size[1]
-
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: losses
-                    size_hint_y: None
-                    size_hint_x:None
-                    width: root.width/11
-                    height: self.texture_size[1]
-
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: goals_scored
-                    size_hint_y: None
-                    size_hint_x:None
-                    width: root.width/11
-                    height: self.texture_size[1]
-
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: goals_conceded
-                    size_hint_y: None
-                    size_hint_x: None
-                    width: root.width/11
-                    height: self.texture_size[1]
-
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: goals_balance
-                    size_hint_y: None
-                    size_hint_x: None
-                    width: root.width/11
-                    height: self.texture_size[1]
-                
-                MDLabel:
-                    text_color: 1, 1, 1, 1
-                    id: points
-                    size_hint_y: None
-                    size_hint_x: None
-                    width: root.width/11
-                    height: self.texture_size[1]
 
         MDBottomNavigationItem:
             name: 'Post Bet'
