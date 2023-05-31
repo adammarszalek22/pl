@@ -8,56 +8,63 @@ from kivy.uix.screenmanager import NoTransition
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.gridlayout import MDGridLayout
+from kivymd.uix.scrollview import ScrollView
 
 class MyLabel(MDLabel):
     pass
 
 class MainWindow(Screen):
-    def scroll1(self):
-        self.ids.scrolltwo.scroll_y = self.ids.scrollone.scroll_y
-    def scroll2(self):
-        self.ids.scrollone.scroll_y = self.ids.scrolltwo.scroll_y
-    def table2(self):
-        position = 1
-        for i in pl.positions.keys():
-            gridlayout = MDGridLayout(cols=2, adaptive_height=True)
-            gridlayout2 = MDGridLayout(cols=8, adaptive_height=True)
-            gridlayout.add_widget(MDLabel(text=str(position), adaptive_height=False))
-            gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
-                                          adaptive_height=False,
-                                          size_hint_x = 2))
-            for i2 in pl.positions[i].keys():
-                if i2 == "points":
-                    gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
-                                                  adaptive_height=False,
-                                                  bold=True))
-                elif i2 != "id" and i2 != "name": 
-                    # We do not need the team id when displaying premier league table.
-                    # Name column is already included.
-                    gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
-                                                  adaptive_height=False))
-            self.ids.boxlayout3.add_widget(gridlayout)
-            self.ids.boxlayout4.add_widget(gridlayout2)
-            position += 1
     def table1(self):
         position = 1
+        app = MDApp.get_running_app()
+        headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
+        headings_layout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
+        headings_layout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
+        for i in headings:
+            if i == "":
+                headings_layout.add_widget(MDLabel(text=i,
+                                                size_hint_y = None,
+                                                height = app.root.height / 10))
+            elif i == "Club":
+                headings_layout.add_widget(MDLabel(text=i,
+                                                size_hint_y = None,
+                                                height = app.root.height / 10,
+                                                size_hint_x = 2))
+            elif i == "Pts":
+                headings_layout2.add_widget(MDLabel(text=i,
+                                                size_hint_y = None,
+                                                height = app.root.height / 10,
+                                                bold=True))
+            else:
+                headings_layout2.add_widget(MDLabel(text=i,
+                                                size_hint_y = None,
+                                                height = app.root.height / 10))
+        self.ids.boxlayout.add_widget(headings_layout)
+        self.ids.boxlayout2.add_widget(headings_layout2)
         for i in pl.positions.keys():
-            gridlayout = MDGridLayout(cols=2, adaptive_height=True)
-            gridlayout2 = MDGridLayout(cols=8, adaptive_height=True)
-            gridlayout.add_widget(MDLabel(text=str(position), adaptive_height=False))
+            gridlayout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
+            gridlayout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
+            gridlayout.add_widget(MDLabel(text=str(position),
+                                          adaptive_height=False,
+                                          size_hint_y = None,
+                                          height = app.root.height / 10))
             gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
                                           adaptive_height=False,
+                                          size_hint_y = None,
+                                          height = app.root.height / 10,
                                           size_hint_x = 2))
             for i2 in pl.positions[i].keys():
                 if i2 == "points":
                     gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
-                                                  adaptive_height=False,
+                                                  size_hint_y = None,
+                                                  height = app.root.height / 10,
                                                   bold=True))
                 elif i2 != "id" and i2 != "name": 
                     # We do not need the team id when displaying premier league table.
                     # Name column is already included.
                     gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
-                                                  adaptive_height=False))
+                                                   size_hint_y = None,
+                                                   height = app.root.height / 10))
             self.ids.boxlayout.add_widget(gridlayout)
             self.ids.boxlayout2.add_widget(gridlayout2)
             position += 1

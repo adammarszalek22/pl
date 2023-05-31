@@ -1,70 +1,12 @@
 <MainWindow>
     name: 'MainWindow' 
     on_enter:
-        root.table2()
         root.table1()
         root.table()
-        root.bets()
+        #root.bets()
         root.scores()
 
     MDBottomNavigation:
-
-        MDBottomNavigationItem:
-            name: 'League Table 2'
-            text: 'Table 2'
-            icon: 'view-list'
-            on_enter: root.table2()
-
-            MDBoxLayout:
-                orientation: 'horizontal'
-                pos_hint: {"top": 1}
-                size_hint_x: 1.5
-
-                MDBoxLayout:
-                    orientation: 'vertical'
-                    md_bg_color: 0, 0, 0, 0
-                    #size_hint_y: 1
-                    pos_hint: {"top": 1}
-                    #padding: 20
-                    #adaptive_height: True
-
-                    ScrollView:
-                        id: scrollone
-                        do_scroll_x: False
-                        do_scroll_y: True
-                        on_scroll_start:
-                            root.scroll1()
-
-                        MDBoxLayout:
-                            id: boxlayout3
-                            orientation: 'vertical'
-                            adaptive_height: True
-                            pos_hint: {"top": 1}
-                            md_bg_color: 1, 0, 0, 0.5
-                
-                MDBoxLayout:
-                    orientation: 'vertical'
-                    md_bg_color: 0, 0, 0, 0
-                    size_hint_x: 2
-                    #size_hint_y: 1
-                    pos_hint: {"top": 1}
-                    #padding: 20
-                    #adaptive_height: True
-
-                    ScrollView:
-                        id: scrolltwo
-                        do_scroll_x: True
-                        do_scroll_y: True
-                        on_scroll_start:
-                            print('moving')
-                            root.scroll2()
-
-                        MDBoxLayout:
-                            id: boxlayout4
-                            orientation: 'vertical'
-                            adaptive_height: True
-                            pos_hint: {"top": 1}
-                            md_bg_color: 1, 0, 0, 0.5
 
         MDBottomNavigationItem:
             name: 'League Table 1'
@@ -75,38 +17,37 @@
             MDBoxLayout:
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
-                #size_hint_y: 1
-                pos_hint: {"top": 1}
-                #padding: 20
+                padding: 20
 
                 ScrollView:
                     do_scroll_x: False
                     do_scroll_y: True
+                    #bar_color: 1, 1, 1, 1
 
                     MDBoxLayout:
+                        id: main_box
                         orientation: 'horizontal'
                         adaptive_height: True
+                        size_hint_y: None
 
                         MDBoxLayout:
                             id: boxlayout
                             orientation: 'vertical'
                             adaptive_height: True
-                            pos_hint: {"top": 1}
-                            md_bg_color: 1, 0, 0, 0.5
+                            md_bg_color: '#212121'
+                            spacing: 2
                         
                         ScrollView:
-                            do_scroll_x: True
                             do_scroll_y: True
+                            do_scroll_x: True
 
                             MDBoxLayout:
                                 id: boxlayout2
-                                md_bg_color: 1, 1, 0, 0.5
-                                pos_hint: {"top": 1}
+                                #md_bg_color: 0.2, 0.2, 0.2, 0.2
                                 orientation: 'vertical'
-                                size_hint: None, None
-                                width: root.width * 0.7
-                                adaptive_height: True
-                                #height: boxlayout.height * 1.00000001
+                                size_hint_x: 2.1
+                                size_hint_y: 1.0000001
+                                spacing: 2
 
         MDBottomNavigationItem:
             name: 'League Table'
@@ -194,7 +135,7 @@
             name: 'Post Bet'
             text: 'Your predictions'
             icon: 'notebook-edit'
-            on_enter: root.bets()
+            #on_enter: root.bets()
 
             MDBoxLayout:
                 orientation: 'vertical'
