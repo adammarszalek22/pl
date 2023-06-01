@@ -1,7 +1,8 @@
 import requests
 import json
 
-url = "http://127.0.0.1:5000"
+#url = "http://127.0.0.1:5000"
+url = "https://pl-server.onrender.com"
 
 def create_user(username, password):
     user = requests.post(url + '/register', json={"username": username, "password": password})

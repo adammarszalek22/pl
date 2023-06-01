@@ -12,8 +12,11 @@ class CreateUser(Screen):
         username = self.ids.login.text
         password = self.ids.password.text
         password2 = self.ids.password2.text
+        pl.get_data()
         try:
-            if password == password2 and\
+            if pl.connection == False:
+                self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
+            elif password == password2 and\
                 create_user(username, password)["code"] == 201 and\
                 pl.connection == True:
                 app = MDApp.get_running_app()
@@ -22,9 +25,6 @@ class CreateUser(Screen):
             elif password != password2:
                 self.ids.password2.helper_text = "Passwords don't match."
                 self.ids.password2.error = True
-            elif pl.connection == False:
-                self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
-                pl.get_data()
             else:
                 self.ids.login.helper_text = 'User already exists.'
                 self.ids.login.error = True

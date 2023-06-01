@@ -11,9 +11,9 @@ class LoginWindow(Screen):
     def log_in(self):
         username = self.ids.login.text
         password = self.ids.password.text
+        pl.get_data()
         if pl.connection == False:
             self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
-            pl.get_data()
         else:
             try:
                 app = MDApp.get_running_app()
