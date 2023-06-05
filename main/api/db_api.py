@@ -18,8 +18,8 @@ def login(username, password):
     except KeyError:
         return json.loads(request.text)["message"]
 
-def revoke_jwt(username, password):
-    user = requests.post(url + '/logout', json={"username": username, "password": password})
+def revoke_jwt(access_token):
+    user = requests.post(url + '/logout', headers={"Authorization": "Bearer " + access_token})
     return json.loads(user.text)
 
 def get_non_fresh_token(refresh_token, username, password):
