@@ -14,6 +14,8 @@ class MyLabel(MDLabel):
 
 class MainWindow(Screen):
     def table(self):
+        size_num = 27
+        position = 1
         app = MDApp.get_running_app()
         headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
         headings_layout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
@@ -23,21 +25,21 @@ class MainWindow(Screen):
             if i == "":
                 headings_layout.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
-                                                height = app.root.height / 10))
+                                                height = app.root.height / size_num))
             elif i == "Club":
                 headings_layout.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
-                                                height = app.root.height / 10,
+                                                height = app.root.height / size_num,
                                                 size_hint_x = 2))
             elif i == "Pts":
                 headings_layout2.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
-                                                height = app.root.height / 10,
+                                                height = app.root.height / size_num,
                                                 bold=True))
             else:
                 headings_layout2.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
-                                                height = app.root.height / 10))
+                                                height = app.root.height / size_num))
         self.ids.boxlayout.add_widget(headings_layout)
         self.ids.boxlayout2.add_widget(headings_layout2)
         for i in pl.positions.keys():
@@ -46,24 +48,24 @@ class MainWindow(Screen):
             gridlayout.add_widget(MDLabel(text=str(position),
                                           adaptive_height=False,
                                           size_hint_y = None,
-                                          height = app.root.height / 10))
+                                          height = app.root.height / size_num))
             gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
                                           adaptive_height=False,
                                           size_hint_y = None,
-                                          height = app.root.height / 10,
+                                          height = app.root.height / size_num,
                                           size_hint_x = 2))
             for i2 in pl.positions[i].keys():
                 if i2 == "points":
                     gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
                                                   size_hint_y = None,
-                                                  height = app.root.height / 10,
+                                                  height = app.root.height / size_num,
                                                   bold=True))
                 elif i2 != "id" and i2 != "name": 
                     # We do not need the team id when displaying premier league table.
                     # Name column is already included.
                     gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
                                                    size_hint_y = None,
-                                                   height = app.root.height / 10))
+                                                   height = app.root.height / size_num))
             self.ids.boxlayout.add_widget(gridlayout)
             self.ids.boxlayout2.add_widget(gridlayout2)
             position += 1
@@ -166,3 +168,13 @@ class MainWindow(Screen):
         self.ids.points2.text = str(user_info["points"])
         self.ids.three_pointers.text = str(user_info["three_pointers"])
         self.ids.one_pointers.text = str(user_info["one_pointers"])
+    
+    def logout(self):
+        self.manager.current = "LoginWindow"
+        app = MDApp.get_running_app()
+        revoke_jwt(app.access_token)
+    
+    def delete_account(self):
+        app = MDApp.get_running_app()
+        delete_account(app.access_token, app.user_id)
+        self.manager.current = "CreateUser"

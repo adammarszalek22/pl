@@ -16,9 +16,7 @@
             MDBoxLayout:
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
-                padding: 20
-                size_hint_y: None
-                height: root.height
+                padding: 40
 
                 ScrollView:
                     do_scroll_x: False
@@ -49,8 +47,8 @@
                                 id: boxlayout2
                                 #md_bg_color: 0.2, 0.2, 0.2, 0.2
                                 orientation: 'vertical'
-                                size_hint_x: 2.1
-                                #size_hint_y: 1.0000001
+                                size_hint_x: 1.5
+                                size_hint_y: 1.0000001
                                 spacing: 2
 
         MDBottomNavigationItem:
@@ -125,3 +123,23 @@
 
                 ScoresLabel:
                     id: one_pointers
+
+        MDBottomNavigationItem:
+            name: 'Settings'
+            text: 'Settings'
+            icon: 'settings'
+
+            MDBoxLayout:
+                orientation: 'vertical'
+
+                MDRoundFlatButton:
+                    text: 'Log out'
+                    pos_hint: {"center_x": 0.5, "top": 0.9}
+                    on_release:
+                        root.logout()
+                
+                MDRoundFlatButton:
+                    text: 'Delete account'
+                    pos_hint: {"center_x": 0.5, "top": 0.8}
+                    on_release:
+                        root.delete_account()
