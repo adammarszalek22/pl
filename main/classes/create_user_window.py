@@ -12,6 +12,7 @@ class CreateUser(Screen):
         username = self.ids.login.text
         password = self.ids.password.text
         password2 = self.ids.password2.text
+        # Trying to get data from fantasy premier league API. Cannot login if there is no data
         pl.get_data()
         try:
             if pl.connection == False:
@@ -29,6 +30,8 @@ class CreateUser(Screen):
                 self.ids.login.helper_text = 'User already exists.'
                 self.ids.login.error = True
         except requests.exceptions.ConnectionError:
+            # Same as in login window. If this error comes up then internet works fine 
+            # but there's another problem (probably server not working)
             self.ids.info.text = "There is a problem on our end. We are working hard to fix it"
 
     def password(self):

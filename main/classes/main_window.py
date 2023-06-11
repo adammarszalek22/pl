@@ -8,18 +8,17 @@ from kivy.uix.screenmanager import NoTransition
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.gridlayout import MDGridLayout
-from kivymd.uix.scrollview import ScrollView
 
 class MyLabel(MDLabel):
     pass
 
 class MainWindow(Screen):
     def table(self):
-        position = 1
         app = MDApp.get_running_app()
         headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
         headings_layout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
         headings_layout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
+        position = 1
         for i in headings:
             if i == "":
                 headings_layout.add_widget(MDLabel(text=i,
@@ -70,7 +69,6 @@ class MainWindow(Screen):
             position += 1
 
     def bets(self):
-
         # A for loop to find a match that hasn't yet started.
         # This will indicate the current gameweek number (a)
         b = 0

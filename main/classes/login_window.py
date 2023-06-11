@@ -11,6 +11,7 @@ class LoginWindow(Screen):
     def log_in(self):
         username = self.ids.login.text
         password = self.ids.password.text
+        # Trying to get data from fantasy premier league API. Cannot login if there is no data
         pl.get_data()
         if pl.connection == False:
             self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
@@ -21,6 +22,8 @@ class LoginWindow(Screen):
                 self.manager.transition = NoTransition()
                 self.manager.current = 'MainWindow'
             except requests.exceptions.ConnectionError:
+                # If pl.connection returns true then device is connected to the internet. 
+                # This means there is problem on our end (e.g. server not running)
                 self.ids.info.text = "There is a problem on our end. We are trying to fix it..."
             except ValueError:
                 if login(username, password) == "User not found":

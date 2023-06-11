@@ -17,6 +17,8 @@
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
                 padding: 20
+                size_hint_y: None
+                height: root.height
 
                 ScrollView:
                     do_scroll_x: False
@@ -38,7 +40,7 @@
                             spacing: 2
                         
                         ScrollView:
-                            do_scroll_y: True
+                            do_scroll_y: False
                             do_scroll_x: True
                             bar_color: 1, 1, 1, 1
                             bar_inactive_color: 1, 1, 1, 1
@@ -48,7 +50,7 @@
                                 #md_bg_color: 0.2, 0.2, 0.2, 0.2
                                 orientation: 'vertical'
                                 size_hint_x: 2.1
-                                size_hint_y: 1.0000001
+                                #size_hint_y: 1.0000001
                                 spacing: 2
 
         MDBottomNavigationItem:

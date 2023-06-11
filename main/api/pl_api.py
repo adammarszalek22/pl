@@ -46,6 +46,7 @@ class premier_league:
                 self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['kickoff_date'] = i['kickoff_time'][0:10]
                 self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['kickoff_time'] = i['kickoff_time'][11:19]
                 self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['finished'] = i['finished']
+
                 self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['started'] = i['started']
 
                 if i['team_h_score'] != None:
@@ -81,7 +82,7 @@ class premier_league:
                                                                         item[1]['goals_balance'],
                                                                         item[1]['goals_scored']),
                                                                         reverse=True)}
-            pl.connection = True # user login will only be successful when the get_data() ran successfully
+            pl.connection = True # user login will only be successful when the get_data() runs successfully
         except requests.exceptions.ConnectionError:  
             pl.connection = False
 
