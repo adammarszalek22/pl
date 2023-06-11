@@ -2,7 +2,7 @@
     name: 'MainWindow' 
     on_enter:
         root.table()
-        #root.bets()
+        root.bets()
         root.scores()
 
     MDBottomNavigation:
@@ -74,17 +74,33 @@
                         size_hint_y: None
                         adaptive_height: True
                 
-                MDBoxLayout:
-                    orientation: 'vertical'
+                MDGridLayout:
+                    cols: 3
                     size_hint_y: 0.2
                     padding: 20
+                    spacing: 20
+
+                    MDIconButton:
+                        icon: 'arrow-left-bold'
+                        pos_hint: {"center_x": 0.15}
+                        size_hint_x: 0.1
+                        on_press:
+                            root.previous_gameweek()
             
                     MDRoundFlatButton:
                         text: 'BET'
                         pos_hint: {"center_x": 0.5}
-                        size_hint_x: 0.4
+                        size_hint_x: 0.5
                         on_press:
                             root.do_bets()
+
+                    MDIconButton:
+                        icon: 'arrow-right-bold'
+                        icon_color: (1, 0, 0, 0.5)
+                        pos_hint: {"center_x": 0.85}
+                        size_hint_x: 0.1
+                        on_press:
+                            root.next_gameweek()
         
         MDBottomNavigationItem:
             name: 'View Your Scores'

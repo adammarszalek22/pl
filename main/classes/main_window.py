@@ -70,24 +70,30 @@ class MainWindow(Screen):
             self.ids.boxlayout2.add_widget(gridlayout2)
             position += 1
 
-    def bets(self):
-        # A for loop to find a match that hasn't yet started.
-        # This will indicate the current gameweek number (a)
-        b = 0
-        for i in pl.matches.keys():
-            for i2 in pl.matches[i].keys():
-                if pl.matches[i][i2]["started"] == False:
-                    a = i
-                    b = 1
+    def bets(self, gameweek=0):
+        # When no gameweek entered this statement will find out what gameweek we are currently in
+        if gameweek == 0:
+            b = 0
+            for i in pl.matches.keys():
+                for i2 in pl.matches[i].keys():
+                    if pl.matches[i][i2]["started"] == False:
+                        gameweek = i
+                        b = 1
+                        break
+                if b == 1:
                     break
-            if b == 1:
-                break
+        if gameweek == 0:
+            self.gameweek = 38
+        else:
+            self.gameweek = gameweek
+        
+        gameweek_string = 'Gameweek ' + str(self.gameweek)
 
         list1 = []
         self.codes = {}
 
         # A list of all match codes in the current gameweek
-        for i in pl.matches[a].keys():
+        for i in pl.matches[gameweek_string].keys():
             list1.append(i)
 
         app = MDApp.get_running_app()
@@ -100,12 +106,12 @@ class MainWindow(Screen):
                                       height = layout_height,
                                       cols = 6,
                                       spacing = 10)
-            self.team1 = MyLabel(text = str(pl.teams[pl.matches[a][i]["team1"]]["name"]),
+            self.team1 = MyLabel(text = str(pl.teams[pl.matches[gameweek_string][i]["team1"]]["name"]),
                                  size_hint = (0.3, 1),
                                  valign = "bottom",
                                  halign = "center")
             gridlayout.add_widget(self.team1)
-            self.goal1 = MyLabel(text = str(pl.matches[a][i]["goals1"]),
+            self.goal1 = MyLabel(text = str(pl.matches[gameweek_string][i]["goals1"]),
                                  size_hint = (0.1, 1),
                                  valign = "middle",
                                  halign = "center")
@@ -118,12 +124,12 @@ class MainWindow(Screen):
                                       multiline = False,
                                       input_type = 'number')
             gridlayout.add_widget(self.guess2)
-            self.goal2 = MyLabel(text = str(pl.matches[a][i]["goals2"]),
+            self.goal2 = MyLabel(text = str(pl.matches[gameweek_string][i]["goals2"]),
                                  size_hint = (0.1, 1),
                                  valign = "middle",
                                  halign = "center")
             gridlayout.add_widget(self.goal2)
-            self.team2 = MyLabel(text=str(pl.teams[pl.matches[a][i]["team2"]]["name"]),
+            self.team2 = MyLabel(text=str(pl.teams[pl.matches[gameweek_string][i]["team2"]]["name"]),
                                  size_hint = (0.3, 1),
                                  valign = "middle",
                                  halign = "center")
@@ -145,6 +151,15 @@ class MainWindow(Screen):
             for i in user["bets"]:
                 self.codes[i["match_id"]]["guess1"].text = str(i["goal1"])
                 self.codes[i["match_id"]]["guess2"].text = str(i["goal2"])
+    
+    def previous_gameweek(self):
+        self.gameweek -= 1
+        self.bets(self.gameweek)
+
+
+    def next_gameweek(self):
+        self.gameweek += 1
+        self.bets(self.gameweek)
 
     
     def do_bets(self):

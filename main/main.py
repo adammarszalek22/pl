@@ -26,7 +26,7 @@ class AwesomeApp(MDApp):
         kv = Builder.load_file('kivy_screens/user.kv')
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'Teal'
-        self.theme_cls.accent_palette = 'Blue'
+        self.theme_cls.accent_palette = 'Teal'
         return kv
 
 if __name__ == '__main__':
