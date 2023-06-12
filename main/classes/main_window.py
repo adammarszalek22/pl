@@ -78,30 +78,32 @@ class MainWindow(Screen):
                 for i2 in pl.matches[i].keys():
                     if pl.matches[i][i2]["started"] == False:
                         gameweek = i
+                        self.current_gameweek = i
                         b = 1
                         break
                 if b == 1:
                     break
         if gameweek == 0:
             self.gameweek = 38
+            self.current_gameweek = 38
         else:
             self.gameweek = gameweek
         
         gameweek_string = 'Gameweek ' + str(self.gameweek)
 
-        list1 = []
+        self.list1 = []
         self.codes = {}
 
         # A list of all match codes in the current gameweek
         for i in pl.matches[gameweek_string].keys():
-            list1.append(i)
+            self.list1.append(i)
 
         app = MDApp.get_running_app()
         layout = self.ids.mylayout
         layout.clear_widgets()
-        layout_height = app.root.height / (len(list1) - 2)
+        layout_height = app.root.height / (len(self.list1) - 2)
 
-        for i in list1:
+        for i in self.list1:
             gridlayout = MDGridLayout(size_hint_y = None,
                                       height = layout_height,
                                       cols = 6,
@@ -135,31 +137,47 @@ class MainWindow(Screen):
                                  halign = "center")
             gridlayout.add_widget(self.team2)
 
+            # Assigning the textfield widgets to a match code in a dictionary
+            # so I can access it when submitting the score guesses
             self.codes[i] = {}
             self.codes[i]["guess1"] = self.guess1
             self.codes[i]["guess2"] = self.guess2
 
             layout.add_widget(gridlayout)
-        
-        # If scores have been previously guessed. They will be displayed.
-        user = my_user_info(app.access_token, app.user_id)
-        t = False
-        for i in user["bets"]:
-            if i["match_id"] in list1:
-                t = True
-        if t == True:
-            for i in user["bets"]:
-                self.codes[i["match_id"]]["guess1"].text = str(i["goal1"])
-                self.codes[i["match_id"]]["guess2"].text = str(i["goal2"])
+        print(self.codes.keys())
+        self.display_previous_guesses()
     
-    def previous_gameweek(self):
-        self.gameweek -= 1
-        self.bets(self.gameweek)
+    def display_previous_guesses(self):
+        # If scores have been previously guessed. They will be displayed.
+        app = MDApp.get_running_app()
+        user = my_user_info(app.access_token, app.user_id)
+        does_exist = False
+        for bet in user["bets"]:
+            if bet["match_id"] in self.list1:
+                does_exist = True
+        if does_exist == True:
+            for bet in user["bets"]:
+                # TO BE FIXED!!! INCLUDES ALL USER BETS (EVEN FROM OTHER GAMEWEEKS)
+                try:
+                    self.codes[bet["match_id"]]["guess1"].text = str(bet["goal1"])
+                    self.codes[bet["match_id"]]["guess2"].text = str(bet["goal2"])
+                except KeyError:
+                    pass
+
+    def previous_gameweek(self):#
+        if self.gameweek == 1:
+            pass
+        else:
+            self.gameweek -= 1
+            self.bets(self.gameweek)
 
 
     def next_gameweek(self):
-        self.gameweek += 1
-        self.bets(self.gameweek)
+        if self.gameweek == 38:
+            pass
+        else:
+            self.gameweek += 1
+            self.bets(self.gameweek)
 
     
     def do_bets(self):
@@ -167,9 +185,9 @@ class MainWindow(Screen):
         app = MDApp.get_running_app()
         for i in self.codes.keys():
             if self.codes[i]["guess1"].text == "":
-                self.codes[i]["guess1"].text = 0
+                self.codes[i]["guess1"].text = "0"
             if self.codes[i]["guess2"].text == "":
-                self.codes[i]["guess2"].text = 0
+                self.codes[i]["guess2"].text = "0"
             guess1 = self.codes[i]["guess1"].text
             guess2 = self.codes[i]["guess2"].text
             #This adds a bet or updates it if it already exists

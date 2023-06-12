@@ -46,6 +46,8 @@ class premier_league:
                 self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['kickoff_date'] = i['kickoff_time'][0:10]
                 self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['kickoff_time'] = i['kickoff_time'][11:19]
                 self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['finished'] = i['finished']
+                # if i['code'] == 2292829: TESTING
+                #     print(i)
 
                 self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['started'] = i['started']
 
@@ -85,6 +87,7 @@ class premier_league:
             pl.connection = True # user login will only be successful when the get_data() runs successfully
         except requests.exceptions.ConnectionError:  
             pl.connection = False
+            print('gfsg')
 
 
 pl = premier_league({}, {}, {}, False)
