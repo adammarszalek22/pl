@@ -18,38 +18,34 @@
                 md_bg_color: 0, 0, 0, 0
                 padding: 40
 
-                ScrollView:
-                    do_scroll_x: False
-                    do_scroll_y: True
-                    bar_color: 1, 1, 1, 1
-                    bar_inactive_color: 1, 1, 1, 1
+
+
+                MDBoxLayout:
+                    id: main_box
+                    orientation: 'horizontal'
+                    adaptive_height: True
+                    size_hint_y: None
 
                     MDBoxLayout:
-                        id: main_box
-                        orientation: 'horizontal'
+                        id: boxlayout
+                        orientation: 'vertical'
                         adaptive_height: True
-                        size_hint_y: None
+                        md_bg_color: '#212121'
+                        spacing: 2
+                    
+                    ScrollView:
+                        do_scroll_y: False
+                        do_scroll_x: True
+                        bar_color: 1, 1, 1, 1
+                        bar_inactive_color: 1, 1, 1, 1
 
                         MDBoxLayout:
-                            id: boxlayout
+                            id: boxlayout2
+                            #md_bg_color: 0.2, 0.2, 0.2, 0.2
                             orientation: 'vertical'
-                            adaptive_height: True
-                            md_bg_color: '#212121'
+                            size_hint_x: 1.5
+                            #size_hint_y: 1.0000001
                             spacing: 2
-                        
-                        ScrollView:
-                            do_scroll_y: False
-                            do_scroll_x: True
-                            bar_color: 1, 1, 1, 1
-                            bar_inactive_color: 1, 1, 1, 1
-
-                            MDBoxLayout:
-                                id: boxlayout2
-                                #md_bg_color: 0.2, 0.2, 0.2, 0.2
-                                orientation: 'vertical'
-                                size_hint_x: 1.5
-                                size_hint_y: 1.0000001
-                                spacing: 2
 
         MDBottomNavigationItem:
             name: 'Post Bet'

@@ -14,9 +14,10 @@ class MyLabel(MDLabel):
 
 class MainWindow(Screen):
     def table(self):
-        size_num = 27
-        position = 1
         app = MDApp.get_running_app()
+        size_num = 21
+        widget_height = app.root.height / size_num  - 80 / 21 - 4
+        position = 1
         headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
         headings_layout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
         headings_layout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
@@ -25,21 +26,21 @@ class MainWindow(Screen):
             if i == "":
                 headings_layout.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
-                                                height = app.root.height / size_num))
+                                                height = widget_height))
             elif i == "Club":
                 headings_layout.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
-                                                height = app.root.height / size_num,
+                                                height = widget_height,
                                                 size_hint_x = 2))
             elif i == "Pts":
                 headings_layout2.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
-                                                height = app.root.height / size_num,
+                                                height = widget_height,
                                                 bold=True))
             else:
                 headings_layout2.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
-                                                height = app.root.height / size_num))
+                                                height = widget_height))
         self.ids.boxlayout.add_widget(headings_layout)
         self.ids.boxlayout2.add_widget(headings_layout2)
         for i in pl.positions.keys():
@@ -48,24 +49,24 @@ class MainWindow(Screen):
             gridlayout.add_widget(MDLabel(text=str(position),
                                           adaptive_height=False,
                                           size_hint_y = None,
-                                          height = app.root.height / size_num))
+                                          height = widget_height))
             gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
                                           adaptive_height=False,
                                           size_hint_y = None,
-                                          height = app.root.height / size_num,
+                                          height = widget_height,
                                           size_hint_x = 2))
             for i2 in pl.positions[i].keys():
                 if i2 == "points":
                     gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
                                                   size_hint_y = None,
-                                                  height = app.root.height / size_num,
+                                                  height = widget_height,
                                                   bold=True))
                 elif i2 != "id" and i2 != "name": 
                     # We do not need the team id when displaying premier league table.
                     # Name column is already included.
                     gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
                                                    size_hint_y = None,
-                                                   height = app.root.height / size_num))
+                                                   height = widget_height))
             self.ids.boxlayout.add_widget(gridlayout)
             self.ids.boxlayout2.add_widget(gridlayout2)
             position += 1
