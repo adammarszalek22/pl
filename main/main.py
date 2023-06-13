@@ -14,6 +14,7 @@ from datetime import datetime
 
 from api.pl_api import *
 from api.db_api import *
+from db import *
 from classes.login_window import LoginWindow
 from classes.create_user_window import CreateUser
 from classes.main_window import MainWindow
@@ -23,6 +24,7 @@ class WindowManager(ScreenManager):
 
 class AwesomeApp(MDApp):
     def build(self):
+        on_entry()
         kv = Builder.load_file('kivy_screens/user.kv')
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'Teal'

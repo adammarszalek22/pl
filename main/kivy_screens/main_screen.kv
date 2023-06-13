@@ -6,19 +6,18 @@
         root.scores()
 
     MDBottomNavigation:
+        id: bottom_nav
 
         MDBottomNavigationItem:
             name: 'League Table'
             text: 'Table'
             icon: 'view-list'
-            on_enter: root.table()
+            #on_enter: root.table()
 
             MDBoxLayout:
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
-                padding: 40
-
-
+                padding: root.padding
 
                 MDBoxLayout:
                     id: main_box
@@ -28,36 +27,40 @@
 
                     MDBoxLayout:
                         id: boxlayout
+
                         orientation: 'vertical'
                         adaptive_height: True
-                        md_bg_color: '#212121'
                         spacing: 2
+
+                        md_bg_color: 1, 1, 1, 1
                     
                     ScrollView:
                         do_scroll_y: False
                         do_scroll_x: True
+
                         bar_color: 1, 1, 1, 1
                         bar_inactive_color: 1, 1, 1, 1
 
                         MDBoxLayout:
                             id: boxlayout2
-                            #md_bg_color: 0.2, 0.2, 0.2, 0.2
+
                             orientation: 'vertical'
-                            size_hint_x: 1.5
-                            #size_hint_y: 1.0000001
                             spacing: 2
+                            
+                            size_hint_x: 1.5
 
         MDBottomNavigationItem:
             name: 'Post Bet'
             text: 'Your predictions'
             icon: 'notebook-edit'
-            on_enter: root.bets()
+            #on_enter: root.bets()
 
             MDBoxLayout:
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
                 size_hint_y: 1
                 pos_hint: {"top": 1}
+                padding: 5
 
                 ScrollView:
                     do_scroll_x: False
@@ -72,29 +75,46 @@
                 
                 MDGridLayout:
                     cols: 3
-                    size_hint_y: 0.2
-                    padding: 20
-                    spacing: 20
+                    size_hint_y: 0.1
+                    spacing: 40
 
-                    MDIconButton:
-                        icon: 'arrow-left-bold'
+                    MDFloatingActionButton:
+                        icon: 'arrow-left-bold-outline'
+
+                        type: "small"
+                        icon_color: app.theme_cls.primary_color
+                        md_bg_color: (1, 1, 1, 1)
+                        elevation: 0
+
                         pos_hint: {"center_x": 0.15}
                         size_hint_x: 0.1
+                        size_hint_y: 1
+                        
                         on_press:
                             root.previous_gameweek()
             
-                    MDRoundFlatButton:
+                    MDFillRoundFlatButton:
                         text: 'BET'
+
                         pos_hint: {"center_x": 0.5}
                         size_hint_x: 0.5
+                        size_hint_y: 1
+
                         on_press:
                             root.do_bets()
 
-                    MDIconButton:
-                        icon: 'arrow-right-bold'
-                        icon_color: (1, 0, 0, 0.5)
+                    MDFloatingActionButton:
+                        icon: 'arrow-right-bold-outline'
+
+                        type: "small"
+                        icon_color: app.theme_cls.primary_color
+                        md_bg_color: (1, 1, 1, 1)
+                        elevation: 0
+
                         pos_hint: {"center_x": 0.85}
                         size_hint_x: 0.1
+                        size_hint_y: 1
+
                         on_press:
                             root.next_gameweek()
         
@@ -139,7 +159,7 @@
         MDBottomNavigationItem:
             name: 'Settings'
             text: 'Settings'
-            icon: 'settings'
+            icon: 'account-settings'
 
             MDBoxLayout:
                 orientation: 'vertical'

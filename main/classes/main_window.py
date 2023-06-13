@@ -1,10 +1,12 @@
 from api.pl_api import *
 from api.db_api import *
+from db import *
 
-from kivymd.app import MDApp
+from kivy.properties import NumericProperty
 from kivy.clock import Clock
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import NoTransition
+from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.gridlayout import MDGridLayout
@@ -13,10 +15,11 @@ class MyLabel(MDLabel):
     pass
 
 class MainWindow(Screen):
+    padding = NumericProperty(40)
     def table(self):
         app = MDApp.get_running_app()
         size_num = 21
-        widget_height = app.root.height / size_num  - 80 / 21 - 4
+        widget_height = app.root.height / size_num  - (self.padding * 2) / size_num - 5
         position = 1
         headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
         headings_layout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
@@ -70,6 +73,7 @@ class MainWindow(Screen):
             self.ids.boxlayout.add_widget(gridlayout)
             self.ids.boxlayout2.add_widget(gridlayout2)
             position += 1
+        self.ids.boxlayout.md_bg_color = '#212121' # app.theme_cls.primary_color
 
     def bets(self, gameweek=0):
         # When no gameweek entered this statement will find out what gameweek we are currently in
@@ -92,19 +96,19 @@ class MainWindow(Screen):
         
         gameweek_string = 'Gameweek ' + str(self.gameweek)
 
-        self.list1 = []
+        self.codes_list = []
         self.codes = {}
 
         # A list of all match codes in the current gameweek
         for i in pl.matches[gameweek_string].keys():
-            self.list1.append(i)
+            self.codes_list.append(i)
 
         app = MDApp.get_running_app()
         layout = self.ids.mylayout
         layout.clear_widgets()
-        layout_height = app.root.height / (len(self.list1) - 2)
+        layout_height = app.root.height / 8
 
-        for i in self.list1:
+        for i in self.codes_list:
             gridlayout = MDGridLayout(size_hint_y = None,
                                       height = layout_height,
                                       cols = 6,
@@ -145,27 +149,27 @@ class MainWindow(Screen):
             self.codes[i]["guess2"] = self.guess2
 
             layout.add_widget(gridlayout)
-        print(self.codes.keys())
         self.display_previous_guesses()
     
     def display_previous_guesses(self):
-        # If scores have been previously guessed. They will be displayed.
-        app = MDApp.get_running_app()
-        user = my_user_info(app.access_token, app.user_id)
         does_exist = False
-        for bet in user["bets"]:
-            if bet["match_id"] in self.list1:
+        bets = get_all_guesses()
+        for bet in bets:
+            code = bet[0]
+            if code in self.codes_list:
                 does_exist = True
         if does_exist == True:
-            for bet in user["bets"]:
-                # TO BE FIXED!!! INCLUDES ALL USER BETS (EVEN FROM OTHER GAMEWEEKS)
+            for bet in bets:
                 try:
-                    self.codes[bet["match_id"]]["guess1"].text = str(bet["goal1"])
-                    self.codes[bet["match_id"]]["guess2"].text = str(bet["goal2"])
+                    code = bet[0]
+                    guess1 = bet[1]
+                    guess2 = bet[2]
+                    self.codes[code]["guess1"].text = str(guess1)
+                    self.codes[code]["guess2"].text = str(guess2)
                 except KeyError:
                     pass
 
-    def previous_gameweek(self):#
+    def previous_gameweek(self):
         if self.gameweek == 1:
             pass
         else:
@@ -184,15 +188,20 @@ class MainWindow(Screen):
     def do_bets(self):
         #Sending input to the server
         app = MDApp.get_running_app()
-        for i in self.codes.keys():
-            if self.codes[i]["guess1"].text == "":
-                self.codes[i]["guess1"].text = "0"
-            if self.codes[i]["guess2"].text == "":
-                self.codes[i]["guess2"].text = "0"
-            guess1 = self.codes[i]["guess1"].text
-            guess2 = self.codes[i]["guess2"].text
+        for code in self.codes.keys():
+            if self.codes[code]["guess1"].text == "":
+                self.codes[code]["guess1"].text = "0"
+            if self.codes[code]["guess2"].text == "":
+                self.codes[code]["guess2"].text = "0"
+            guess1 = self.codes[code]["guess1"].text
+            guess2 = self.codes[code]["guess2"].text
             #This adds a bet or updates it if it already exists
-            update_bet(str(app.access_token), str(i), guess1, guess2, int(app.user_id))
+            bet = get_guess(code)
+            if bet:
+                update_guess(guess1, guess2, code)
+            else:
+                add_guess(code, guess1, guess2)
+            update_bet(str(app.access_token), str(code), guess1, guess2, int(app.user_id))
     
     def scores(self):
         app = MDApp.get_running_app()

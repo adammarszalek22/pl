@@ -87,7 +87,6 @@ class premier_league:
             pl.connection = True # user login will only be successful when the get_data() runs successfully
         except requests.exceptions.ConnectionError:  
             pl.connection = False
-            print('gfsg')
 
 
 pl = premier_league({}, {}, {}, False)
