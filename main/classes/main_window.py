@@ -18,13 +18,18 @@ class MainWindow(Screen):
     padding = NumericProperty(40)
     def table(self):
         app = MDApp.get_running_app()
+
         size_num = 21
         widget_height = app.root.height / size_num  - (self.padding * 2) / size_num - 5
-        position = 1
+
+        self.ids.boxlayout.clear_widgets()
+        self.ids.boxlayout2.clear_widgets()
+
         headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
         headings_layout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
         headings_layout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
         position = 1
+
         for i in headings:
             if i == "":
                 headings_layout.add_widget(MDLabel(text=i,
@@ -44,8 +49,10 @@ class MainWindow(Screen):
                 headings_layout2.add_widget(MDLabel(text=i,
                                                 size_hint_y = None,
                                                 height = widget_height))
+                
         self.ids.boxlayout.add_widget(headings_layout)
         self.ids.boxlayout2.add_widget(headings_layout2)
+
         for i in pl.positions.keys():
             gridlayout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
             gridlayout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
@@ -73,6 +80,7 @@ class MainWindow(Screen):
             self.ids.boxlayout.add_widget(gridlayout)
             self.ids.boxlayout2.add_widget(gridlayout2)
             position += 1
+
         self.ids.boxlayout.md_bg_color = '#212121' # app.theme_cls.primary_color
 
     def bets(self, gameweek=0):
@@ -220,4 +228,5 @@ class MainWindow(Screen):
     def delete_account(self):
         app = MDApp.get_running_app()
         delete_account(app.access_token, app.user_id)
+        delete_all_guesses()
         self.manager.current = "CreateUser"
