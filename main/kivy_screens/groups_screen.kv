@@ -1,0 +1,64 @@
+<GroupsButton@MDRectangleFlatIconButton>
+    theme_text_color: 'Custom'
+    text_color: 'black'
+    line_color: 'white'
+    theme_icon_color: 'Custom'
+    icon_color: 'blue'
+
+<CreateLeagueContent>
+    orientation: 'vertical'
+    spacing: "12dp"
+    size_hint_y: None
+    height: "70dp"
+
+    MDTextField:
+        hint_text: 'Name'
+        helper_text: ""
+        helper_text_mode: "on_error"
+        pos_hint: {"top": 0.8}
+
+<SuccessContent>
+    orientation: 'vertical'
+    spacing: "12dp"
+    size_hint_y: None
+    height: "70dp"
+
+    MDLabel:
+        text: f'You successfully created the league. Share this group id ({root.group_id}) with others so they can join!'
+
+<GroupsWindow>
+    name: 'GroupsWindow'
+    spacing: 5
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 5
+
+        GroupsButton:
+            text: 'Create a group'
+            icon: 'account-group'
+            on_release:
+                root.open_dialog()
+
+        GroupsButton:
+            text: 'My groups'
+            icon: 'human'
+        
+        GroupsButton:
+            text: 'Groups I\'m a part of'
+            icon: 'group'
+        
+        GroupsButton:
+            text: 'Back'
+            icon: 'backspace'
+            on_release:
+                app.root.current = 'MainWindow'
+        
+        MDLabel:
+
+        MDLabel:
+
+        MDLabel:
+
+        MDLabel:

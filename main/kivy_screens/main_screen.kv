@@ -1,3 +1,11 @@
+<MoreButton@MDRectangleFlatIconButton>
+    theme_text_color: 'Custom'
+    text_color: 'black'
+    line_color: 'white'
+    theme_icon_color: 'Custom'
+    icon_color: 'blue'
+
+
 <MainWindow>
     name: 'MainWindow' 
     on_enter:
@@ -157,21 +165,54 @@
                     id: one_pointers
 
         MDBottomNavigationItem:
-            name: 'Settings'
-            text: 'Settings'
-            icon: 'account-settings'
+            name: 'More'
+            text: 'More'
+            icon: 'more'
 
             MDBoxLayout:
                 orientation: 'vertical'
+                padding: 20
+                spacing: 5
 
-                MDRoundFlatButton:
+                MoreButton:
+                    text: 'Groups'
+                    icon: 'account-group'
+                    on_release:
+                        app.root.current = 'GroupsWindow'
+
+                MoreButton:
+                    text: 'View your score'
+                    icon: 'account'
+                
+                MoreButton:
+                    text: 'View other users\' scores'
+                    icon: 'account-multiple-outline'
+                
+                MoreButton:
+                    text: 'Settings'
+                    icon: 'account-settings'
+
+                MoreButton:
                     text: 'Log out'
-                    pos_hint: {"center_x": 0.5, "top": 0.9}
+                    icon: 'logout'
                     on_release:
                         root.logout()
                 
-                MDRoundFlatButton:
-                    text: 'Delete account'
-                    pos_hint: {"center_x": 0.5, "top": 0.8}
-                    on_release:
-                        root.delete_account()
+                MoreButton:
+                    text: 'Help'
+                    icon: 'help'
+                
+                MDLabel:
+
+                MDLabel:
+
+                MDLabel:
+
+                MDLabel:
+
+                MDLabel:
+                
+                
+
+
+

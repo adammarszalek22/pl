@@ -18,6 +18,7 @@ from db import *
 from classes.login_window import LoginWindow
 from classes.create_user_window import CreateUser
 from classes.main_window import MainWindow
+from classes.groups_window import GroupsWindow
 
 class WindowManager(ScreenManager):
     pass
@@ -27,8 +28,8 @@ class AwesomeApp(MDApp):
         on_entry()
         kv = Builder.load_file('kivy_screens/user.kv')
         self.theme_cls.theme_style = 'Light'
-        self.theme_cls.primary_palette = 'Teal'
-        self.theme_cls.accent_palette = 'Teal'
+        self.theme_cls.primary_palette = 'Blue'
+        #self.theme_cls.accent_palette = 'Teal'
         return kv
 
 if __name__ == '__main__':

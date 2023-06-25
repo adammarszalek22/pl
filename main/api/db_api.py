@@ -1,8 +1,8 @@
 import requests
 import json
 
-#url = "http://127.0.0.1:5000"
-url = "https://pl-server.onrender.com"
+url = "http://127.0.0.1:5000"
+#url = "https://pl-server.onrender.com"
 
 '''
 USER
@@ -92,7 +92,8 @@ def post_bet(access_token, match_id, goal1, goal2, user_id):
                         json={"match_id": match_id,
                               "goal1": goal1,
                               "goal2": goal2,
-                              "user_id": user_id})
+                              "user_id": user_id,
+                              "done": "no"})
     return bet
 
 def update_bet(access_token, match_id, goal1, goal2, user_id):
@@ -101,8 +102,70 @@ def update_bet(access_token, match_id, goal1, goal2, user_id):
                            json={"match_id": match_id,
                                  "goal1": goal1,
                                  "goal2": goal2,
-                                 "user_id": user_id})
+                                 "user_id": user_id,
+                                 "done": "no"})
     return json.loads(new_bet.text)
 
 #a = login("adam", "1234")[0]
 #post_bet(a, "2293058", 3, 4, 1)
+
+'''
+GROUPS
+'''
+
+def get_all_groups(access_token):
+    groups = requests.get(
+        url + '/all_groups',
+        headers={"Authorization": "Bearer " + access_token}
+    )
+    return json.loads(groups.text)
+
+def delete_all_groups(access_token, username, password):
+    delete = requests.delete(
+        url + '/all_groups',
+        headers={"Authorization": "Bearer " + access_token},
+        json={"username": username,
+              "password": password}
+    )
+    return json.loads(delete.text)
+
+def get_group_by_id(access_token, id):
+    group = requests.get(
+        url + '/groups',
+        headers={"Authorization": "Bearer " + access_token},
+        json={"id": id}
+    )
+    return json.loads(group.text)
+
+def create_group(access_token, name):
+    newgroup = requests.post(
+        url + '/groups',
+        headers={"Authorization": "Bearer " + access_token},
+        json={"name": name}
+    )
+    return json.loads(newgroup.text)
+
+def join_group(access_token, id):
+    group = requests.put(
+        url + '/groups',
+        headers={"Authorization": "Bearer " + access_token},
+        json={"id": id}
+    )
+    return json.loads(group.text)
+
+def delete_group(access_token, id):
+    delete_group = requests.delete(
+        url + '/groups',
+        headers={"Authorization": "Bearer " + access_token},
+        json={"id": id}
+    )
+    return json.loads(delete_group.text)
+
+def delete_user_from_group(access_token, id, user_id):
+    delete_user = requests.delete(
+        url + '/groups_users',
+        headers={"Authorization": "Bearer " + access_token},
+        json={"id": id,
+              "user_id": user_id}
+    )
+    return json.loads(delete_user.text)

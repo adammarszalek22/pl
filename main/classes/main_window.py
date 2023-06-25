@@ -197,6 +197,7 @@ class MainWindow(Screen):
         #Sending input to the server
         app = MDApp.get_running_app()
         for code in self.codes.keys():
+            print(code)
             if self.codes[code]["guess1"].text == "":
                 self.codes[code]["guess1"].text = "0"
             if self.codes[code]["guess2"].text == "":
