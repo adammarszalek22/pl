@@ -197,7 +197,6 @@ class MainWindow(Screen):
         #Sending input to the server
         app = MDApp.get_running_app()
         for code in self.codes.keys():
-            print(code)
             if self.codes[code]["guess1"].text == "":
                 self.codes[code]["guess1"].text = "0"
             if self.codes[code]["guess2"].text == "":
@@ -212,14 +211,14 @@ class MainWindow(Screen):
                 add_guess(code, guess1, guess2)
             update_bet(str(app.access_token), str(code), guess1, guess2, int(app.user_id))
     
-    def scores(self):
-        app = MDApp.get_running_app()
-        user_info = my_user_info(app.access_token, app.user_id)
-        self.ids.username.text = str(user_info["username"])
-        self.ids.position.text = str(user_info["position"])
-        self.ids.points2.text = str(user_info["points"])
-        self.ids.three_pointers.text = str(user_info["three_pointers"])
-        self.ids.one_pointers.text = str(user_info["one_pointers"])
+    # def scores(self):
+    #     app = MDApp.get_running_app()
+    #     user_info = my_user_info(app.access_token, app.user_id)
+    #     self.ids.username.text = str(user_info["username"])
+    #     self.ids.position.text = str(user_info["position"])
+    #     self.ids.points2.text = str(user_info["points"])
+    #     self.ids.three_pointers.text = str(user_info["three_pointers"])
+    #     self.ids.one_pointers.text = str(user_info["one_pointers"])
     
     def logout(self):
         self.manager.current = "LoginWindow"

@@ -11,7 +11,6 @@
     on_enter:
         root.table()
         root.bets()
-        root.scores()
 
     MDBottomNavigation:
         id: bottom_nav
@@ -125,44 +124,6 @@
 
                         on_press:
                             root.next_gameweek()
-        
-        MDBottomNavigationItem:
-            name: 'View Your Scores'
-            text: 'Your scores'
-            icon: 'view-split-vertical'
-
-            MDGridLayout:
-                cols: 2
-
-                ScoresLabel:
-                    text: 'Username'
-
-                ScoresLabel:
-                    id: username
-
-                ScoresLabel:
-                    text: 'League position'
-                
-                ScoresLabel:
-                    id: position
-
-                ScoresLabel:
-                    text: 'Points'
-                
-                ScoresLabel:
-                    id: points2
-
-                ScoresLabel:
-                    text: 'Three-pointers'
-
-                ScoresLabel:
-                    id: three_pointers
-
-                ScoresLabel:
-                    text: 'One-pointers'
-
-                ScoresLabel:
-                    id: one_pointers
 
         MDBottomNavigationItem:
             name: 'More'
@@ -183,6 +144,8 @@
                 MoreButton:
                     text: 'View your score'
                     icon: 'account'
+                    on_release:
+                        app.root.current = 'ViewScoreWindow'
                 
                 MoreButton:
                     text: 'View other users\' scores'

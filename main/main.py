@@ -19,6 +19,7 @@ from classes.login_window import LoginWindow
 from classes.create_user_window import CreateUser
 from classes.main_window import MainWindow
 from classes.groups_window import GroupsWindow
+from classes.view_score_window import ViewScoreWindow
 
 class WindowManager(ScreenManager):
     pass

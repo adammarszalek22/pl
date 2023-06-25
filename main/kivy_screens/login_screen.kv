@@ -64,9 +64,16 @@
             size_hint_x: 0.6
             pos_hint: {"center_x": 0.5, "top": 0.5}
             on_release:
-                root.log_in()
+                root.do_log_in()
 
         MDLabel:
+
+        MDSpinner:
+            id: spinner
+            size_hint: None, None
+            size: dp(35), dp(35)
+            pos_hint: {'center_x': .5, 'top': .3}
+            active: False
             
         MDLabel:
             text: "Or"
@@ -75,13 +82,13 @@
             halign: "center"
             size_hint_y: None
             height: self.texture_size[1] * 1.5
-            pos_hint: {"center_x": 0.5, "top": 0.3}
+            pos_hint: {"center_x": 0.5, "top": 0.2}
         
         MDFlatButton:
             text: 'SIGN UP'
             bold: True
             size_hint_x: 0.6
-            pos_hint: {"center_x": 0.5, "top": 0.25}
+            pos_hint: {"center_x": 0.5, "top": 0.17}
             on_release:
                 root.manager.transition = NoTransition()
                 app.root.current = 'CreateUser'
