@@ -1,0 +1,8 @@
+<TopBar@FloatLayout>
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"x": 0.05, "center_y": .5}
+        theme_icon_color: "Custom"
+        icon_color: app.theme_cls.primary_color
+        on_release:
+            app.root.get_screen('MainWindow').example()

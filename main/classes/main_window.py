@@ -16,11 +16,12 @@ class MyLabel(MDLabel):
 
 class MainWindow(Screen):
     padding = NumericProperty(40)
+    spacing = NumericProperty(2)
+
     def table(self):
         app = MDApp.get_running_app()
 
-        size_num = 21
-        widget_height = app.root.height / size_num  - (self.padding * 2) / size_num - 5
+        widget_height = app.root.height / 21  - (self.padding * 2) / 21 - 40/21 - 60/21
 
         self.ids.boxlayout.clear_widgets()
         self.ids.boxlayout2.clear_widgets()
@@ -28,7 +29,6 @@ class MainWindow(Screen):
         headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
         headings_layout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
         headings_layout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
-        position = 1
 
         for i in headings:
             if i == "":
@@ -53,6 +53,7 @@ class MainWindow(Screen):
         self.ids.boxlayout.add_widget(headings_layout)
         self.ids.boxlayout2.add_widget(headings_layout2)
 
+        position = 1
         for i in pl.positions.keys():
             gridlayout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
             gridlayout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
@@ -157,6 +158,18 @@ class MainWindow(Screen):
             self.codes[i]["guess2"] = self.guess2
 
             layout.add_widget(gridlayout)
+        
+        # for i in self.codes_list:
+        #     for key in self.codes[i].keys():
+        #         if key == "guess1":
+        #             def next(instance):
+        #                 self.codes[i]["guess2"].focus = True
+        #             self.codes[i]["guess1"].bind(on_text_validate=next)
+                # elif key == "guess2" and self.codes_list.index(i) < len(self.codes_list) - 1:
+                #     def next(instance):
+                #         self.codes[self.codes_list[self.codes_list.index(i) + 1]]["guess1"].focus = True
+                #     self.codes[i]["guess1"].bind(on_text_validate=next)
+
         self.display_previous_guesses()
     
     def display_previous_guesses(self):
@@ -211,15 +224,6 @@ class MainWindow(Screen):
                 add_guess(code, guess1, guess2)
             update_bet(str(app.access_token), str(code), guess1, guess2, int(app.user_id))
     
-    # def scores(self):
-    #     app = MDApp.get_running_app()
-    #     user_info = my_user_info(app.access_token, app.user_id)
-    #     self.ids.username.text = str(user_info["username"])
-    #     self.ids.position.text = str(user_info["position"])
-    #     self.ids.points2.text = str(user_info["points"])
-    #     self.ids.three_pointers.text = str(user_info["three_pointers"])
-    #     self.ids.one_pointers.text = str(user_info["one_pointers"])
-    
     def logout(self):
         self.manager.current = "LoginWindow"
         app = MDApp.get_running_app()
@@ -230,3 +234,6 @@ class MainWindow(Screen):
         delete_account(app.access_token, app.user_id)
         delete_all_guesses()
         self.manager.current = "CreateUser"
+    
+    def example(self):
+        print('Hello')

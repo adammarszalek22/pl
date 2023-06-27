@@ -1,9 +1,5 @@
-<GroupsButton@MDRectangleFlatIconButton>
-    theme_text_color: 'Custom'
-    text_color: 'black'
-    line_color: 'white'
-    theme_icon_color: 'Custom'
-    icon_color: 'blue'
+#: include ./kv_others/top_bar.kv
+#: include ./kv_others/buttons.kv
 
 <CreateLeagueContent>
     orientation: 'vertical'
@@ -26,32 +22,88 @@
     MDLabel:
         text: f'You successfully created the league. Share this group id ({root.group_id}) with others so they can join!'
 
+<JoinLeagueContent>
+    orientation: 'vertical'
+    spacing: "12dp"
+    size_hint_y: None
+    height: "70dp"
+
+    MDTextField:
+        hint_text: 'League ID'
+        helper_text: ""
+        helper_text_mode: "on_error"
+        pos_hint: {"top": 0.1}
+
+<SuccessJoinContent>
+    orientation: 'vertical'
+    spacing: "12dp"
+    size_hint_y: None
+    height: "70dp"
+
+    MDLabel:
+        text: f"Are you sure you want to join \'{root.group_name}\' ({root.group_id}) league?"
+
 <GroupsWindow>
     name: 'GroupsWindow'
-    spacing: 5
+
+    MDBoxLayout:
+        md_bg_color: '#e6e7e8'
+        size_hint: None, None
+        size: root.width, root.height * 0.09
+        pos_hint: {"top": 1}
+        TopBar:
 
     MDBoxLayout:
         orientation: 'vertical'
+        size_hint: None, None
+        size: root.width, root.height * 0.91
+        pos_hint: {"top": 0.91}
         padding: 20
         spacing: 5
 
-        GroupsButton:
+        MoreButton:
             text: 'Create a group'
             icon: 'account-group'
+            size_hint_x: .4
+            size_hint_y: None
+            height: root.height / 10
+            halign: 'left'
             on_release:
                 root.open_dialog()
 
-        GroupsButton:
+        MoreButton:
+            text: 'Join a group'
+            icon: 'account-group'
+            size_hint_x: .4
+            size_hint_y: None
+            height: root.height / 10
+            halign: 'left'
+            on_release:
+                root.open_dialog_join()
+
+        MoreButton:
             text: 'My groups'
             icon: 'human'
+            size_hint_x: .4
+            size_hint_y: None
+            height: root.height / 10
+            halign: 'left'
         
-        GroupsButton:
+        MoreButton:
             text: 'Groups I\'m a part of'
             icon: 'group'
+            size_hint_x: .4
+            size_hint_y: None
+            height: root.height / 10
+            halign: 'left'
         
-        GroupsButton:
+        MoreButton:
             text: 'Back'
             icon: 'backspace'
+            size_hint_x: .4
+            size_hint_y: None
+            height: root.height / 10
+            halign: 'left'
             on_release:
                 app.root.current = 'MainWindow'
         

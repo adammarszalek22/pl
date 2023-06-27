@@ -24,6 +24,7 @@ class LoginWindow(Screen):
     def log_in(self):
         username = self.ids.login.text
         password = self.ids.password.text
+        self.ids.info.text = ''
         # Trying to get data from fantasy premier league API. Cannot login if there is no data
         pl.get_data()
         if pl.connection == False:
@@ -39,6 +40,9 @@ class LoginWindow(Screen):
                 # This means there is problem on our end (e.g. server not running)
                 self.ids.info.text = "There is a problem on our end. We are trying to fix it..."
                 self.is_thread_finished = 2
+            except json.decoder.JSONDecodeError:
+                self.ids.info.text = 'Unknown error'
+                self.is_thread_finished = 2
             except ValueError:
                 if login(username, password) == "User not found":
                     self.ids.login.helper_text = "User not found"
@@ -48,7 +52,6 @@ class LoginWindow(Screen):
                     self.ids.password.helper_text = "Wrong password"
                     self.ids.password.error = True
                     self.is_thread_finished = 2
-        
     
     def change_screen(self, dt):
         if self.is_thread_finished == 1:

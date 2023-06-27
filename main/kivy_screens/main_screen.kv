@@ -1,10 +1,4 @@
-<MoreButton@MDRectangleFlatIconButton>
-    theme_text_color: 'Custom'
-    text_color: 'black'
-    line_color: 'white'
-    theme_icon_color: 'Custom'
-    icon_color: 'blue'
-
+#: include ./kv_others/buttons.kv
 
 <MainWindow>
     name: 'MainWindow' 
@@ -19,11 +13,11 @@
             name: 'League Table'
             text: 'Table'
             icon: 'view-list'
-            #on_enter: root.table()
 
             MDBoxLayout:
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
+                size: root.width, root.height
                 padding: root.padding
 
                 MDBoxLayout:
@@ -34,33 +28,27 @@
 
                     MDBoxLayout:
                         id: boxlayout
-
                         orientation: 'vertical'
                         adaptive_height: True
-                        spacing: 2
-
+                        spacing: root.spacing
                         md_bg_color: 1, 1, 1, 1
                     
                     ScrollView:
                         do_scroll_y: False
                         do_scroll_x: True
-
                         bar_color: 1, 1, 1, 1
                         bar_inactive_color: 1, 1, 1, 1
 
                         MDBoxLayout:
                             id: boxlayout2
-
                             orientation: 'vertical'
-                            spacing: 2
-                            
+                            spacing: root.spacing
                             size_hint_x: 1.5
 
         MDBottomNavigationItem:
             name: 'Post Bet'
             text: 'Your predictions'
             icon: 'notebook-edit'
-            #on_enter: root.bets()
 
             MDBoxLayout:
                 orientation: 'vertical'
@@ -83,45 +71,38 @@
                 MDGridLayout:
                     cols: 3
                     size_hint_y: 0.1
+                    md_bg_color: 1, 1, 1, 1
                     spacing: 40
 
                     MDFloatingActionButton:
                         icon: 'arrow-left-bold-outline'
-
                         type: "small"
                         icon_color: app.theme_cls.primary_color
                         md_bg_color: (1, 1, 1, 1)
                         elevation: 0
-
                         pos_hint: {"center_x": 0.15}
-                        size_hint_x: 0.1
+                        size_hint_x: 0.2
                         size_hint_y: 1
-                        
                         on_press:
                             root.previous_gameweek()
             
                     MDFillRoundFlatButton:
                         text: 'BET'
-
                         pos_hint: {"center_x": 0.5}
-                        size_hint_x: 0.5
+                        size_hint_x: 0.4
                         size_hint_y: 1
-
                         on_press:
                             root.do_bets()
 
                     MDFloatingActionButton:
                         icon: 'arrow-right-bold-outline'
-
                         type: "small"
                         icon_color: app.theme_cls.primary_color
                         md_bg_color: (1, 1, 1, 1)
                         elevation: 0
-
                         pos_hint: {"center_x": 0.85}
-                        size_hint_x: 0.1
+                        size_hint_x: 0.2
                         size_hint_y: 1
-
                         on_press:
                             root.next_gameweek()
 
@@ -138,43 +119,61 @@
                 MoreButton:
                     text: 'Groups'
                     icon: 'account-group'
+                    size_hint_x: .4
+                    size_hint_y: None
+                    height: root.height / 10
+                    halign: 'left'
                     on_release:
                         app.root.current = 'GroupsWindow'
 
                 MoreButton:
                     text: 'View your score'
                     icon: 'account'
+                    size_hint_x: .4
+                    size_hint_y: None
+                    height: root.height / 10
+                    halign: 'left'
                     on_release:
                         app.root.current = 'ViewScoreWindow'
                 
                 MoreButton:
                     text: 'View other users\' scores'
                     icon: 'account-multiple-outline'
+                    size_hint_x: .4
+                    size_hint_y: None
+                    height: root.height / 10
+                    halign: 'left'
                 
                 MoreButton:
                     text: 'Settings'
                     icon: 'account-settings'
+                    size_hint_x: .4
+                    size_hint_y: None
+                    height: root.height / 10
+                    halign: 'left'
 
                 MoreButton:
                     text: 'Log out'
                     icon: 'logout'
+                    size_hint_x: .4
+                    size_hint_y: None
+                    height: root.height / 10
+                    halign: 'left'
                     on_release:
                         root.logout()
                 
                 MoreButton:
                     text: 'Help'
                     icon: 'help'
+                    size_hint_x: .4
+                    size_hint_y: None
+                    height: root.height / 10
+                    halign: 'left'
                 
                 MDLabel:
 
                 MDLabel:
 
-                MDLabel:
-
-                MDLabel:
-
-                MDLabel:
-                
                 
 
 

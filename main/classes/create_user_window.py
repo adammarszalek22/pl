@@ -25,6 +25,7 @@ class CreateUser(Screen):
         username = self.ids.login.text
         password = self.ids.password.text
         password2 = self.ids.password2.text
+        self.ids.info.text = ''
         # Trying to get data from fantasy premier league API. Cannot login if there is no data
         pl.get_data()
         try:
@@ -38,7 +39,7 @@ class CreateUser(Screen):
                 app.access_token, app.refresh_token, app.user_id = login(username, password)
                 self.is_thread_finished = 1
             elif password != password2:
-                self.ids.password2.helper_text = "Passwords don't match."
+                # self.ids.password2.helper_text = "Passwords don't match."
                 self.ids.password2.error = True
                 self.is_thread_finished = 2
             else:
@@ -49,6 +50,9 @@ class CreateUser(Screen):
             # Same as in login window. If this error comes up then internet works fine 
             # but there's another problem (probably server not working)
             self.ids.info.text = "There is a problem on our end. We are working hard to fix it"
+            self.is_thread_finished = 2
+        except json.decoder.JSONDecodeError:
+            self.ids.info.text = 'Unknown error'
             self.is_thread_finished = 2
 
     def change_screen(self, dt):
@@ -88,3 +92,9 @@ class CreateUser(Screen):
     
     def focus2(self, dt):
         self.ids.password2.focus = True
+    
+    def do_they_match(self, instance):
+        password = self.ids.password.text
+        password2 = self.ids.password2.text
+        if instance.focus == False and password != password2:
+            self.ids.password2.error = True

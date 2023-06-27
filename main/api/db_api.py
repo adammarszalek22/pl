@@ -151,7 +151,10 @@ def join_group(access_token, id):
         headers={"Authorization": "Bearer " + access_token},
         json={"id": id}
     )
-    return json.loads(group.text)
+    if group.status_code == 200: 
+        return {"status_code": 200, **json.loads(group.text)}
+    elif group.status_code == 409:
+        return {"status_code": 409}
 
 def delete_group(access_token, id):
     delete_group = requests.delete(
@@ -169,3 +172,17 @@ def delete_user_from_group(access_token, id, user_id):
               "user_id": user_id}
     )
     return json.loads(delete_user.text)
+
+def my_groups(access_token):
+    groups = requests.get(
+        url + '/my_groups',
+        headers={"Authorization": "Bearer " + access_token}
+        )
+    return {"status_code": groups.status_code, **json.loads(groups.text)}
+
+def groups_im_in(access_token):
+    groups = requests.get(
+        url + '/groups_im_in',
+        headers={"Authorization": "Bearer " + access_token}
+        )
+    return {"status_code": groups.status_code, **json.loads(groups.text)}
