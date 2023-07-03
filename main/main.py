@@ -22,7 +22,9 @@ from classes.groups_window import GroupsWindow
 from classes.view_score_window import ViewScoreWindow
 
 class WindowManager(ScreenManager):
-    pass
+    def go_back(self):
+        if self.current == 'GroupsWindow':
+            self.current = 'MainWindow'
 
 class AwesomeApp(MDApp):
     def build(self):

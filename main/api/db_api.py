@@ -82,9 +82,20 @@ def delete_all_bets(access_token, id):
     return json.loads(bet.text)
 
 def get_all_bets(access_token):
-    bets = requests.get(url + '/bet',
-                        headers={"Authorization": "Bearer " + access_token})
-    return json.loads(bets.text)
+    try:
+        bets = requests.get(url + '/bet',
+                            headers={"Authorization": "Bearer " + access_token})
+        return {"status_code": 200, "list": json.loads(bets.text)}
+    except json.decoder.JSONDecodeError:
+        return {"status_code": 500}
+
+def get_all_bets_by_user_id(access_token):
+    try:
+        bets = requests.get(url + '/bet_by_user_id',
+                            headers={"Authorization": "Bearer " + access_token})
+        return {"status_code": 200, "list": json.loads(bets.text)}
+    except json.decoder.JSONDecodeError:
+        return {"status_code": 500}
 
 def post_bet(access_token, match_id, goal1, goal2, user_id):
     bet = requests.post(url + '/bet',
@@ -97,14 +108,31 @@ def post_bet(access_token, match_id, goal1, goal2, user_id):
     return bet
 
 def update_bet(access_token, match_id, goal1, goal2, user_id):
-    new_bet = requests.put(url + '/bet',
-                           headers={"Authorization": "Bearer " + access_token},
-                           json={"match_id": match_id,
-                                 "goal1": goal1,
-                                 "goal2": goal2,
-                                 "user_id": user_id,
-                                 "done": "no"})
+    new_bet = requests.put(
+        url + '/bet',
+        headers={"Authorization": "Bearer " + access_token},
+        json={
+            "match_id": match_id,
+            "goal1": goal1,
+            "goal2": goal2,
+            "user_id": user_id,
+            "done": "no"
+            }
+        )
     return json.loads(new_bet.text)
+
+def update_multiple_bets(access_token, list_match_id, list_goal1, list_goal2, user_id):
+    new_bets = requests.put(
+        url + '/multiple_bets_update',
+        headers={"Authorization": "Bearer " + access_token},
+        json={
+            "match_id": list_match_id,
+            "goal1": list_goal1,
+            "goal2": list_goal2,
+            "user_id": user_id
+            }
+        )
+    return json.loads(new_bets.text)
 
 #a = login("adam", "1234")[0]
 #post_bet(a, "2293058", 3, 4, 1)

@@ -117,6 +117,15 @@ class MainWindow(Screen):
         layout.clear_widgets()
         layout_height = app.root.height / 8
 
+        header = MDLabel(
+            text = f'Gameweek {self.gameweek}',
+            size_hint_y = None,
+            height = layout_height / 2,
+            halign = 'center'
+        )
+        layout.add_widget(header)
+        
+
         for i in self.codes_list:
             gridlayout = MDGridLayout(size_hint_y = None,
                                       height = layout_height,
@@ -173,22 +182,27 @@ class MainWindow(Screen):
         self.display_previous_guesses()
     
     def display_previous_guesses(self):
+        
+        app = MDApp.get_running_app()
         does_exist = False
-        bets = get_all_guesses()
-        for bet in bets:
-            code = bet[0]
-            if code in self.codes_list:
-                does_exist = True
-        if does_exist == True:
-            for bet in bets:
-                try:
-                    code = bet[0]
-                    guess1 = bet[1]
-                    guess2 = bet[2]
-                    self.codes[code]["guess1"].text = str(guess1)
-                    self.codes[code]["guess2"].text = str(guess2)
-                except KeyError:
-                    pass
+        bets = get_all_bets_by_user_id(app.access_token)
+        if bets["status_code"] == 200:
+            for bet in bets["list"]:
+                code = bet['match_id']
+                if code in self.codes_list:
+                    does_exist = True
+            if does_exist == True:
+                for bet in bets["list"]:
+                    try:
+                        code = bet['match_id']
+                        guess1 = bet['goal1']
+                        guess2 = bet['goal2']
+                        self.codes[code]["guess1"].text = str(guess1)
+                        self.codes[code]["guess2"].text = str(guess2)
+                    except KeyError:
+                        pass
+        else:
+            pass
 
     def previous_gameweek(self):
         if self.gameweek == 1:
@@ -209,6 +223,9 @@ class MainWindow(Screen):
     def do_bets(self):
         #Sending input to the server
         app = MDApp.get_running_app()
+        list_code = []
+        list_guess1 = []
+        list_guess2 = []
         for code in self.codes.keys():
             if self.codes[code]["guess1"].text == "":
                 self.codes[code]["guess1"].text = "0"
@@ -217,12 +234,11 @@ class MainWindow(Screen):
             guess1 = self.codes[code]["guess1"].text
             guess2 = self.codes[code]["guess2"].text
             #This adds a bet or updates it if it already exists
-            bet = get_guess(code)
-            if bet:
-                update_guess(guess1, guess2, code)
-            else:
-                add_guess(code, guess1, guess2)
-            update_bet(str(app.access_token), str(code), guess1, guess2, int(app.user_id))
+            #update_bet(str(app.access_token), str(code), guess1, guess2, int(app.user_id))
+            list_code.append(code)
+            list_guess1.append(guess1)
+            list_guess2.append(guess2)
+        update_multiple_bets(str(app.access_token), list_code, list_guess1, list_guess2, int(app.user_id))
     
     def logout(self):
         self.manager.current = "LoginWindow"

@@ -1,5 +1,9 @@
 import sqlite3
 
+'''
+WILL BE DELETED. CANNOT STORE MATCH GUESSES IN LOCAL DATABASE (because more guesses could be made on another device)
+'''
+
 def on_entry():
     conn = sqlite3.connect('score_guesses.db')
     c = conn.cursor()
