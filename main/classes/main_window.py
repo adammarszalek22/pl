@@ -102,14 +102,12 @@ class MainWindow(Screen):
             self.current_gameweek = 38
         else:
             self.gameweek = gameweek
-        
-        gameweek_string = 'Gameweek ' + str(self.gameweek)
 
         self.codes_list = []
         self.codes = {}
 
         # A list of all match codes in the current gameweek
-        for i in pl.matches[gameweek_string].keys():
+        for i in pl.matches[self.gameweek].keys():
             self.codes_list.append(i)
 
         app = MDApp.get_running_app()
@@ -131,12 +129,12 @@ class MainWindow(Screen):
                                       height = layout_height,
                                       cols = 6,
                                       spacing = 10)
-            self.team1 = MyLabel(text = str(pl.teams[pl.matches[gameweek_string][i]["team1"]]["name"]),
+            self.team1 = MyLabel(text = str(pl.teams[pl.matches[self.gameweek][i]["team1"]]["name"]),
                                  size_hint = (0.3, 1),
                                  valign = "bottom",
                                  halign = "center")
             gridlayout.add_widget(self.team1)
-            self.goal1 = MyLabel(text = str(pl.matches[gameweek_string][i]["goals1"]),
+            self.goal1 = MyLabel(text = str(pl.matches[self.gameweek][i]["goals1"]),
                                  size_hint = (0.1, 1),
                                  valign = "middle",
                                  halign = "center")
@@ -149,12 +147,12 @@ class MainWindow(Screen):
                                       multiline = False,
                                       input_type = 'number')
             gridlayout.add_widget(self.guess2)
-            self.goal2 = MyLabel(text = str(pl.matches[gameweek_string][i]["goals2"]),
+            self.goal2 = MyLabel(text = str(pl.matches[self.gameweek][i]["goals2"]),
                                  size_hint = (0.1, 1),
                                  valign = "middle",
                                  halign = "center")
             gridlayout.add_widget(self.goal2)
-            self.team2 = MyLabel(text=str(pl.teams[pl.matches[gameweek_string][i]["team2"]]["name"]),
+            self.team2 = MyLabel(text=str(pl.teams[pl.matches[self.gameweek][i]["team2"]]["name"]),
                                  size_hint = (0.3, 1),
                                  valign = "middle",
                                  halign = "center")

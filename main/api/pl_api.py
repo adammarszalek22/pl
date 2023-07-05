@@ -35,21 +35,21 @@ class premier_league:
                 self.teams[i['id']]['goals_balance'] = 0
                 self.matches = {}
             for i in range(1, 39):
-                self.matches['Gameweek ' + str(i)] = {}
+                self.matches[i] = {}
 
             for i in response_1:
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])] = {}
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['team1'] = i['team_h']
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['team2'] = i['team_a']
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['goals1'] = i['team_h_score']
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['goals2'] = i['team_a_score']
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['kickoff_date'] = i['kickoff_time'][0:10]
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['kickoff_time'] = i['kickoff_time'][11:19]
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['finished'] = i['finished']
+                self.matches[i['event']][str(i['code'])] = {}
+                self.matches[i['event']][str(i['code'])]['team1'] = i['team_h']
+                self.matches[i['event']][str(i['code'])]['team2'] = i['team_a']
+                self.matches[i['event']][str(i['code'])]['goals1'] = i['team_h_score']
+                self.matches[i['event']][str(i['code'])]['goals2'] = i['team_a_score']
+                self.matches[i['event']][str(i['code'])]['kickoff_date'] = i['kickoff_time'][0:10]
+                self.matches[i['event']][str(i['code'])]['kickoff_time'] = i['kickoff_time'][11:19]
+                self.matches[i['event']][str(i['code'])]['finished'] = i['finished']
                 # if i['code'] == 2292829: TESTING
                 #     print(i)
 
-                self.matches['Gameweek ' + str(i['event'])][str(i['code'])]['started'] = i['started']
+                self.matches[i['event']][str(i['code'])]['started'] = i['started']
 
                 if i['team_h_score'] != None:
 

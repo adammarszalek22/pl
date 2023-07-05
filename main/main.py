@@ -28,7 +28,6 @@ class WindowManager(ScreenManager):
 
 class AwesomeApp(MDApp):
     def build(self):
-        on_entry()
         kv = Builder.load_file('kivy_screens/user.kv')
         self.theme_cls.theme_style = 'Light'
         self.theme_cls.primary_palette = 'Blue'
