@@ -143,6 +143,8 @@
                     size_hint_y: None
                     height: root.height / 10
                     halign: 'left'
+                    on_release:
+                        app.root.current = 'ViewOtherScoreWindow'
                 
                 MoreButton:
                     text: 'Settings'

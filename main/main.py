@@ -20,11 +20,17 @@ from classes.create_user_window import CreateUser
 from classes.main_window import MainWindow
 from classes.groups_window import GroupsWindow
 from classes.view_score_window import ViewScoreWindow
+from classes.my_groups_window import MyGroupsWindow
+from classes.view_other_score_window import ViewOtherScoreWindow
 
 class WindowManager(ScreenManager):
     def go_back(self):
         if self.current == 'GroupsWindow':
             self.current = 'MainWindow'
+        elif self.current == 'ViewScoreWindow':
+            self.current = 'MainWindow'
+        elif self.current == 'MyGroupsWindow':
+            self.current = 'GroupsWindow'
 
 class AwesomeApp(MDApp):
     def build(self):

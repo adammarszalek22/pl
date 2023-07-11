@@ -206,7 +206,7 @@ def my_groups(access_token):
         url + '/my_groups',
         headers={"Authorization": "Bearer " + access_token}
         )
-    return {"status_code": groups.status_code, **json.loads(groups.text)}
+    return {"status_code": groups.status_code, "list": json.loads(groups.text)}
 
 def groups_im_in(access_token):
     groups = requests.get(
