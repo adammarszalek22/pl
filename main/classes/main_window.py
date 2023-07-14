@@ -7,16 +7,23 @@ from kivy.clock import Clock
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import NoTransition
 from kivymd.app import MDApp
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.gridlayout import MDGridLayout
 
 class MyLabel(MDLabel):
     pass
 
+class BetDialog(MDBoxLayout):
+    pass
+
 class MainWindow(Screen):
     padding = NumericProperty(40)
     spacing = NumericProperty(2)
+    dialog = None
 
     def table(self):
         app = MDApp.get_running_app()
@@ -236,7 +243,38 @@ class MainWindow(Screen):
             list_code.append(code)
             list_guess1.append(guess1)
             list_guess2.append(guess2)
-        update_multiple_bets(str(app.access_token), list_code, list_guess1, list_guess2, int(app.user_id))
+        update_bets = update_multiple_bets(str(app.access_token), list_code, list_guess1, list_guess2)
+        if update_bets["status_code"] == 200:
+            #Dialog - success
+            self.open_dialog("Your predictions were submitted successfully!")
+        elif update_bets["status_code"] == 405:
+            # Dialog - cannot update bets after the first match of the gameweek has started
+            self.open_dialog("Cannot create/update predictions once the gameweek has started.")
+    
+    def open_dialog(self, message):
+        app = MDApp.get_running_app()
+        if not self.dialog:
+            okay_button = MDFlatButton(
+                        text="OK",
+                        theme_text_color="Custom",
+                        text_color=app.theme_cls.primary_color,
+                    )
+            self.dialog = MDDialog(
+                title="Name your league",
+                type='custom',
+                content_cls = BetDialog(),
+                buttons=[
+                    okay_button
+                ]
+            )
+            okay_button.bind(on_release=self.exit_dialog)
+        
+        self.dialog.content_cls.children[0].text = message
+        self.dialog.open()
+    
+    def exit_dialog(self, instance):
+        self.dialog.content_cls.children[0].text = ''
+        self.dialog.dismiss()
     
     def logout(self):
         self.manager.current = "LoginWindow"
@@ -246,7 +284,6 @@ class MainWindow(Screen):
     def delete_account(self):
         app = MDApp.get_running_app()
         delete_account(app.access_token, app.user_id)
-        delete_all_guesses()
         self.manager.current = "CreateUser"
     
     def example(self):

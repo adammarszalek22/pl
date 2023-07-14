@@ -62,6 +62,16 @@ def delete_account(access_token, id):
                              headers={"Authorization": "Bearer " + access_token})
     return json.loads(delete.text)
 
+def get_by_username(access_token, username):
+    user = requests.get(
+        url + '/user',
+        headers={"Authorization": "Bearer " + access_token},
+        json={"username": username}
+        )
+    if user.status_code == 200:
+        return {"status_code": 200, **json.loads(user.text)}
+    return {"status_code": 404}
+
 '''
 BETS
 '''
@@ -97,17 +107,21 @@ def get_all_bets_by_user_id(access_token):
     except json.decoder.JSONDecodeError:
         return {"status_code": 500}
 
-def post_bet(access_token, match_id, goal1, goal2, user_id):
+def post_bet(access_token, match_id, goal1, goal2):
     bet = requests.post(url + '/bet',
                         headers={"Authorization": "Bearer " + access_token},
                         json={"match_id": match_id,
                               "goal1": goal1,
                               "goal2": goal2,
-                              "user_id": user_id,
                               "done": "no"})
-    return bet
+    if bet.status_code == 405:
+        return {"status_code": 405}
+    elif bet.status_code == 500:
+        return {"status_code": 500}
+    else:
+        return {"status_code": 200, **json.loads(bet.text)}
 
-def update_bet(access_token, match_id, goal1, goal2, user_id):
+def update_bet(access_token, match_id, goal1, goal2):
     new_bet = requests.put(
         url + '/bet',
         headers={"Authorization": "Bearer " + access_token},
@@ -115,24 +129,28 @@ def update_bet(access_token, match_id, goal1, goal2, user_id):
             "match_id": match_id,
             "goal1": goal1,
             "goal2": goal2,
-            "user_id": user_id,
             "done": "no"
             }
         )
-    return json.loads(new_bet.text)
+    if new_bet.status_code == 405:
+        return {"status_code": 405}
+    else:
+        return {"status_code": 200, **json.loads(new_bet.text)}
 
-def update_multiple_bets(access_token, list_match_id, list_goal1, list_goal2, user_id):
+def update_multiple_bets(access_token, list_match_id, list_goal1, list_goal2):
     new_bets = requests.put(
         url + '/multiple_bets_update',
         headers={"Authorization": "Bearer " + access_token},
         json={
             "match_id": list_match_id,
             "goal1": list_goal1,
-            "goal2": list_goal2,
-            "user_id": user_id
+            "goal2": list_goal2
             }
         )
-    return json.loads(new_bets.text)
+    if new_bets.status_code == 405:
+        return {"status_code": 405}
+    else:
+        return {"status_code": 200, **json.loads(new_bets.text)}
 
 #a = login("adam", "1234")[0]
 #post_bet(a, "2293058", 3, 4, 1)

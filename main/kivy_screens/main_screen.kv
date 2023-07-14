@@ -1,5 +1,14 @@
 #: include ./kv_others/buttons.kv
 
+<BetDialog>
+    orientation: 'vertical'
+    spacing: "12dp"
+    size_hint_y: None
+    height: "70dp"
+
+    MDLabel:
+        text: ''
+
 <MainWindow>
     name: 'MainWindow' 
     on_enter:
@@ -12,6 +21,12 @@
         MDBottomNavigationItem:
             name: 'League Table'
             text: 'Table'
+            icon: 'view-list'
+
+
+        MDBottomNavigationItem:
+            name: 'Premier League Table'
+            text: 'PL Table'
             icon: 'view-list'
 
             MDBoxLayout:

@@ -1,8 +1,20 @@
 #: include ./kv_others/top_bar.kv
 
+<DialogContent>
+    orientation: 'vertical'
+    spacing: "12dp"
+    size_hint_y: None
+    height: "70dp"
+
+    MDTextField:
+        hint_text: 'Username'
+        helper_text: ""
+        helper_text_mode: "on_error"
+        pos_hint: {"top": 0.8}
+
 <ViewOtherScoreWindow>
     name: 'ViewOtherScoreWindow'
-    on_enter: root.scores()
+    on_enter: root.open_dialog()
 
     MDBoxLayout:
         md_bg_color: '#e6e7e8'
