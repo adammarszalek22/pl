@@ -38,47 +38,50 @@ class premier_league:
                 self.matches[i] = {}
 
             for i in response_1:
-                self.matches[i['event']][str(i['code'])] = {}
-                self.matches[i['event']][str(i['code'])]['team1'] = i['team_h']
-                self.matches[i['event']][str(i['code'])]['team2'] = i['team_a']
-                self.matches[i['event']][str(i['code'])]['goals1'] = i['team_h_score']
-                self.matches[i['event']][str(i['code'])]['goals2'] = i['team_a_score']
-                self.matches[i['event']][str(i['code'])]['kickoff_date'] = i['kickoff_time'][0:10]
-                self.matches[i['event']][str(i['code'])]['kickoff_time'] = i['kickoff_time'][11:19]
-                self.matches[i['event']][str(i['code'])]['finished'] = i['finished']
-                # if i['code'] == 2292829: TESTING
-                #     print(i)
+                try:
+                    self.matches[i['event']][str(i['code'])] = {}
+                    self.matches[i['event']][str(i['code'])]['team1'] = i['team_h']
+                    self.matches[i['event']][str(i['code'])]['team2'] = i['team_a']
+                    self.matches[i['event']][str(i['code'])]['goals1'] = i['team_h_score'] or ''
+                    self.matches[i['event']][str(i['code'])]['goals2'] = i['team_a_score'] or ''
+                    self.matches[i['event']][str(i['code'])]['kickoff_date'] = i['kickoff_time'][0:10]
+                    self.matches[i['event']][str(i['code'])]['kickoff_time'] = i['kickoff_time'][11:19]
+                    self.matches[i['event']][str(i['code'])]['finished'] = i['finished']
+                    # if i['code'] == 2292829: TESTING
+                    #     print(i)
 
-                self.matches[i['event']][str(i['code'])]['started'] = i['started']
+                    self.matches[i['event']][str(i['code'])]['started'] = i['started']
 
-                if i['team_h_score'] != None:
+                    if i['team_h_score'] != None:
 
-                    if i['team_h_score'] > i['team_a_score']:
-                        self.teams[i['team_h']]['points'] += 3
-                        self.teams[i['team_h']]['wins'] += 1
-                        self.teams[i['team_a']]['losses'] += 1
-                    elif i['team_h_score'] < i['team_a_score']:
-                        self.teams[i['team_a']]['points'] += 3
-                        self.teams[i['team_a']]['wins'] += 1
-                        self.teams[i['team_h']]['losses'] += 1
-                    else:
-                        self.teams[i['team_h']]['points'] += 1
-                        self.teams[i['team_a']]['points'] += 1
-                        self.teams[i['team_h']]['draws'] += 1
-                        self.teams[i['team_a']]['draws'] += 1
+                        if i['team_h_score'] > i['team_a_score']:
+                            self.teams[i['team_h']]['points'] += 3
+                            self.teams[i['team_h']]['wins'] += 1
+                            self.teams[i['team_a']]['losses'] += 1
+                        elif i['team_h_score'] < i['team_a_score']:
+                            self.teams[i['team_a']]['points'] += 3
+                            self.teams[i['team_a']]['wins'] += 1
+                            self.teams[i['team_h']]['losses'] += 1
+                        else:
+                            self.teams[i['team_h']]['points'] += 1
+                            self.teams[i['team_a']]['points'] += 1
+                            self.teams[i['team_h']]['draws'] += 1
+                            self.teams[i['team_a']]['draws'] += 1
 
-                    self.teams[i['team_h']]['matches_played'] += 1
-                    self.teams[i['team_a']]['matches_played'] += 1
+                        self.teams[i['team_h']]['matches_played'] += 1
+                        self.teams[i['team_a']]['matches_played'] += 1
 
-                    self.teams[i['team_h']]['goals_scored'] += i['team_h_score']
-                    self.teams[i['team_a']]['goals_scored'] += i['team_a_score']
+                        self.teams[i['team_h']]['goals_scored'] += i['team_h_score']
+                        self.teams[i['team_a']]['goals_scored'] += i['team_a_score']
 
-                    self.teams[i['team_h']]['goals_conceded'] += i['team_a_score']
-                    self.teams[i['team_a']]['goals_conceded'] += i['team_h_score']
+                        self.teams[i['team_h']]['goals_conceded'] += i['team_a_score']
+                        self.teams[i['team_a']]['goals_conceded'] += i['team_h_score']
 
-                    self.teams[i['team_h']]['goals_balance'] += i['team_h_score'] - i['team_a_score']
-                    self.teams[i['team_a']]['goals_balance'] += i['team_a_score'] - i['team_h_score']
-                
+                        self.teams[i['team_h']]['goals_balance'] += i['team_h_score'] - i['team_a_score']
+                        self.teams[i['team_a']]['goals_balance'] += i['team_a_score'] - i['team_h_score']
+                except KeyError:
+                    pass
+
             self.positions = {k: v for k, v in sorted(self.teams.items(),
                                                     key=lambda item: (item[1]['points'],
                                                                         item[1]['goals_balance'],
