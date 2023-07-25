@@ -17,6 +17,7 @@ class ViewOtherScoreWindow(Screen):
     dialog = None
 
     def open_dialog(self):
+
         # Opens dialog where user enters the username of the person whose scores they want to see
         app = MDApp.get_running_app()
         if not self.dialog:
@@ -41,21 +42,25 @@ class ViewOtherScoreWindow(Screen):
             )
             okay_button.bind(on_release=self.scores)
             cancel_button.bind(on_release=self.exit_dialog)
+            
         self.dialog.open()
 
     def exit_dialog(self, instance):
+
         self.dialog.content_cls.children[0].text = ''
         self.dialog.dismiss()
 
     def scores(self, instance):
+
         app = MDApp.get_running_app()
         self.username = self.dialog.content_cls.children[0].text
         user_info = get_by_username(app.access_token, self.username)
-        print(user_info)
+
         if user_info["status_code"] == 200:
             self.ids.username.text = str(user_info["username"])
             self.ids.position.text = str(user_info["position"])
             self.ids.points2.text = str(user_info["points"])
             self.ids.three_pointers.text = str(user_info["three_pointers"])
             self.ids.one_pointers.text = str(user_info["one_pointers"])
+
         self.exit_dialog(self)

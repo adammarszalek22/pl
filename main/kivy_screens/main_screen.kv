@@ -12,7 +12,7 @@
 <MainWindow>
     name: 'MainWindow' 
     on_enter:
-        root.table()
+        root.pl_table()
         root.bets()
 
     MDBottomNavigation:
@@ -66,60 +66,71 @@
             icon: 'notebook-edit'
 
             MDBoxLayout:
+                id: header
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
-                size_hint_y: 1
+                size_hint_y: 0.2
                 pos_hint: {"top": 1}
                 padding: 5
 
+            MDBoxLayout:
+                orientation: 'vertical'
+                md_bg_color: 0, 0, 0, 0
+                size_hint_y: 0.7
+                pos_hint: {"top": 0.8}
+                padding: 5
+
                 ScrollView:
+                    id: the_scroll
                     do_scroll_x: False
                     do_scroll_y: True
+                    effect_cls: 'DampedScrollEffect'
 
                     MDBoxLayout:
-                        id: mylayout
+                        id: my_main_layout
                         padding: 20
                         orientation: 'vertical'
                         size_hint_y: None
                         adaptive_height: True
                 
-                MDGridLayout:
-                    cols: 3
-                    size_hint_y: 0.1
-                    md_bg_color: 1, 1, 1, 1
-                    spacing: 40
+            MDGridLayout:
+                cols: 3
+                size_hint_y: 0.1
+                #md_bg_color: 1, 1, 1, 1
+                pos_hint: {"top": 0.1}
+                spacing: 40
 
-                    MDFloatingActionButton:
-                        icon: 'arrow-left-bold-outline'
-                        type: "small"
-                        icon_color: app.theme_cls.primary_color
-                        md_bg_color: (1, 1, 1, 1)
-                        elevation: 0
-                        pos_hint: {"center_x": 0.15}
-                        size_hint_x: 0.2
-                        size_hint_y: 1
-                        on_press:
-                            root.previous_gameweek()
-            
-                    MDFillRoundFlatButton:
-                        text: 'SUBMIT'
-                        pos_hint: {"center_x": 0.5}
-                        size_hint_x: 0.4
-                        size_hint_y: 1
-                        on_press:
-                            root.do_bets()
+                MDFloatingActionButton:
+                    icon: 'arrow-left-bold-outline'
+                    type: "small"
+                    icon_color: app.theme_cls.primary_color
+                    md_bg_color: (1, 1, 1, 1)
+                    elevation: 0
+                    pos_hint: {"center_x": 0.15}
+                    size_hint_x: 0.2
+                    size_hint_y: 1
+                    on_press:
+                        root.previous_gameweek()
+        
+                MDFillRoundFlatButton:
+                    text: 'SUBMIT'
+                    pos_hint: {"center_x": 0.5}
+                    size_hint_x: 0.4
+                    size_hint_y: 1
+                    on_press:
+                        root.do_bets()
 
-                    MDFloatingActionButton:
-                        icon: 'arrow-right-bold-outline'
-                        type: "small"
-                        icon_color: app.theme_cls.primary_color
-                        md_bg_color: (1, 1, 1, 1)
-                        elevation: 0
-                        pos_hint: {"center_x": 0.85}
-                        size_hint_x: 0.2
-                        size_hint_y: 1
-                        on_press:
-                            root.next_gameweek()
+                MDFloatingActionButton:
+                    icon: 'arrow-right-bold-outline'
+                    type: "small"
+                    icon_color: app.theme_cls.primary_color
+                    md_bg_color: (1, 1, 1, 1)
+                    elevation: 0
+                    pos_hint: {"center_x": 0.85}
+                    size_hint_x: 0.2
+                    size_hint_y: 1
+                    on_press:
+                        root.next_gameweek()
 
         MDBottomNavigationItem:
             name: 'More'

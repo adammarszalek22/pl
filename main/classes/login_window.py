@@ -12,6 +12,7 @@ class LoginWindow(Screen):
     is_thread_finished = 0
 
     def do_log_in(self):
+
         # Creating a new thread for the log_in function so that the spinner can be started
         # Once log_in function is finished, is_thread_finished will be set to 1
         # And then change_screen function will take effect
@@ -22,6 +23,7 @@ class LoginWindow(Screen):
         Clock.schedule_once(self.change_screen, 0.01)
 
     def log_in(self):
+
         username = self.ids.login.text
         password = self.ids.password.text
         self.ids.info.text = ''
@@ -54,6 +56,7 @@ class LoginWindow(Screen):
                     self.is_thread_finished = 2
     
     def change_screen(self, dt):
+
         if self.is_thread_finished == 1:
             self.manager.transition = NoTransition()
             self.manager.current = 'MainWindow'
@@ -66,6 +69,7 @@ class LoginWindow(Screen):
             Clock.schedule_once(self.change_screen, 0.01)
         
     def password(self):
+
         if self.ids.password.password == True:
             self.ids.password.password = False
             self.ids.password.icon_left = "eye"
@@ -76,4 +80,5 @@ class LoginWindow(Screen):
             Clock.schedule_once(self.focus, 0.05)
     
     def focus(self, dt):
+        
         self.ids.password.focus = True

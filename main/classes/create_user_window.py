@@ -12,6 +12,7 @@ class CreateUser(Screen):
     is_thread_finished = 0
 
     def do_create_user(self):
+        
         # Creating a new thread for the create_user_app function so that the spinner can be started
         # Once create_user_app function is finished, is_thread_finished will be set to 1
         # And then change_screen function will take effect
@@ -22,6 +23,7 @@ class CreateUser(Screen):
         Clock.schedule_once(self.change_screen, 0.01)
 
     def create_user_app(self):
+
         username = self.ids.login.text
         password = self.ids.password.text
         password2 = self.ids.password2.text
@@ -56,6 +58,7 @@ class CreateUser(Screen):
             self.is_thread_finished = 2
 
     def change_screen(self, dt):
+
         if self.is_thread_finished == 1:
             self.manager.transition = NoTransition()
             self.manager.current = 'MainWindow'
@@ -68,6 +71,7 @@ class CreateUser(Screen):
             Clock.schedule_once(self.change_screen, 0.01)
 
     def password(self):
+
         if self.ids.password.password == True:
             self.ids.password.password = False
             self.ids.password.icon_left = "eye"
@@ -78,9 +82,11 @@ class CreateUser(Screen):
             Clock.schedule_once(self.focus1, 0.05)
     
     def focus1(self, dt):
+
         self.ids.password.focus = True
     
     def password2(self):
+
         if self.ids.password2.password == True:
             self.ids.password2.password = False
             self.ids.password2.icon_left = "eye"
@@ -91,9 +97,11 @@ class CreateUser(Screen):
             Clock.schedule_once(self.focus2, 0.05)
     
     def focus2(self, dt):
+
         self.ids.password2.focus = True
     
     def do_they_match(self, instance):
+
         password = self.ids.password.text
         password2 = self.ids.password2.text
         if instance.focus == False and password != password2:
