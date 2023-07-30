@@ -24,19 +24,30 @@ class LoginWindow(Screen):
 
     def log_in(self):
 
+        self.ids.info.text = ''
         username = self.ids.login.text
         password = self.ids.password.text
-        self.ids.info.text = ''
         # Trying to get data from fantasy premier league API. Cannot login if there is no data
         pl.get_data()
-        if pl.connection == False:
-            self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
-            self.is_thread_finished = 2
-        else:
+        if pl.connection == True:
             try:
                 app = MDApp.get_running_app()
-                app.access_token, app.refresh_token, app.user_id = login(username, password)
-                self.is_thread_finished = 1
+                login_details = login(username, password)
+                code = login_details["code"]
+                if code == 200:
+                    app.access_token = login_details["access_token"]
+                    app.refresh_token = login_details["refresh_token"]
+                    app.user_id = login_details["user_id"]
+                    self.is_thread_finished = 1
+                elif code == 401:
+                    message = login_details["message"]
+                    if message == "User not found":
+                        self.ids.login.helper_text = "User not found"
+                        self.ids.login.error = True
+                    elif message == "Wrong password":
+                        self.ids.password.helper_text = "Wrong password"
+                        self.ids.password.error = True
+                    self.is_thread_finished = 2
             except requests.exceptions.ConnectionError:
                 # If pl.connection returns true then device is connected to the internet. 
                 # This means there is problem on our end (e.g. server not running)
@@ -45,15 +56,11 @@ class LoginWindow(Screen):
             except json.decoder.JSONDecodeError:
                 self.ids.info.text = 'Unknown error'
                 self.is_thread_finished = 2
-            except ValueError:
-                if login(username, password) == "User not found":
-                    self.ids.login.helper_text = "User not found"
-                    self.ids.login.error = True
-                    self.is_thread_finished = 2
-                elif login(username, password) == "Wrong password":
-                    self.ids.password.helper_text = "Wrong password"
-                    self.ids.password.error = True
-                    self.is_thread_finished = 2
+        else:
+            self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
+            self.is_thread_finished = 2
+            
+                
     
     def change_screen(self, dt):
 

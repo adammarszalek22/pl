@@ -24,38 +24,42 @@ class CreateUser(Screen):
 
     def create_user_app(self):
 
+        self.ids.info.text = ''
         username = self.ids.login.text
         password = self.ids.password.text
         password2 = self.ids.password2.text
-        self.ids.info.text = ''
         # Trying to get data from fantasy premier league API. Cannot login if there is no data
         pl.get_data()
-        try:
-            if pl.connection == False:
-                self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
+        if pl.connection == True:
+            try:
+                new_user = create_user(username, password, password2)
+                code = new_user["code"]
+                if code == 201:
+                    app = MDApp.get_running_app()
+                    login_details = login(username, password)
+                    app.access_token = login_details["access_token"]
+                    app.refresh_token = login_details["refresh_token"]
+                    app.user_id = login_details["user_id"]
+                    self.is_thread_finished = 1 # go to next screen
+                elif code == 401:
+                    self.ids.password2.error = True
+                    self.is_thread_finished = 2 # stay in the current screen
+                else:
+                    self.ids.login.helper_text = 'User already exists.'
+                    self.ids.login.error = True
+                    self.is_thread_finished = 2 # stay in the current screen
+            except requests.exceptions.ConnectionError:
+                # Same as in login window. If this error comes up then internet works fine 
+                # but there's another problem (probably server not working)
+                self.ids.info.text = "There is a problem on our end. We are working hard to fix it"
                 self.is_thread_finished = 2
-            elif password == password2 and\
-                create_user(username, password)["code"] == 201 and\
-                pl.connection == True:
-                app = MDApp.get_running_app()
-                app.access_token, app.refresh_token, app.user_id = login(username, password)
-                self.is_thread_finished = 1
-            elif password != password2:
-                # self.ids.password2.helper_text = "Passwords don't match."
-                self.ids.password2.error = True
+            except json.decoder.JSONDecodeError:
+                self.ids.info.text = 'Unknown error'
                 self.is_thread_finished = 2
-            else:
-                self.ids.login.helper_text = 'User already exists.'
-                self.ids.login.error = True
-                self.is_thread_finished = 2
-        except requests.exceptions.ConnectionError:
-            # Same as in login window. If this error comes up then internet works fine 
-            # but there's another problem (probably server not working)
-            self.ids.info.text = "There is a problem on our end. We are working hard to fix it"
+        else:
+            self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
             self.is_thread_finished = 2
-        except json.decoder.JSONDecodeError:
-            self.ids.info.text = 'Unknown error'
-            self.is_thread_finished = 2
+
 
     def change_screen(self, dt):
 

@@ -49,6 +49,8 @@
             width: root.width * 0.7
             pos_hint: {"center_x": 0.5, "top": 0.55}
             password: True
+            on_text_validate:
+                root.do_create_user()
             on_focus:
                 root.do_they_match(self)
 

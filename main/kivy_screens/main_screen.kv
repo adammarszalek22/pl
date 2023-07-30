@@ -14,14 +14,38 @@
     on_enter:
         root.pl_table()
         root.bets()
+        root.users_table()
 
     MDBottomNavigation:
         id: bottom_nav
 
         MDBottomNavigationItem:
-            name: 'League Table'
+            name: 'Users Table'
             text: 'Table'
             icon: 'view-list'
+
+            MDBoxLayout:
+                id: main
+                orientation: 'vertical'
+                md_bg_color: 0, 0, 0, 0
+                size_hint_y: 0.9
+                pos_hint: {"top": 1}
+                padding: root.padding
+            
+            MDFloatLayout:
+                id: float
+                size_hint_y: 0.1
+                pos_hint: {"top": 0.1}
+                spacing: 40
+                padding: 20
+
+                MDFillRoundFlatButton:
+                    text: 'Show full table'
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    size_hint_x: None
+                    width: root.width * 0.35
+                    on_press:
+                        root.show_full_table()
 
 
         MDBottomNavigationItem:
@@ -69,15 +93,15 @@
                 id: header
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
-                size_hint_y: 0.2
+                size_hint_y: 0.15
                 pos_hint: {"top": 1}
                 padding: 5
 
             MDBoxLayout:
                 orientation: 'vertical'
                 md_bg_color: 0, 0, 0, 0
-                size_hint_y: 0.7
-                pos_hint: {"top": 0.8}
+                size_hint_y: 0.75
+                pos_hint: {"top": 0.85}
                 padding: 5
 
                 ScrollView:
@@ -93,12 +117,11 @@
                         size_hint_y: None
                         adaptive_height: True
                 
-            MDGridLayout:
-                cols: 3
+            MDFloatLayout:
                 size_hint_y: 0.1
-                #md_bg_color: 1, 1, 1, 1
                 pos_hint: {"top": 0.1}
                 spacing: 40
+                padding: 20
 
                 MDFloatingActionButton:
                     icon: 'arrow-left-bold-outline'
@@ -106,17 +129,16 @@
                     icon_color: app.theme_cls.primary_color
                     md_bg_color: (1, 1, 1, 1)
                     elevation: 0
-                    pos_hint: {"center_x": 0.15}
+                    pos_hint: {"center_x": 0.15, "center_y": 0.5}
                     size_hint_x: 0.2
-                    size_hint_y: 1
                     on_press:
                         root.previous_gameweek()
         
                 MDFillRoundFlatButton:
                     text: 'SUBMIT'
-                    pos_hint: {"center_x": 0.5}
-                    size_hint_x: 0.4
-                    size_hint_y: 1
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    size_hint_x: None
+                    width: root.width * 0.35
                     on_press:
                         root.do_bets()
 
@@ -126,9 +148,8 @@
                     icon_color: app.theme_cls.primary_color
                     md_bg_color: (1, 1, 1, 1)
                     elevation: 0
-                    pos_hint: {"center_x": 0.85}
+                    pos_hint: {"center_x": 0.85, "center_y": 0.5}
                     size_hint_x: 0.2
-                    size_hint_y: 1
                     on_press:
                         root.next_gameweek()
 

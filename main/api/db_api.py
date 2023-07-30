@@ -1,44 +1,32 @@
 import requests
 import json
 
-#url = "http://127.0.0.1:5000"
-url = "https://pl-server.onrender.com"
+url = "http://127.0.0.1:5000"
+#url = "https://pl-server.onrender.com"
 
 '''
 USER
 '''
 
-def create_user(username, password):
+def create_user(username, password, password2):
     user = requests.post(url + '/register', 
-                         json={"username": username, "password": password})
-    return json.loads(user.text)
+                         json={"username": username,
+                               "password": password,
+                               "password2": password2})
+    return {"code": user.status_code, **json.loads(user.text)}
 
 def login(username, password):
     request = requests.post(url + '/login', 
                             json={"username": username, "password": password})
-    try:
-        access_token = json.loads(request.text)["access_token"]
-        refresh_token = json.loads(request.text)["refresh_token"]
-        user_id = json.loads(request.text)["user_id"]
-        return [access_token, refresh_token, user_id]
-    except KeyError:
-        return json.loads(request.text)["message"]
-    
-# def update(access_token, user_id, points, position, three_pointers, one_pointers):
-#     request = requests.update(url + f"/update/{user_id}",
-#                               headers = {"Authorization": "Bearer " + access_token},
-#                               json = {
-#                                 "points": points,
-#                                 "position": position,
-#                                 "three_pointes": three_pointers,
-#                                 "one_pointers": one_pointers
-#                               })
-#     return json.loads(request.text)
+    return {"code": request.status_code, **json.loads(request.text)}
 
 def get_all_users(access_token):
     users = requests.get(url + '/get_all',
                          headers={"Authorization": "Bearer " + access_token})
-    return json.loads(users.text)
+    return {"code": users.status_code, "users": json.loads(users.text)}
+
+# print(login("adam", "1234"))
+# print(get_all_users(login('adam', '1234')["access_token"]))
 
 def get_non_fresh_token(refresh_token, username, password):
     request = requests.post(url + '/refresh',
@@ -57,10 +45,16 @@ def my_user_info(access_token, id):
                         headers={"Authorization": "Bearer " + access_token})
     return json.loads(user.text)
 
-def delete_account(access_token, id):
-    delete = requests.delete(url + "/delete",
-                             headers={"Authorization": "Bearer " + access_token})
-    return json.loads(delete.text)
+def user_info_by_pos(access_token, league_pos):
+    user = requests.get(url + '/user_pos',
+                        headers={"Authorization": "Bearer " + access_token},
+                        json={"position": league_pos})
+    return json.loads(user.text)
+
+def first_ten(access_token):
+    user = requests.get(url + '/first-ten',
+                        headers={"Authorization": "Bearer " + access_token})
+    return json.loads(user.text)
 
 def get_by_username(access_token, username):
     user = requests.get(
@@ -68,9 +62,12 @@ def get_by_username(access_token, username):
         headers={"Authorization": "Bearer " + access_token},
         json={"username": username}
         )
-    if user.status_code == 200:
-        return {"status_code": 200, **json.loads(user.text)}
-    return {"status_code": 404}
+    return {"status_code": user.status_code, **json.loads(user.text)}
+
+def delete_account(access_token):
+    delete = requests.delete(url + "/delete",
+                             headers={"Authorization": "Bearer " + access_token})
+    return json.loads(delete.text)
 
 '''
 BETS
@@ -232,3 +229,4 @@ def groups_im_in(access_token):
         headers={"Authorization": "Bearer " + access_token}
         )
     return {"status_code": groups.status_code, **json.loads(groups.text)}
+

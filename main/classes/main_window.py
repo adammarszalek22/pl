@@ -9,8 +9,9 @@ from kivy.uix.screenmanager import NoTransition
 from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
-from kivymd.uix.button import MDFlatButton
+from kivymd.uix.button import MDFlatButton, MDFillRoundFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.gridlayout import MDGridLayout
 
@@ -27,6 +28,71 @@ class MainWindow(Screen):
     spacing = NumericProperty(2)
     dialog = None
 
+    '''
+    NavItem - 'Table'
+    '''
+
+    def users_table(self):
+
+        app = MDApp.get_running_app()
+
+        first10 = first_ten(app.access_token)
+
+        layout = self.ids.main
+        layout.clear_widgets()
+
+        list = ["position", "username", "points", "three_pointers", "one_pointers"]
+        header_grid = MDGridLayout(
+                cols = 5,
+                padding = 5
+            )
+        for i in list:
+            header_grid.add_widget(
+                MDLabel(
+                    text = i.capitalize()
+                )
+            )
+        layout.add_widget(header_grid)
+
+        for i in first10:
+            grid = MDGridLayout(
+                cols = 5,
+                padding = 5
+            )
+            for header in list:
+                grid.add_widget(
+                    MDLabel(
+                        text = str(i[header])
+                        )
+                    )
+            layout.add_widget(grid)
+        
+        me = my_user_info(app.access_token, app.user_id)
+        def add_me():
+            grid = MDGridLayout(
+                cols = 5,
+                padding = 5
+            )
+            for header in list:
+                grid.add_widget(
+                    MDLabel(
+                        text = str(me[header])
+                        )
+                    )
+            layout.add_widget(grid)
+        if me["position"] == 11:
+            add_me()
+        elif me["position"] > 11:
+            layout.add_widget(
+                MDLabel(
+                text = '...'
+                )
+            )
+            add_me()
+    
+    def show_full_table(self, instance):
+        pass
+            
     '''
     NavItem - 'Premier League Table'
     '''
@@ -133,8 +199,6 @@ class MainWindow(Screen):
 
         header = MDLabel(
             text = f'Gameweek {self.gameweek}',
-            size_hint_y = None,
-            height = layout_height / 8,
             halign = 'center'
         )
         self.ids.header.add_widget(header)
@@ -179,7 +243,7 @@ class MainWindow(Screen):
             self.team1 = MyLabel(
                 text = str(pl.teams[pl.matches[self.gameweek][game]["team1"]]["name"]),
                 size_hint = (0.3, None),
-                height = layout_height / 8,
+                height = layout_height / 10,
                 valign = "bottom",
                 halign = "center"
                 )
@@ -188,7 +252,7 @@ class MainWindow(Screen):
             self.goal1 = MyLabel(
                 text = str(pl.matches[self.gameweek][game]["goals1"]),
                 size_hint = (0.1, None),
-                height = layout_height / 8,
+                height = layout_height / 10,
                 valign = "middle",
                 halign = "center"
                 )
@@ -196,7 +260,7 @@ class MainWindow(Screen):
 
             another_layout = MDGridLayout(
                 size_hint_y = None,
-                height = layout_height / 8,
+                height = layout_height / 10,
                 cols = 1,
                 padding = [0, 20, 0, 0]
             )
@@ -209,7 +273,7 @@ class MainWindow(Screen):
             
             another_layout2 = MDGridLayout(
                 size_hint_y = None,
-                height = layout_height / 8,
+                height = layout_height / 10,
                 cols = 1,
                 padding = [0, 20, 0, 0]
             )
@@ -223,7 +287,7 @@ class MainWindow(Screen):
             self.goal2 = MyLabel(
                 text = str(pl.matches[self.gameweek][game]["goals2"]),
                 size_hint = (0.1, None),
-                height = layout_height / 8,
+                height = layout_height / 10,
                 valign = "middle",
                 halign = "center"
                 )
@@ -232,7 +296,7 @@ class MainWindow(Screen):
             self.team2 = MyLabel(
                 text=str(pl.teams[pl.matches[self.gameweek][game]["team2"]]["name"]),
                 size_hint = (0.3, None),
-                height = layout_height / 8,
+                height = layout_height / 10,
                 valign = "middle",
                 halign = "center"
                 )

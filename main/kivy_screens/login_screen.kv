@@ -38,6 +38,8 @@
             text: '1234'
             halign: 'left'
             pos_hint: {"center_x": 0.5, "top": 0.65}
+            on_text_validate:
+                root.do_log_in()
         
         MDRectangleFlatButton:
             id: icon
