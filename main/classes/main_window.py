@@ -8,14 +8,21 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import NoTransition
 from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog
+from kivymd.uix.spinner import MDSpinner
 from kivymd.uix.label import MDLabel
 from kivymd.uix.button import MDFlatButton, MDFillRoundFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.gridlayout import MDGridLayout
+from threading import Thread
 
 from functools import partial
+
+from kivy.metrics import dp
+
+import time
+
 
 class MyLabel(MDLabel):
     pass
@@ -80,6 +87,7 @@ class MainWindow(Screen):
                         )
                     )
             layout.add_widget(grid)
+
         if me["position"] == 11:
             add_me()
         elif me["position"] > 11:
@@ -98,67 +106,50 @@ class MainWindow(Screen):
     '''
 
     def pl_table(self):
-        app = MDApp.get_running_app()
-
-        widget_height = app.root.height / 21  - (self.padding * 2) / 21 - 40/21 - 60/21
 
         self.ids.boxlayout.clear_widgets()
         self.ids.boxlayout2.clear_widgets()
 
         headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
-        headings_layout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
-        headings_layout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
-
-        for i in headings:
-            if i == "":
-                headings_layout.add_widget(MDLabel(text=i,
-                                                size_hint_y = None,
-                                                height = widget_height))
-            elif i == "Club":
-                headings_layout.add_widget(MDLabel(text=i,
-                                                size_hint_y = None,
-                                                height = widget_height,
-                                                size_hint_x = 2))
-            elif i == "Pts":
-                headings_layout2.add_widget(MDLabel(text=i,
-                                                size_hint_y = None,
-                                                height = widget_height,
-                                                bold=True))
-            else:
-                headings_layout2.add_widget(MDLabel(text=i,
-                                                size_hint_y = None,
-                                                height = widget_height))
-                
+        headings_layout = MDGridLayout(cols=2, md_bg_color = (1, 1, 1, 1))
+        headings_layout2 = MDGridLayout(cols=8, md_bg_color = (1, 1, 1, 1))
+        
         self.ids.boxlayout.add_widget(headings_layout)
         self.ids.boxlayout2.add_widget(headings_layout2)
 
+        for i in headings:
+            if i == "":
+                headings_layout.add_widget(MDLabel(text=i))
+            elif i == "Club":
+                headings_layout.add_widget(MDLabel(text=i,
+                                                size_hint_x = 2))
+            elif i == "Pts":
+                headings_layout2.add_widget(MDLabel(text=i,
+                                                bold=True))
+            else:
+                headings_layout2.add_widget(MDLabel(text=i))
+
         position = 1
         for i in pl.positions.keys():
-            gridlayout = MDGridLayout(cols=2, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
-            gridlayout2 = MDGridLayout(cols=8, adaptive_height=True, md_bg_color = (1, 1, 1, 1))
-            gridlayout.add_widget(MDLabel(text=str(position),
-                                          adaptive_height=False,
-                                          size_hint_y = None,
-                                          height = widget_height))
+            # Holds position number and team name
+            gridlayout = MDGridLayout(cols=2, md_bg_color = (1, 1, 1, 1))
+            # Holds the games playes, points, etc. (all the numerical stats)
+            gridlayout2 = MDGridLayout(cols=8, md_bg_color = (1, 1, 1, 1))
+
+            self.ids.boxlayout.add_widget(gridlayout)
+            self.ids.boxlayout2.add_widget(gridlayout2)
+
+            gridlayout.add_widget(MDLabel(text=str(position)))
             gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
-                                          adaptive_height=False,
-                                          size_hint_y = None,
-                                          height = widget_height,
                                           size_hint_x = 2))
             for i2 in pl.positions[i].keys():
                 if i2 == "points":
                     gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
-                                                  size_hint_y = None,
-                                                  height = widget_height,
                                                   bold=True))
                 elif i2 != "id" and i2 != "name": 
                     # We do not need the team id when displaying premier league table.
                     # Name column is already included.
-                    gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
-                                                   size_hint_y = None,
-                                                   height = widget_height))
-            self.ids.boxlayout.add_widget(gridlayout)
-            self.ids.boxlayout2.add_widget(gridlayout2)
+                    gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2])))
             position += 1
 
         self.ids.boxlayout.md_bg_color = '#212121' # app.theme_cls.primary_color
@@ -197,18 +188,23 @@ class MainWindow(Screen):
         layout.clear_widgets()
         layout_height = app.root.height * 1.5
 
-        header = MDLabel(
-            text = f'Gameweek {self.gameweek}',
-            halign = 'center'
-        )
-        self.ids.header.add_widget(header)
+        # header = MDLabel(
+        #     text = f'Gameweek {self.gameweek}',
+        #     halign = 'center'
+        # )
+        # self.ids.header.add_widget(header)
+        self.ids.header_label.text = f'Gameweek {self.gameweek}'
 
+        # Main gridlayout that will hold three other gridlayouts 
         grid = MDGridLayout(
             cols = 3,
             size_hint_y = None,
             adaptive_height = True
         )
         layout.add_widget(grid)
+
+        # Leaving space below widgets to make
+        # keyboard management easier (on a mobile)
         layout.add_widget(
             MDBoxLayout(
                 size_hint_y = None,
@@ -216,13 +212,15 @@ class MainWindow(Screen):
             )
         )
         
+        # For team1 and goal1
         grid_layout1 = MDGridLayout(
             size_hint_y = None,
             adaptive_height = True,
             cols = 2,
             spacing = 10
             )
-    
+
+        # For prediction1 and prediction2
         self.grid_layout2 = MDGridLayout(
             size_hint_y = None,
             adaptive_height = True,
@@ -231,6 +229,7 @@ class MainWindow(Screen):
             padding = [60, 0, 60, 0]
             )
 
+        # For team2 and goal2
         grid_layout3 = MDGridLayout(
             size_hint_y = None,
             adaptive_height = True,
@@ -241,7 +240,7 @@ class MainWindow(Screen):
         for game in self.codes_list:
 
             self.team1 = MyLabel(
-                text = str(pl.teams[pl.matches[self.gameweek][game]["team1"]]["name"]),
+                text = str(pl.teams[pl.matches[self.gameweek][game]["team1"]]["name"]), # team name
                 size_hint = (0.3, None),
                 height = layout_height / 10,
                 valign = "bottom",
@@ -250,7 +249,7 @@ class MainWindow(Screen):
             grid_layout1.add_widget(self.team1)
 
             self.goal1 = MyLabel(
-                text = str(pl.matches[self.gameweek][game]["goals1"]),
+                text = str(pl.matches[self.gameweek][game]["goals1"]), # goals scored by team1
                 size_hint = (0.1, None),
                 height = layout_height / 10,
                 valign = "middle",
@@ -258,6 +257,8 @@ class MainWindow(Screen):
                 )
             grid_layout1.add_widget(self.goal1)
 
+            # Putting textfields in a grid layout so that it 
+            # is easier to align with other widgets
             another_layout = MDGridLayout(
                 size_hint_y = None,
                 height = layout_height / 10,
@@ -271,6 +272,8 @@ class MainWindow(Screen):
             another_layout.add_widget(self.guess1)
             self.grid_layout2.add_widget(another_layout)
             
+            # Putting textfields in a grid layout so that it 
+            # is easier to align with other widgets
             another_layout2 = MDGridLayout(
                 size_hint_y = None,
                 height = layout_height / 10,
@@ -285,7 +288,7 @@ class MainWindow(Screen):
             self.grid_layout2.add_widget(another_layout2)
 
             self.goal2 = MyLabel(
-                text = str(pl.matches[self.gameweek][game]["goals2"]),
+                text = str(pl.matches[self.gameweek][game]["goals2"]), # goals scored by team2
                 size_hint = (0.1, None),
                 height = layout_height / 10,
                 valign = "middle",
@@ -294,7 +297,7 @@ class MainWindow(Screen):
             grid_layout3.add_widget(self.goal2)
 
             self.team2 = MyLabel(
-                text=str(pl.teams[pl.matches[self.gameweek][game]["team2"]]["name"]),
+                text=str(pl.teams[pl.matches[self.gameweek][game]["team2"]]["name"]), # team2 name
                 size_hint = (0.3, None),
                 height = layout_height / 10,
                 valign = "middle",
@@ -314,6 +317,7 @@ class MainWindow(Screen):
 
         self.when_text_validate()
         self.display_previous_guesses()
+        print('don')
     
     def when_text_validate(self):
 

@@ -12,12 +12,125 @@
 <MainWindow>
     name: 'MainWindow' 
     on_enter:
+        #root.run_spinner()
         root.pl_table()
-        root.bets()
         root.users_table()
+        root.bets()
 
     MDBottomNavigation:
         id: bottom_nav
+
+        MDBottomNavigationItem:
+            name: 'Premier League Table'
+            text: 'PL Table'
+            icon: 'view-list'
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                md_bg_color: 0, 0, 0, 0
+                size: root.width, root.height
+                padding: root.padding
+                orientation: 'horizontal'
+
+                MDBoxLayout:
+                    id: boxlayout
+                    orientation: 'vertical'
+                    spacing: root.spacing
+                    md_bg_color: 1, 1, 1, 1
+                    size_hint_y: 1
+                
+                ScrollView:
+                    do_scroll_y: False
+                    do_scroll_x: True
+                    bar_color: 1, 1, 1, 1
+                    bar_inactive_color: 0.8, 0.8, 0.8, 1
+                    bar_color: 0.8, 0.8, 0.8, 1
+
+                    MDBoxLayout:
+                        id: boxlayout2
+                        orientation: 'vertical'
+                        spacing: root.spacing
+                        size_hint_x: 1.5
+
+        MDBottomNavigationItem:
+            name: 'Post Bet'
+            text: 'Your predictions'
+            icon: 'notebook-edit'
+
+            MDBoxLayout:
+                orientation: 'vertical'
+
+                MDBoxLayout:
+                    id: header
+                    orientation: 'vertical'
+                    md_bg_color: 0, 0, 0, 0
+                    size_hint_y: 0.15
+                    pos_hint: {"top": 1}
+                    padding: 5
+
+                    MDLabel:
+                        id: header_label
+                        text: ''
+                        halign: 'center'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    md_bg_color: 0, 0, 0, 0
+                    size_hint_y: 0.75
+                    pos_hint: {"top": 0.85}
+                    padding: 5
+
+                    ScrollView:
+                        id: the_scroll
+                        do_scroll_x: False
+                        do_scroll_y: True
+                        effect_cls: 'DampedScrollEffect'
+
+                        MDBoxLayout:
+                            id: my_main_layout
+                            padding: 20
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            adaptive_height: True
+                    
+                MDFloatLayout:
+                    size_hint_y: 0.1
+                    pos_hint: {"top": 0.1}
+                    spacing: 40
+                    padding: 20
+                    md_bg_color: (1, 1, 1, 1)
+
+                    MDFloatingActionButton:
+                        icon: 'arrow-left-bold-outline'
+                        type: "small"
+                        theme_icon_color: "Custom"
+                        icon_color: app.theme_cls.primary_color
+                        md_bg_color: (1, 1, 1, 1)
+                        elevation: 0
+                        pos_hint: {"center_x": 0.15, "center_y": 0.5}
+                        size_hint_x: 0.2
+                        on_press:
+                            root.previous_gameweek()
+            
+                    MDFillRoundFlatButton:
+                        text: 'SUBMIT'
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                        size_hint_x: None
+                        width: root.width * 0.35
+                        on_press:
+                            root.do_bets()
+
+                    MDFloatingActionButton:
+                        icon: 'arrow-right-bold-outline'
+                        type: "small"
+                        theme_icon_color: "Custom"
+                        icon_color: app.theme_cls.primary_color
+                        md_bg_color: (1, 1, 1, 1)
+                        elevation: 0
+                        pos_hint: {"center_x": 0.85, "center_y": 0.5}
+                        size_hint_x: 0.2
+                        on_press:
+                            root.next_gameweek()
 
         MDBottomNavigationItem:
             name: 'Users Table'
@@ -38,6 +151,7 @@
                 pos_hint: {"top": 0.1}
                 spacing: 40
                 padding: 20
+                md_bg_color: (1, 1, 1, 1)
 
                 MDFillRoundFlatButton:
                     text: 'Show full table'
@@ -46,112 +160,6 @@
                     width: root.width * 0.35
                     on_press:
                         root.show_full_table()
-
-
-        MDBottomNavigationItem:
-            name: 'Premier League Table'
-            text: 'PL Table'
-            icon: 'view-list'
-
-            MDBoxLayout:
-                orientation: 'vertical'
-                md_bg_color: 0, 0, 0, 0
-                size: root.width, root.height
-                padding: root.padding
-
-                MDBoxLayout:
-                    id: main_box
-                    orientation: 'horizontal'
-                    adaptive_height: True
-                    size_hint_y: None
-
-                    MDBoxLayout:
-                        id: boxlayout
-                        orientation: 'vertical'
-                        adaptive_height: True
-                        spacing: root.spacing
-                        md_bg_color: 1, 1, 1, 1
-                    
-                    ScrollView:
-                        do_scroll_y: False
-                        do_scroll_x: True
-                        bar_color: 1, 1, 1, 1
-                        bar_inactive_color: 1, 1, 1, 1
-
-                        MDBoxLayout:
-                            id: boxlayout2
-                            orientation: 'vertical'
-                            spacing: root.spacing
-                            size_hint_x: 1.5
-
-        MDBottomNavigationItem:
-            name: 'Post Bet'
-            text: 'Your predictions'
-            icon: 'notebook-edit'
-
-            MDBoxLayout:
-                id: header
-                orientation: 'vertical'
-                md_bg_color: 0, 0, 0, 0
-                size_hint_y: 0.15
-                pos_hint: {"top": 1}
-                padding: 5
-
-            MDBoxLayout:
-                orientation: 'vertical'
-                md_bg_color: 0, 0, 0, 0
-                size_hint_y: 0.75
-                pos_hint: {"top": 0.85}
-                padding: 5
-
-                ScrollView:
-                    id: the_scroll
-                    do_scroll_x: False
-                    do_scroll_y: True
-                    effect_cls: 'DampedScrollEffect'
-
-                    MDBoxLayout:
-                        id: my_main_layout
-                        padding: 20
-                        orientation: 'vertical'
-                        size_hint_y: None
-                        adaptive_height: True
-                
-            MDFloatLayout:
-                size_hint_y: 0.1
-                pos_hint: {"top": 0.1}
-                spacing: 40
-                padding: 20
-
-                MDFloatingActionButton:
-                    icon: 'arrow-left-bold-outline'
-                    type: "small"
-                    icon_color: app.theme_cls.primary_color
-                    md_bg_color: (1, 1, 1, 1)
-                    elevation: 0
-                    pos_hint: {"center_x": 0.15, "center_y": 0.5}
-                    size_hint_x: 0.2
-                    on_press:
-                        root.previous_gameweek()
-        
-                MDFillRoundFlatButton:
-                    text: 'SUBMIT'
-                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                    size_hint_x: None
-                    width: root.width * 0.35
-                    on_press:
-                        root.do_bets()
-
-                MDFloatingActionButton:
-                    icon: 'arrow-right-bold-outline'
-                    type: "small"
-                    icon_color: app.theme_cls.primary_color
-                    md_bg_color: (1, 1, 1, 1)
-                    elevation: 0
-                    pos_hint: {"center_x": 0.85, "center_y": 0.5}
-                    size_hint_x: 0.2
-                    on_press:
-                        root.next_gameweek()
 
         MDBottomNavigationItem:
             name: 'More'
