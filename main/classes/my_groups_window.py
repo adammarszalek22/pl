@@ -34,7 +34,10 @@ class MyGroupsWindow(Screen):
                 )
             
             box_layout.add_widget(self.heading_label)
-            positions = group["positions"].split(' ')
+            try:
+                positions = group["positions"].split(' ')
+            except AttributeError:
+                    positions = []
 
             headings = ["Position", "Username", "Points", "Three pointers", "One pointers"]
             for heading in headings:

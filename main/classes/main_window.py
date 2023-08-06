@@ -61,42 +61,46 @@ class MainWindow(Screen):
             )
         layout.add_widget(header_grid)
 
-        for i in first10:
-            grid = MDGridLayout(
-                cols = 5,
-                padding = 5
-            )
-            for header in list:
-                grid.add_widget(
-                    MDLabel(
-                        text = str(i[header])
-                        )
-                    )
-            layout.add_widget(grid)
-        
-        me = my_user_info(app.access_token, app.user_id)
-        def add_me():
-            grid = MDGridLayout(
-                cols = 5,
-                padding = 5
-            )
-            for header in list:
-                grid.add_widget(
-                    MDLabel(
-                        text = str(me[header])
-                        )
-                    )
-            layout.add_widget(grid)
+        try:
 
-        if me["position"] == 11:
-            add_me()
-        elif me["position"] > 11:
-            layout.add_widget(
-                MDLabel(
-                text = '...'
+            for i in first10:
+                grid = MDGridLayout(
+                    cols = 5,
+                    padding = 5
                 )
-            )
-            add_me()
+                for header in list:
+                    grid.add_widget(
+                        MDLabel(
+                            text = str(i[header])
+                            )
+                        )
+                layout.add_widget(grid)
+            
+            me = my_user_info(app.access_token, app.user_id)
+            def add_me():
+                grid = MDGridLayout(
+                    cols = 5,
+                    padding = 5
+                )
+                for header in list:
+                    grid.add_widget(
+                        MDLabel(
+                            text = str(me[header])
+                            )
+                        )
+                layout.add_widget(grid)
+
+            if me["position"] == 11:
+                add_me()
+            elif me["position"] > 11:
+                layout.add_widget(
+                    MDLabel(
+                    text = '...'
+                    )
+                )
+                add_me()
+        except KeyError:
+            pass
     
     def show_full_table(self, instance):
         pass
@@ -317,7 +321,6 @@ class MainWindow(Screen):
 
         self.when_text_validate()
         self.display_previous_guesses()
-        print('don')
     
     def when_text_validate(self):
 

@@ -31,6 +31,8 @@ class WindowManager(ScreenManager):
             self.current = 'MainWindow'
         elif self.current == 'MyGroupsWindow':
             self.current = 'GroupsWindow'
+        elif self.current == 'ViewOtherScoreWindow':
+            self.current = 'MainWindow'
 
 class AwesomeApp(MDApp):
     def build(self):
