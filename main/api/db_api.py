@@ -228,5 +228,5 @@ def groups_im_in(access_token):
         url + '/groups_im_in',
         headers={"Authorization": "Bearer " + access_token}
         )
-    return {"status_code": groups.status_code, **json.loads(groups.text)}
+    return {"status_code": groups.status_code, "list": json.loads(groups.text)}
 

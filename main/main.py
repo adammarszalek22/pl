@@ -21,6 +21,7 @@ from classes.main_window import MainWindow
 from classes.groups_window import GroupsWindow
 from classes.view_score_window import ViewScoreWindow
 from classes.my_groups_window import MyGroupsWindow
+from classes.groups_im_part_of_window import GroupsImPartOf
 from classes.view_other_score_window import ViewOtherScoreWindow
 
 class WindowManager(ScreenManager):
@@ -30,6 +31,8 @@ class WindowManager(ScreenManager):
         elif self.current == 'ViewScoreWindow':
             self.current = 'MainWindow'
         elif self.current == 'MyGroupsWindow':
+            self.current = 'GroupsWindow'
+        elif self.current == 'GroupsImPartOf':
             self.current = 'GroupsWindow'
         elif self.current == 'ViewOtherScoreWindow':
             self.current = 'MainWindow'

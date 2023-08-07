@@ -9,15 +9,15 @@ from kivy.clock import Clock
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import NoTransition
 
-class MyGroupsWindow(Screen):
+class GroupsImPartOf(Screen):
 
-    def display_my_groups(self):
+    def display_the_groups(self):
 
         self.ids.carousel.clear_widgets()
         app = MDApp.get_running_app()
-        my_group = my_groups(app.access_token)
+        groups = groups_im_in(app.access_token)
 
-        if my_group["list"] == None:
+        if groups["list"] == None:
              self.ids.carousel.add_widget(
                   MDBoxLayout(
                     MDLabel(
@@ -28,7 +28,7 @@ class MyGroupsWindow(Screen):
              )
              return 0
 
-        for group in my_group["list"]:  
+        for group in groups["list"]:  
 
             box_layout = MDBoxLayout(orientation = 'vertical', padding = 30, spacing = 5)
             

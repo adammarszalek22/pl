@@ -1,0 +1,23 @@
+#: include ./kv_others/top_bar.kv
+
+<GroupsImPartOf>
+    name: 'GroupsImPartOf'
+    on_enter: root.display_the_groups()
+
+    MDBoxLayout:
+        md_bg_color: '#e6e7e8'
+        size_hint: None, None
+        size: root.width, root.height * 0.09
+        pos_hint: {"top": 1}
+        TopBar:
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        size_hint: None, None
+        size: root.width, root.height * 0.91
+        pos_hint: {"top": 0.91}
+        padding: 20
+        spacing: 5
+
+        MDCarousel:
+            id: carousel
