@@ -53,7 +53,7 @@
 
         MDBottomNavigationItem:
             name: 'Post Bet'
-            text: 'Your predictions'
+            text: 'Predictions'
             icon: 'notebook-edit'
 
             MDBoxLayout:
@@ -143,6 +143,38 @@
                 size_hint_y: 0.9
                 pos_hint: {"top": 1}
                 padding: root.padding
+
+                MDGridLayout:
+                    id: header
+                    cols: 5
+                    padding: 5
+                    size_hint_y: None
+                    height: root.height * 0.1
+
+                    MDLabel:
+                        text: "Position"
+                        font_size: "12dp"
+
+                    MDLabel:
+                        text: "Username"
+                        font_size: "12dp"
+
+                    MDLabel:
+                        text: "Points"
+                        font_size: "12dp"
+
+                    MDLabel:
+                        text: "3-pointers"
+                        font_size: "12dp"
+
+                    MDLabel:
+                        text: "1-pointers"
+                        font_size: "12dp"
+
+                MDGridLayout:
+                    id: grid
+                    cols: 5
+                    padding: 5
             
             MDFloatLayout:
                 id: float
@@ -199,14 +231,6 @@
                     halign: 'left'
                     on_release:
                         app.root.current = 'ViewOtherScoreWindow'
-                
-                MoreButton:
-                    text: 'Settings'
-                    icon: 'account-settings'
-                    size_hint_x: .4
-                    size_hint_y: None
-                    height: root.height / 10
-                    halign: 'left'
 
                 MoreButton:
                     text: 'Log out'
@@ -217,14 +241,6 @@
                     halign: 'left'
                     on_release:
                         root.logout()
-                
-                MoreButton:
-                    text: 'Help'
-                    icon: 'help'
-                    size_hint_x: .4
-                    size_hint_y: None
-                    height: root.height / 10
-                    halign: 'left'
                 
                 MDLabel:
 

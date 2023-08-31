@@ -45,59 +45,39 @@ class MainWindow(Screen):
 
         first10 = first_ten(app.access_token)
 
-        layout = self.ids.main
-        layout.clear_widgets()
-
         list = ["position", "username", "points", "three_pointers", "one_pointers"]
-        header_grid = MDGridLayout(
-                cols = 5,
-                padding = 5
-            )
-        for i in list:
-            header_grid.add_widget(
-                MDLabel(
-                    text = i.capitalize()
-                )
-            )
-        layout.add_widget(header_grid)
+        grid = self.ids.grid
+        grid.clear_widgets()
 
         try:
-
             for i in first10:
-                grid = MDGridLayout(
-                    cols = 5,
-                    padding = 5
-                )
                 for header in list:
-                    grid.add_widget(
-                        MDLabel(
+                    self.label = MDLabel(
                             text = str(i[header])
                             )
-                        )
-                layout.add_widget(grid)
+                    self.label.font_size = "12dp"
+                    grid.add_widget(self.label)
             
             me = my_user_info(app.access_token, app.user_id)
             def add_me():
-                grid = MDGridLayout(
-                    cols = 5,
-                    padding = 5
-                )
                 for header in list:
-                    grid.add_widget(
-                        MDLabel(
-                            text = str(me[header])
+                    self.label = MDLabel(
+                            text = str(i[header])
                             )
-                        )
-                layout.add_widget(grid)
+                    self.label.font_size = "12dp"
+                    grid.add_widget(self.label)
 
             if me["position"] == 11:
                 add_me()
             elif me["position"] > 11:
-                layout.add_widget(
+                grid.add_widget(
                     MDLabel(
-                    text = '...'
+                    text = '...',
+                    font_size = "12dp"
                     )
                 )
+                for i in range(4):
+                    grid.add_widget(MDLabel())
                 add_me()
         except KeyError:
             pass
@@ -395,20 +375,23 @@ class MainWindow(Screen):
             guess2 = self.codes[code]["guess2"].text
             if guess1 == "":
                 self.codes[code]["guess1"].text = "0"
+                guess1 = 0
             if guess2 == "":
                 self.codes[code]["guess2"].text = "0"
+                guess2 = 0
             matches.append(code)
             list_guess1.append(guess1)
             list_guess2.append(guess2)
 
         update_bets = update_multiple_bets(str(app.access_token), matches, list_guess1, list_guess2)
+        print(update_bets)
 
         if update_bets["status_code"] == 200:
-            self.open_dialog("Your predictions were submitted successfully!")
+            self.open_dialog("Your predictions were submitted successfully!", "Submitted")
         elif update_bets["status_code"] == 405:
-            self.open_dialog("Cannot create/update predictions once the gameweek has started.")
+            self.open_dialog("Cannot create/update predictions once the gameweek has started.", "Failed")
     
-    def open_dialog(self, message):
+    def open_dialog(self, message, title):
 
         app = MDApp.get_running_app()
         if not self.dialog:
@@ -418,7 +401,7 @@ class MainWindow(Screen):
                         text_color=app.theme_cls.primary_color,
                     )
             self.dialog = MDDialog(
-                title="Name your league",
+                title='',
                 type='custom',
                 content_cls = BetDialog(),
                 buttons=[
@@ -427,6 +410,7 @@ class MainWindow(Screen):
             )
             okay_button.bind(on_release=self.exit_dialog)
         
+        self.dialog.title = title
         self.dialog.content_cls.children[0].text = message
         self.dialog.open()
     

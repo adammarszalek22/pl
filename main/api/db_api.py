@@ -144,10 +144,11 @@ def update_multiple_bets(access_token, list_match_id, list_goal1, list_goal2):
             "goal2": list_goal2
             }
         )
-    if new_bets.status_code == 405:
-        return {"status_code": 405}
-    else:
-        return {"status_code": 200, **json.loads(new_bets.text)}
+    # if new_bets.status_code == 405:
+    #     return {"status_code": 405}
+    # else:
+    #     return {"status_code": 200, **json.loads(new_bets.text)}
+    return {"status_code": new_bets.status_code, **json.loads(new_bets.text)}
 
 #a = login("adam", "1234")[0]
 #post_bet(a, "2293058", 3, 4, 1)

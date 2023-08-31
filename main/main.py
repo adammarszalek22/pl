@@ -23,19 +23,39 @@ from classes.view_score_window import ViewScoreWindow
 from classes.my_groups_window import MyGroupsWindow
 from classes.groups_im_part_of_window import GroupsImPartOf
 from classes.view_other_score_window import ViewOtherScoreWindow
+from kivy.core.window import Window
+
 
 class WindowManager(ScreenManager):
+    def __init__(self, **kwargs):
+        super(WindowManager, self).__init__(**kwargs)
+        self.prev_screen = {
+            'GroupsWindow': 'MainWindow',
+            'ViewScoreWindow': 'MainWindow',
+            'MyGroupsWindow': 'GroupsWindow',
+            'GroupsImPartOf': 'GroupsWindow',
+            'ViewOtherScoreWindow': 'MainWindow'
+        }
+        Window.bind(on_keyboard=self.keys)
+    def keys(self, window, key, *largs):
+        if key == 27:
+            self.go_back()
+            return True
     def go_back(self):
-        if self.current == 'GroupsWindow':
-            self.current = 'MainWindow'
-        elif self.current == 'ViewScoreWindow':
-            self.current = 'MainWindow'
-        elif self.current == 'MyGroupsWindow':
-            self.current = 'GroupsWindow'
-        elif self.current == 'GroupsImPartOf':
-            self.current = 'GroupsWindow'
-        elif self.current == 'ViewOtherScoreWindow':
-            self.current = 'MainWindow'
+        try:
+            self.current = self.prev_screen[self.current]
+        except KeyError:
+            pass
+        # if self.current == 'GroupsWindow':
+        #     self.current = 'MainWindow'
+        # elif self.current == 'ViewScoreWindow':
+        #     self.current = 'MainWindow'
+        # elif self.current == 'MyGroupsWindow':
+        #     self.current = 'GroupsWindow'
+        # elif self.current == 'GroupsImPartOf':
+        #     self.current = 'GroupsWindow'
+        # elif self.current == 'ViewOtherScoreWindow':
+        #     self.current = 'MainWindow'
 
 class AwesomeApp(MDApp):
     def build(self):
