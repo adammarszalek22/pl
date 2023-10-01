@@ -12,7 +12,7 @@ from kivy.uix.screenmanager import NoTransition
 
 
 class CreateLeagueContent(MDBoxLayout):
-    pass
+    pass 
 
 
 class SuccessContent(MDBoxLayout):

@@ -136,7 +136,7 @@ class MainWindow(Screen):
                     gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2])))
             position += 1
 
-        self.ids.boxlayout.md_bg_color = '#212121' # app.theme_cls.primary_color
+        self.ids.boxlayout.md_bg_color = (1, 1, 1, 1)#'#212121' # app.theme_cls.primary_color
     
     '''
     NavItem - 'PostBet'
