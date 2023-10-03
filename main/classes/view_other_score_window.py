@@ -56,11 +56,12 @@ class ViewOtherScoreWindow(Screen):
         self.username = self.dialog.content_cls.children[0].text
         user_info = get_by_username(app.access_token, self.username)
 
-        if user_info["status_code"] == 200:
+        if user_info["status_code"] == 200 and "username" in user_info.keys():
             self.ids.username.text = str(user_info["username"])
             self.ids.position.text = str(user_info["position"])
             self.ids.points2.text = str(user_info["points"])
             self.ids.three_pointers.text = str(user_info["three_pointers"])
             self.ids.one_pointers.text = str(user_info["one_pointers"])
-
-        self.exit_dialog(self)
+            self.exit_dialog(self)
+        else:
+            self.dialog.content_cls.children[0].error = True
