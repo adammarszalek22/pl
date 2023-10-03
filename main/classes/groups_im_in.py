@@ -6,12 +6,14 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.label import MDLabel
 from kivy.clock import Clock
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.screenmanager import NoTransition
+from kivy.uix.screenmanager import Screen
 
-class GroupsImPartOf(Screen):
+class GroupsImIn(Screen):
 
     def display_the_groups(self):
+
+        if self.ids.carousel.children:
+            return
 
         self.ids.carousel.clear_widgets()
         app = MDApp.get_running_app()
@@ -62,7 +64,7 @@ class GroupsImPartOf(Screen):
 
                 get_user = my_user_info(app.access_token, user)
 
-                
+
                 self.position = MDLabel(text = str(position))
                 self.username = MDLabel(text = get_user["username"])
                 self.points = MDLabel(text = str(get_user["points"]))

@@ -13,6 +13,9 @@ class MyGroupsWindow(Screen):
 
     def display_my_groups(self):
 
+        if self.ids.carousel.children:
+            return
+
         self.ids.carousel.clear_widgets()
         app = MDApp.get_running_app()
         my_group = my_groups(app.access_token)

@@ -3,25 +3,16 @@ from api.db_api import *
 from db import *
 
 from kivy.properties import NumericProperty
-from kivy.clock import Clock
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.screenmanager import NoTransition
+from kivy.uix.screenmanager import Screen
 from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.spinner import MDSpinner
 from kivymd.uix.label import MDLabel
-from kivymd.uix.button import MDFlatButton, MDFillRoundFlatButton
+from kivymd.uix.button import MDFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.gridlayout import MDGridLayout
-from threading import Thread
 
 from functools import partial
-
-from kivy.metrics import dp
-
-import time
 
 
 class MyLabel(MDLabel):
@@ -38,10 +29,19 @@ class MainWindow(Screen):
     spacing = NumericProperty(2)
     dialog = None
     table_dialog = None
+    colour = (0, 0, 1, 1)
 
     '''
     NavItem - 'Table'
     '''
+
+    def _add_me(self, grid, me):
+        for header in list:
+            self.label = MDLabel(
+                    text = str(me[header])
+                    )
+            self.label.font_size = "12dp"
+            grid.add_widget(self.label)
 
     def users_table(self):
 
@@ -50,43 +50,44 @@ class MainWindow(Screen):
         # getting the 10 best users
         first10 = first_ten(app.access_token)
 
+        # headers/keys
         list = ["position", "username", "points", "three_pointers", "one_pointers"]
+
+        # main container
         grid = self.ids.grid
         grid.clear_widgets()
 
-        try:
-            for i in first10:
-                for header in list:
-                    self.label = MDLabel(
-                            text = str(i[header])
-                            )
-                    self.label.font_size = "12dp"
-                    grid.add_widget(self.label)
-            
-            me = my_user_info(app.access_token, app.user_id)
-            self.my_pos = int(me["position"])
-            def _add_me():
-                for header in list:
-                    self.label = MDLabel(
-                            text = str(me[header])
-                            )
-                    self.label.font_size = "12dp"
-                    grid.add_widget(self.label)
+        # getting the actual user and their position
+        me = my_user_info(app.access_token, app.user_id)
+        self.my_pos = int(me["position"])
 
-            if me["position"] == 11:
-                _add_me()
-            elif me["position"] > 11:
-                grid.add_widget(
-                    MDLabel(
-                    text = '...',
-                    font_size = "12dp"
-                    )
+        # adding the 10 users to the table
+        for i in first10:
+            if i["username"] == me["username"]:
+                for header in list:
+                    self.label = MDLabel(text = str(i[header]), theme_text_color = 'Custom', text_color = self.colour)
+                    self.label.font_size = "12dp"
+                    grid.add_widget(self.label)
+                continue
+            for header in list:
+                self.label = MDLabel(text = str(i[header]))
+                self.label.font_size = "12dp"
+                grid.add_widget(self.label)
+       
+        # if the user is 11th in the table then we add him
+        if me["position"] == 11:
+            self._add_me(grid, me)
+        # else we leave one row empty ('...') and add the user on next line
+        elif me["position"] > 11:
+            grid.add_widget(
+                MDLabel(
+                text = '...',
+                font_size = "12dp"
                 )
-                for j in range(4):
-                    grid.add_widget(MDLabel())
-                _add_me()
-        except KeyError:
-            pass
+            )
+            for j in range(4):
+                grid.add_widget(MDLabel())
+            self._add_me(grid, me)
     
     def show_full(self):
         app = MDApp.get_running_app()
@@ -102,15 +103,14 @@ class MainWindow(Screen):
 
 
             for i, user in enumerate(users):
-                colour = (0, 0, 1, 1)
 
                 self.headers = {}
 
-                self.headers["position"] = MDLabel(text = str(i + 1), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
-                self.headers["username"] = MDLabel(text = user["username"], size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
-                self.headers["points"] = MDLabel(text = str(user["points"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
-                self.headers["three_pointers"] = MDLabel(text = str(user["three_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
-                self.headers["one_pointers"] = MDLabel(text = str(user["one_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
+                self.headers["position"] = MDLabel(text = str(i + 1), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
+                self.headers["username"] = MDLabel(text = user["username"], size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
+                self.headers["points"] = MDLabel(text = str(user["points"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
+                self.headers["three_pointers"] = MDLabel(text = str(user["three_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
+                self.headers["one_pointers"] = MDLabel(text = str(user["one_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
 
                 for key in self.headers.keys():
                     self.headers[key].font_size = '12dp'
