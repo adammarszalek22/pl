@@ -64,7 +64,9 @@ class CreateUser(Screen):
     def change_screen(self, dt):
 
         if self.is_thread_finished == 1:
-            self.manager.transition = NoTransition()
+            self.manager.get_screen('MainWindow').bets()
+            self.manager.get_screen('MainWindow').pl_table()
+            self.manager.get_screen('MainWindow').users_table()
             self.manager.current = 'MainWindow'
             self.ids.spinner.active = False
             self.is_thread_finished = 0
