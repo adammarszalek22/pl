@@ -53,16 +53,32 @@ class MyGroupsWindow(Screen):
 
             headings = ["Position", "Username", "Points", "Three pointers", "One pointers"]
             for heading in headings:
-                grid_layout.add_widget(MDLabel(text = heading))
+                self._label = MDLabel(text = heading)
+                self._label.font_size = '12dp'
+                grid_layout.add_widget(self._label)
 
             position = 1
             for user in positions:
                 get_user = my_user_info(app.access_token, user)
-                grid_layout.add_widget(MDLabel(text = str(position)))
-                grid_layout.add_widget(MDLabel(text = get_user["username"]))
-                grid_layout.add_widget(MDLabel(text = str(get_user["points"])))
-                grid_layout.add_widget(MDLabel(text = str(get_user["three_pointers"])))
-                grid_layout.add_widget(MDLabel(text = str(get_user["one_pointers"])))
+
+                self.position = MDLabel(text = str(position))
+                self.username = MDLabel(text = get_user["username"])
+                self.points = MDLabel(text = str(get_user["points"]))
+                self.three_pointers = MDLabel(text = str(get_user["three_pointers"]))
+                self.one_pointers = MDLabel(text = str(get_user["one_pointers"]))
+
+                self.position.font_size = '12dp'
+                self.username.font_size = '12dp'
+                self.points.font_size = '12dp'
+                self.three_pointers.font_size = '12dp'
+                self.one_pointers.font_size = '12dp'
+
+
+                grid_layout.add_widget(self.position)
+                grid_layout.add_widget(self.username)
+                grid_layout.add_widget(self.points)
+                grid_layout.add_widget(self.three_pointers)
+                grid_layout.add_widget(self.one_pointers)
                 position += 1
 
             box_layout.add_widget(grid_layout)
