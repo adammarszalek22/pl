@@ -9,12 +9,48 @@
     MDLabel:
         text: ''
 
+<GlobalTable>
+    orientation: 'vertical'
+    spacing: "12dp"
+    size_hint_y: None
+    height: "400dp"
+
+    ScrollView:
+        do_scroll_y: True
+        bar_width: 5
+
+        MDGridLayout:
+            cols: 5
+            size_hint_y: None
+            adaptive_height: True
+
+            MDLabel:
+                text: "Position"
+                font_size: "12dp"
+                adaptive_height: True
+
+            MDLabel:
+                text: "Username"
+                font_size: "12dp"
+                adaptive_height: True
+
+            MDLabel:
+                text: "Points"
+                font_size: "12dp"
+                adaptive_height: True
+
+            MDLabel:
+                text: "3-pointers"
+                font_size: "12dp"
+                adaptive_height: True
+
+            MDLabel:
+                text: "1-pointers"
+                font_size: "12dp"
+                adaptive_height: True
+
 <MainWindow>
     name: 'MainWindow' 
-    on_enter:
-        root.bets()
-        root.pl_table()
-        root.users_table()
 
     MDBottomNavigation:
         id: bottom_nav
@@ -180,7 +216,7 @@
                     size_hint_x: None
                     width: root.width * 0.35
                     on_press:
-                        root.show_full_table()
+                        root.show_full()
 
         MDBottomNavigationItem:
             name: 'More'
@@ -232,6 +268,16 @@
                     on_release:
                         root.logout()
                 
+                MoreButton:
+                    text: 'Delete my account'
+                    icon: 'logout'
+                    size_hint_x: .4
+                    size_hint_y: None
+                    height: root.height / 10
+                    halign: 'left'
+                    on_release:
+                        root.delete_account()
+
                 MDLabel:
 
                 MDLabel:

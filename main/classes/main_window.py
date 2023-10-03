@@ -30,10 +30,14 @@ class MyLabel(MDLabel):
 class BetDialog(MDBoxLayout):
     pass
 
+class GlobalTable(MDBoxLayout):
+    pass
+
 class MainWindow(Screen):
     padding = NumericProperty(40)
     spacing = NumericProperty(2)
     dialog = None
+    table_dialog = None
 
     '''
     NavItem - 'Table'
@@ -43,6 +47,7 @@ class MainWindow(Screen):
 
         app = MDApp.get_running_app()
 
+        # getting the 10 best users
         first10 = first_ten(app.access_token)
 
         list = ["position", "username", "points", "three_pointers", "one_pointers"]
@@ -59,16 +64,17 @@ class MainWindow(Screen):
                     grid.add_widget(self.label)
             
             me = my_user_info(app.access_token, app.user_id)
-            def add_me():
+            self.my_pos = int(me["position"])
+            def _add_me():
                 for header in list:
                     self.label = MDLabel(
-                            text = str(i[header])
+                            text = str(me[header])
                             )
                     self.label.font_size = "12dp"
                     grid.add_widget(self.label)
 
             if me["position"] == 11:
-                add_me()
+                _add_me()
             elif me["position"] > 11:
                 grid.add_widget(
                     MDLabel(
@@ -76,14 +82,61 @@ class MainWindow(Screen):
                     font_size = "12dp"
                     )
                 )
-                for i in range(4):
+                for j in range(4):
                     grid.add_widget(MDLabel())
-                add_me()
+                _add_me()
         except KeyError:
             pass
     
-    def show_full_table(self, instance):
-        pass
+    def show_full(self):
+        app = MDApp.get_running_app()
+
+        if not self.table_dialog:
+
+            self.box = GlobalTable()
+            self.scroll_box = self.box.children[0].children[0]
+
+            all_users = get_all_users(app.access_token)
+            users = [v for v in sorted(all_users['users'], key = lambda item: item['position'])]
+
+
+
+            for i, user in enumerate(users):
+                colour = (0, 0, 1, 1)
+
+                self.headers = {}
+
+                self.headers["position"] = MDLabel(text = str(i + 1), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
+                self.headers["username"] = MDLabel(text = user["username"], size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
+                self.headers["points"] = MDLabel(text = str(user["points"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
+                self.headers["three_pointers"] = MDLabel(text = str(user["three_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
+                self.headers["one_pointers"] = MDLabel(text = str(user["one_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = colour if self.my_pos == i + 1 else None)
+
+                for key in self.headers.keys():
+                    self.headers[key].font_size = '12dp'
+                    self.scroll_box.add_widget(self.headers[key])
+
+            okay_button = MDFlatButton(
+                        text="Back",
+                        theme_text_color="Custom",
+                        text_color=app.theme_cls.primary_color,
+                    )
+            
+            self.table_dialog = MDDialog(
+                title='',
+                type='custom',
+                content_cls = self.box,
+                buttons=[
+                    okay_button
+                ]
+            )
+            okay_button.bind(on_release=self.exit_full_table)
+            
+        self.table_dialog.open()
+    
+    def exit_full_table(self, instance):
+
+        self.table_dialog.dismiss()
             
     '''
     NavItem - 'Premier League Table'
@@ -430,7 +483,7 @@ class MainWindow(Screen):
         revoke_jwt(app.access_token)
     
     def delete_account(self):
-        
-        app = MDApp.get_running_app()
-        delete_account(app.access_token, app.user_id)
-        self.manager.current = "CreateUser"
+        pass
+        # app = MDApp.get_running_app()
+        # delete_account(app.access_token, app.user_id)
+        # self.manager.current = "CreateUser"
