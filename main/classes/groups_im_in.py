@@ -5,7 +5,6 @@ from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.label import MDLabel
-from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 
 class GroupsImIn(Screen):

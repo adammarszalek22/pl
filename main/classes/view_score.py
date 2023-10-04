@@ -2,13 +2,7 @@ from api.pl_api import *
 from api.db_api import *
 
 from kivymd.app import MDApp
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivy.properties import NumericProperty, StringProperty
-from kivy.clock import Clock
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.screenmanager import NoTransition
+from kivy.uix.screenmanager import Screen
 
 class ViewScoreWindow(Screen):
 
