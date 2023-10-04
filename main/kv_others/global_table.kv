@@ -1,0 +1,39 @@
+<GlobalTable>
+    orientation: 'vertical'
+    spacing: "12dp"
+    size_hint_y: None
+    height: "400dp"
+
+    ScrollView:
+        do_scroll_y: True
+        bar_width: 5
+
+        MDGridLayout:
+            cols: 5
+            size_hint_y: None
+            adaptive_height: True
+
+            MDLabel:
+                text: "Position"
+                font_size: "12dp"
+                adaptive_height: True
+
+            MDLabel:
+                text: "Username"
+                font_size: "12dp"
+                adaptive_height: True
+
+            MDLabel:
+                text: "Points"
+                font_size: "12dp"
+                adaptive_height: True
+
+            MDLabel:
+                text: "3-pointers"
+                font_size: "12dp"
+                adaptive_height: True
+
+            MDLabel:
+                text: "1-pointers"
+                font_size: "12dp"
+                adaptive_height: True
