@@ -1,56 +1,11 @@
 #: include ./kv_others/buttons.kv
-
-<BetDialog>
-    orientation: 'vertical'
-    spacing: "12dp"
-    size_hint_y: None
-    height: "70dp"
-
-    MDLabel:
-        text: ''
-
-<GlobalTable>
-    orientation: 'vertical'
-    spacing: "12dp"
-    size_hint_y: None
-    height: "400dp"
-
-    ScrollView:
-        do_scroll_y: True
-        bar_width: 5
-
-        MDGridLayout:
-            cols: 5
-            size_hint_y: None
-            adaptive_height: True
-
-            MDLabel:
-                text: "Position"
-                font_size: "12dp"
-                adaptive_height: True
-
-            MDLabel:
-                text: "Username"
-                font_size: "12dp"
-                adaptive_height: True
-
-            MDLabel:
-                text: "Points"
-                font_size: "12dp"
-                adaptive_height: True
-
-            MDLabel:
-                text: "3-pointers"
-                font_size: "12dp"
-                adaptive_height: True
-
-            MDLabel:
-                text: "1-pointers"
-                font_size: "12dp"
-                adaptive_height: True
+#: include ./kv_others/pl_table.kv
+#: include ./kv_others/global_table.kv
+#: include ./kv_others/bet_dialog.kv
+#: include ./kv_others/bet_layout.kv
 
 <MainWindow>
-    name: 'MainWindow' 
+    name: 'MainWindow'
 
     MDBottomNavigation:
         id: bottom_nav
@@ -60,103 +15,18 @@
             text: 'PL Table'
             icon: 'view-list'
 
-            MDBoxLayout:
-                orientation: 'vertical'
-                md_bg_color: 0, 0, 0, 0
+            PL_LAYOUT:
+                id: my_layout
                 size: root.width, root.height
                 padding: root.padding
-                orientation: 'horizontal'
-
-                MDBoxLayout:
-                    id: boxlayout
-                    orientation: 'vertical'
-                    spacing: root.spacing
-                    md_bg_color: 1, 1, 1, 1
-                    size_hint_y: 1
-                
-                ScrollView:
-                    do_scroll_y: False
-                    do_scroll_x: True
-                    bar_color: 1, 1, 1, 1
-                    bar_inactive_color: 0.8, 0.8, 0.8, 1
-                    bar_color: 0.8, 0.8, 0.8, 1
-
-                    MDBoxLayout:
-                        id: boxlayout2
-                        orientation: 'vertical'
-                        spacing: root.spacing
-                        size_hint_x: 1.5
 
         MDBottomNavigationItem:
             name: 'Post Bet'
             text: 'Predictions'
             icon: 'notebook-edit'
 
-            MDBoxLayout:
-                orientation: 'vertical'
-
-                MDBoxLayout:
-                    id: header
-                    orientation: 'vertical'
-                    md_bg_color: 0, 0, 0, 0
-                    size_hint_y: 0.15
-                    pos_hint: {"top": 1}
-                    padding: 5
-
-                    MDLabel:
-                        id: header_label
-                        text: ''
-                        halign: 'center'
-
-                MDBoxLayout:
-                    orientation: 'vertical'
-                    md_bg_color: 0, 0, 0, 0
-                    size_hint_y: 0.75
-                    pos_hint: {"top": 0.85}
-                    padding: 5
-
-                    ScrollView:
-                        id: the_scroll
-                        do_scroll_x: False
-                        do_scroll_y: True
-                        effect_cls: 'DampedScrollEffect'
-
-                        MDBoxLayout:
-                            id: my_main_layout
-                            padding: 20
-                            orientation: 'vertical'
-                            size_hint_y: None
-                            adaptive_height: True
-                    
-                MDFloatLayout:
-                    id: float_layout
-                    size_hint_y: 0.1
-                    pos_hint: {"top": 0.1}
-                    spacing: 40
-                    padding: 20
-                    #md_bg_color: (1, 1, 1, 1)
-
-                    MDFillRoundFlatButton:
-                        text: 'Previous'
-                        pos_hint: {"center_x": 0.15, "center_y": 0.5}
-                        size_hint_x: 0.2
-                        on_press:
-                            root.previous_gameweek()
-            
-                    MDFillRoundFlatButton:
-                        text: 'SUBMIT'
-                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                        size_hint_x: None
-                        width: root.width * 0.35
-                        on_press:
-                            root.do_bets()
-
-                    MDFillRoundFlatButton:
-                        text: 'Next'
-                        pos_hint: {"center_x": 0.85, "center_y": 0.5}
-                        size_hint_x: 0.2
-                        on_press:
-                            root.next_gameweek()
+            BetLayout:
+                id: bet_layout
 
         MDBottomNavigationItem:
             name: 'Users Table'

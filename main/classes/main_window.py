@@ -13,6 +13,7 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.gridlayout import MDGridLayout
 
 from functools import partial
+from threading import Thread
 
 
 class MyLabel(MDLabel):
@@ -36,9 +37,11 @@ class MainWindow(Screen):
     '''
 
     def _add_me(self, grid, me):
-        for header in list:
+        for header in self.list:
             self.label = MDLabel(
-                    text = str(me[header])
+                    text = str(me[header]),
+                    theme_text_color = 'Custom',
+                    text_color = self.colour
                     )
             self.label.font_size = "12dp"
             grid.add_widget(self.label)
@@ -51,7 +54,7 @@ class MainWindow(Screen):
         first10 = first_ten(app.access_token)
 
         # headers/keys
-        list = ["position", "username", "points", "three_pointers", "one_pointers"]
+        self.list = ["position", "username", "points", "three_pointers", "one_pointers"]
 
         # main container
         grid = self.ids.grid
@@ -63,14 +66,10 @@ class MainWindow(Screen):
 
         # adding the 10 users to the table
         for i in first10:
-            if i["username"] == me["username"]:
-                for header in list:
-                    self.label = MDLabel(text = str(i[header]), theme_text_color = 'Custom', text_color = self.colour)
-                    self.label.font_size = "12dp"
-                    grid.add_widget(self.label)
-                continue
-            for header in list:
-                self.label = MDLabel(text = str(i[header]))
+            t_t_c = 'Custom' if i["username"] == me["username"] else None
+            t_c = self.colour if i["username"] == me["username"] else None
+            for header in self.list:
+                self.label = MDLabel(text = str(i[header]), theme_text_color = t_t_c, text_color = t_c)
                 self.label.font_size = "12dp"
                 grid.add_widget(self.label)
        
@@ -103,14 +102,17 @@ class MainWindow(Screen):
 
 
             for i, user in enumerate(users):
+                
+                t_t_c = 'Custom' if self.my_pos == i + 1 else None
+                t_c = self.colour if self.my_pos == i + 1 else None
 
                 self.headers = {}
 
-                self.headers["position"] = MDLabel(text = str(i + 1), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
-                self.headers["username"] = MDLabel(text = user["username"], size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
-                self.headers["points"] = MDLabel(text = str(user["points"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
-                self.headers["three_pointers"] = MDLabel(text = str(user["three_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
-                self.headers["one_pointers"] = MDLabel(text = str(user["one_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = 'Custom', text_color = self.colour if self.my_pos == i + 1 else None)
+                self.headers["position"] = MDLabel(text = str(i + 1), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+                self.headers["username"] = MDLabel(text = user["username"], size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+                self.headers["points"] = MDLabel(text = str(user["points"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+                self.headers["three_pointers"] = MDLabel(text = str(user["three_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+                self.headers["one_pointers"] = MDLabel(text = str(user["one_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
 
                 for key in self.headers.keys():
                     self.headers[key].font_size = '12dp'
@@ -143,53 +145,103 @@ class MainWindow(Screen):
     '''
 
     def pl_table(self):
-
-        self.ids.boxlayout.clear_widgets()
-        self.ids.boxlayout2.clear_widgets()
-
-        headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
-        headings_layout = MDGridLayout(cols=2, md_bg_color = (1, 1, 1, 1))
-        headings_layout2 = MDGridLayout(cols=8, md_bg_color = (1, 1, 1, 1))
+        # add the widgets first and then use threading to add info
         
-        self.ids.boxlayout.add_widget(headings_layout)
-        self.ids.boxlayout2.add_widget(headings_layout2)
+        # for holding the widgets
+        self.name_widgets = {}
+        self.stats_widgets = {}
 
-        for i in headings:
-            if i == "":
-                headings_layout.add_widget(MDLabel(text=i))
-            elif i == "Club":
-                headings_layout.add_widget(MDLabel(text=i,
-                                                size_hint_x = 2))
-            elif i == "Pts":
-                headings_layout2.add_widget(MDLabel(text=i,
-                                                bold=True))
-            else:
-                headings_layout2.add_widget(MDLabel(text=i))
+        # dealing with headings
+        self.ids.my_layout.ids.gridlayout.add_widget(MDLabel(text = 'Pos'))
+        self.ids.my_layout.ids.gridlayout.add_widget(MDLabel(text = 'Club'))
+        for heading in ['MP', 'W', 'D', 'L', 'Pts', 'GA', 'GF', 'GD']:
+            self.ids.my_layout.ids.gridlayout2.add_widget(MDLabel(text = heading))
 
+
+        self.headers = ["matches_played", "wins", "draws", "losses",
+                 "points", "goals_scored", "goals_conceded", "goals_balance"]
+        # creating widgets for position and name of club, then storing them in a dict
+        for position in range(1, 21):
+            self.name_widgets[position] = {}
+            self.name_widgets[position]['POS'] = MDLabel(text = str(position))
+            self.name_widgets[position]['CLUB'] = MDLabel()
+            self.ids.my_layout.ids.gridlayout.add_widget(self.name_widgets[position]['POS'])
+            self.ids.my_layout.ids.gridlayout.add_widget(self.name_widgets[position]['CLUB'])
+        
+        # creating widgets for the club stats, then storing them in a dict
+        for position in range(1, 21):
+            self.stats_widgets[position] = {}
+            for header in self.headers:
+                self.stats_widgets[position][header] = MDLabel()
+                self.ids.my_layout.ids.gridlayout2.add_widget(self.stats_widgets[position][header])
+        
+        # adding the info in a separate thread for smoother experience
+        thread = Thread(target = self.show_info)
+        thread.start()
+    
+    def show_info(self):
+        
         position = 1
-        for i in pl.positions.keys():
-            # Holds position number and team name
-            gridlayout = MDGridLayout(cols=2, md_bg_color = (1, 1, 1, 1))
-            # Holds the games playes, points, etc. (all the numerical stats)
-            gridlayout2 = MDGridLayout(cols=8, md_bg_color = (1, 1, 1, 1))
+        for club in pl.positions.values():
 
-            self.ids.boxlayout.add_widget(gridlayout)
-            self.ids.boxlayout2.add_widget(gridlayout2)
+            # showing the club name
+            self.name_widgets[position]['CLUB'].text = str(club["name"])
 
-            gridlayout.add_widget(MDLabel(text=str(position)))
-            gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
-                                          size_hint_x = 2))
-            for i2 in pl.positions[i].keys():
-                if i2 == "points":
-                    gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
-                                                  bold=True))
-                elif i2 != "id" and i2 != "name": 
-                    # We do not need the team id when displaying premier league table.
-                    # Name column is already included.
-                    gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2])))
-            position += 1
+            # showing the stats info
+            for header in self.headers:
+                self.stats_widgets[position][header].text = str(club[header])
+                self.stats_widgets[position][header].bold = True if header == "points" else False
 
-        self.ids.boxlayout.md_bg_color = (1, 1, 1, 1)#'#212121' # app.theme_cls.primary_color
+            position += 1        
+
+    # def pl_table1(self):
+
+    #     self.ids.boxlayout.clear_widgets()
+    #     self.ids.boxlayout2.clear_widgets()
+
+    #     headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
+    #     headings_layout = MDGridLayout(cols=2, md_bg_color = (1, 1, 1, 1))
+    #     headings_layout2 = MDGridLayout(cols=8, md_bg_color = (1, 1, 1, 1))
+        
+    #     self.ids.boxlayout.add_widget(headings_layout)
+    #     self.ids.boxlayout2.add_widget(headings_layout2)
+
+    #     for i in headings:
+    #         if i == "":
+    #             headings_layout.add_widget(MDLabel(text=i))
+    #         elif i == "Club":
+    #             headings_layout.add_widget(MDLabel(text=i,
+    #                                             size_hint_x = 2))
+    #         elif i == "Pts":
+    #             headings_layout2.add_widget(MDLabel(text=i,
+    #                                             bold=True))
+    #         else:
+    #             headings_layout2.add_widget(MDLabel(text=i))
+
+    #     position = 1
+    #     for i in pl.positions.keys():
+    #         # Holds position number and team name
+    #         gridlayout = MDGridLayout(cols=2, md_bg_color = (1, 1, 1, 1))
+    #         # Holds the games playes, points, etc. (all the numerical stats)
+    #         gridlayout2 = MDGridLayout(cols=8, md_bg_color = (1, 1, 1, 1))
+
+    #         self.ids.boxlayout.add_widget(gridlayout)
+    #         self.ids.boxlayout2.add_widget(gridlayout2)
+
+    #         gridlayout.add_widget(MDLabel(text=str(position)))
+    #         gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
+    #                                       size_hint_x = 2))
+    #         for i2 in pl.positions[i].keys():
+    #             if i2 == "points":
+    #                 gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
+    #                                               bold=True))
+    #             elif i2 != "id" and i2 != "name": 
+    #                 # We do not need the team id when displaying premier league table.
+    #                 # Name column is already included.
+    #                 gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2])))
+    #         position += 1
+
+    #     self.ids.boxlayout.md_bg_color = (1, 1, 1, 1)#'#212121' # app.theme_cls.primary_color
     
     '''
     NavItem - 'PostBet'
@@ -221,7 +273,7 @@ class MainWindow(Screen):
         self.codes_list = [match_id for match_id in pl.matches[self.gameweek].keys()]
 
         app = MDApp.get_running_app()
-        layout = self.ids.my_main_layout
+        layout = self.ids.bet_layout.ids.my_main_layout
         layout.clear_widgets()
         layout_height = app.root.height * 1.5
 
@@ -230,7 +282,7 @@ class MainWindow(Screen):
         #     halign = 'center'
         # )
         # self.ids.header.add_widget(header)
-        self.ids.header_label.text = f'Gameweek {self.gameweek}'
+        self.ids.bet_layout.ids.header_label.text = f'Gameweek {self.gameweek}'
 
         # Main gridlayout that will hold three other gridlayouts 
         grid = MDGridLayout(
@@ -481,6 +533,7 @@ class MainWindow(Screen):
         self.manager.current = "LoginWindow"
         app = MDApp.get_running_app()
         revoke_jwt(app.access_token)
+        self.table_dialog = None
     
     def delete_account(self):
         pass
