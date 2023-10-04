@@ -3,8 +3,7 @@ from api.db_api import *
 
 from kivymd.app import MDApp
 from kivy.clock import Clock
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.screenmanager import NoTransition
+from kivy.uix.screenmanager import Screen
 from threading import Thread
 
 

@@ -3,8 +3,7 @@ from api.db_api import *
 
 from kivymd.app import MDApp
 from kivy.clock import Clock
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.screenmanager import NoTransition
+from kivy.uix.screenmanager import Screen
 from threading import Thread
 
 
@@ -21,7 +20,7 @@ class LoginWindow(Screen):
         thread = Thread(target=self.log_in)
         thread.start()
         Clock.schedule_once(self.change_screen, 0.01)
-
+        
     def log_in(self):
 
         self.ids.info.text = ''
