@@ -1,13 +1,6 @@
 import requests
 import json
 
-'''
-Perhaps create a database later?
-And can create a db on the server that does the calculation every few minutes? 
-This might make the startup faster
-'''
-
-
 def get(url):
     response = requests.get(url)
     return json.loads(response.content)
