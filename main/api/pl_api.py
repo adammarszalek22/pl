@@ -1,6 +1,10 @@
 import requests
 import json
 
+'''
+Will find api with league positions and stats so I dont have to calculate it
+'''
+
 def get(url):
     response = requests.get(url)
     return json.loads(response.content)

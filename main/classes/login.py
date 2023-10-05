@@ -64,7 +64,7 @@ class LoginWindow(Screen):
     def change_screen(self, dt):
 
         if self.is_thread_finished == 1:
-            self.manager.get_screen('MainWindow').bets()
+            self.manager.get_screen('MainWindow').show_gameweek_games()
             self.manager.get_screen('MainWindow').pl_table()
             self.manager.get_screen('MainWindow').users_table()
             self.manager.current = 'MainWindow'
