@@ -1,8 +1,9 @@
 #: include ./kv_others/buttons.kv
 #: include ./kv_others/pl_table.kv
 #: include ./kv_others/global_table.kv
-#: include ./kv_others/bet_dialog.kv
+#: include ./kv_others/submission_dialog.kv
 #: include ./kv_others/bet_layout.kv
+#: include ./kv_others/bet_layout2.kv
 
 <MainWindow>
     name: 'MainWindow'
@@ -19,14 +20,49 @@
                 id: my_layout
                 size: root.width, root.height
                 padding: root.padding
+                md_bg_color: 0, 1, 0, 0.1
 
         MDBottomNavigationItem:
             name: 'Post Bet'
             text: 'Predictions'
             icon: 'notebook-edit'
 
-            BetLayout:
+            BetLayout2:
                 id: bet_layout
+                size: root.width, root.height
+                padding: root.padding
+                md_bg_color: 0, 1, 0, 0.1
+
+                MDFloatLayout:
+                    id: float_layout
+                    size_hint_y: 0.1
+                    pos_hint: {"top": 0.1}
+                    spacing: 40
+                    padding: 20
+
+                    MDFillRoundFlatButton:
+                        text: 'Previous'
+                        pos_hint: {"center_x": 0.15, "center_y": 0.5}
+                        size_hint_x: 0.2
+                        on_press:
+                            root.previous_gameweek()
+                            root.show_gameweek_games()
+
+                    MDFillRoundFlatButton:
+                        text: 'SUBMIT'
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                        size_hint_x: None
+                        width: root.width * 0.35
+                        on_release:
+                            root.submit()
+
+                    MDFillRoundFlatButton:
+                        text: 'Next'
+                        pos_hint: {"center_x": 0.85, "center_y": 0.5}
+                        size_hint_x: 0.2
+                        on_press:
+                            root.next_gameweek()
+                            root.show_gameweek_games()
 
         MDBottomNavigationItem:
             name: 'Users Table'
@@ -36,7 +72,7 @@
             MDBoxLayout:
                 id: main
                 orientation: 'vertical'
-                md_bg_color: 0, 0, 0, 0
+                md_bg_color: 0, 1, 0, 0.1
                 size_hint_y: 0.9
                 pos_hint: {"top": 1}
                 padding: root.padding
@@ -79,6 +115,7 @@
                 pos_hint: {"top": 0.1}
                 spacing: 40
                 padding: 20
+                md_bg_color: 0, 1, 0, 0.1
 
                 MDFillRoundFlatButton:
                     text: 'Show full table'
@@ -97,6 +134,7 @@
                 orientation: 'vertical'
                 padding: 20
                 spacing: 5
+                md_bg_color: 0, 1, 0, 0.1
 
                 MoreButton:
                     text: 'Groups'

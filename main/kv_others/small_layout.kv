@@ -1,0 +1,34 @@
+<MiniLayout@MDBoxLayout>
+    orientation: 'vertical'
+    
+    MDGridLayout:
+        cols: 6
+        spacing: 5
+        size_hint_y: 0.7
+
+        MDLabel:
+            halign: 'center'
+
+        MDLabel:
+            halign: 'center'
+
+        MDTextField:
+            disabled: True
+            on_text_validate:
+                next.focus = True
+
+        MDTextField:
+            disabled: True
+            id: next
+            on_text_validate:
+                self.parent.parent.parent.children[self.parent.parent.parent.children.index(self.parent.parent) - 1].children[1].children[3].focus = True
+
+        MDLabel:
+            halign: 'center'
+        
+        MDLabel:
+            halign: 'center'
+    
+    MDLabel:
+        halign: 'center'
+        size_hint_y: 0.3

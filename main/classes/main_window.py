@@ -9,27 +9,36 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField
-from kivymd.uix.gridlayout import MDGridLayout
+from kivy.clock import mainthread
 
 from functools import partial
 from threading import Thread
+from datetime import datetime
 
+def convert_date(date):
+    return f"{date[8:10]}/{date[5:7]}/{date[0:4]}"
 
-class MyLabel(MDLabel):
-    pass
+def has_passed(start_time):
+    return start_time < datetime.now()
 
-class BetDialog(MDBoxLayout):
+class Submission_Dialog(MDBoxLayout):
     pass
 
 class GlobalTable(MDBoxLayout):
     pass
 
 class MainWindow(Screen):
+
     padding = NumericProperty(40)
     spacing = NumericProperty(2)
+
     dialog = None
+    widgets = None
+    gameweek = None
+
     table_dialog = None
+    bets = None
+
     colour = (0, 0, 1, 1)
 
     '''
@@ -193,262 +202,79 @@ class MainWindow(Screen):
                 self.stats_widgets[position][header].bold = True if header == "points" else False
 
             position += 1        
-
-    # def pl_table1(self):
-
-    #     self.ids.boxlayout.clear_widgets()
-    #     self.ids.boxlayout2.clear_widgets()
-
-    #     headings = ["", "Club", "MP", "W", "D", "L", "Pts", "GF", "GA", "GD"]
-    #     headings_layout = MDGridLayout(cols=2, md_bg_color = (1, 1, 1, 1))
-    #     headings_layout2 = MDGridLayout(cols=8, md_bg_color = (1, 1, 1, 1))
-        
-    #     self.ids.boxlayout.add_widget(headings_layout)
-    #     self.ids.boxlayout2.add_widget(headings_layout2)
-
-    #     for i in headings:
-    #         if i == "":
-    #             headings_layout.add_widget(MDLabel(text=i))
-    #         elif i == "Club":
-    #             headings_layout.add_widget(MDLabel(text=i,
-    #                                             size_hint_x = 2))
-    #         elif i == "Pts":
-    #             headings_layout2.add_widget(MDLabel(text=i,
-    #                                             bold=True))
-    #         else:
-    #             headings_layout2.add_widget(MDLabel(text=i))
-
-    #     position = 1
-    #     for i in pl.positions.keys():
-    #         # Holds position number and team name
-    #         gridlayout = MDGridLayout(cols=2, md_bg_color = (1, 1, 1, 1))
-    #         # Holds the games playes, points, etc. (all the numerical stats)
-    #         gridlayout2 = MDGridLayout(cols=8, md_bg_color = (1, 1, 1, 1))
-
-    #         self.ids.boxlayout.add_widget(gridlayout)
-    #         self.ids.boxlayout2.add_widget(gridlayout2)
-
-    #         gridlayout.add_widget(MDLabel(text=str(position)))
-    #         gridlayout.add_widget(MDLabel(text=str(pl.positions[i]["name"]),
-    #                                       size_hint_x = 2))
-    #         for i2 in pl.positions[i].keys():
-    #             if i2 == "points":
-    #                 gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2]),
-    #                                               bold=True))
-    #             elif i2 != "id" and i2 != "name": 
-    #                 # We do not need the team id when displaying premier league table.
-    #                 # Name column is already included.
-    #                 gridlayout2.add_widget(MDLabel(text=str(pl.positions[i][i2])))
-    #         position += 1
-
-    #     self.ids.boxlayout.md_bg_color = (1, 1, 1, 1)#'#212121' # app.theme_cls.primary_color
     
     '''
     NavItem - 'PostBet'
     '''
-    
-    def what_gameweek(self, gameweek):
-        # When no gameweek entered this statement will find out
-        # what gameweek we are currently in
-        if gameweek == 0:
-            b = 0
+
+    def show_gameweek_games(self):
+
+        thread = Thread(target = self.display)
+        thread.start()
+
+    def display(self):
+
+        # find out what gameweek it is if the function is run for the first time
+        if not self.gameweek:
+            self.what_gameweek()
+        
+        # list with all match ids from current gameweek
+        self.match_id_list = [match_id for match_id in pl.matches[self.gameweek].keys()]
+
+        # # store widgets in a dict for easier access
+        if not self.widgets:
+            self.store_widgets()
+
+        # display the gameweek header
+        self.handle_header()
+        
+        # show matches, scores and times from the particular gameweek
+        self.show_games()
+
+        # if predictions were already made, display them
+        self.show_previous_predictions()
+
+        # bind 'on_text' function to each textfield
+        self.bind_textfields()
+
+    def what_gameweek(self):
+
+        class Found(Exception):
+            pass
+        try:
             for week in pl.matches.keys():
                 for match_id in pl.matches[week].keys():
                     if pl.matches[week][match_id]["started"] == False:
-                        gameweek = week
-                        b = 1
-                        break
-                if b == 1:
-                    break
-        self.gameweek = 38 if gameweek == 0 else gameweek
-    
-    def bets(self, gameweek=0):
-
-        self.what_gameweek(gameweek)
-
-        # This will hold score TextField widgets
-        self.codes = {}
-
-        # A list of all match codes in the current gameweek
-        self.codes_list = [match_id for match_id in pl.matches[self.gameweek].keys()]
-
-        app = MDApp.get_running_app()
-        layout = self.ids.bet_layout.ids.my_main_layout
-        layout.clear_widgets()
-        layout_height = app.root.height * 1.5
-
-        # header = MDLabel(
-        #     text = f'Gameweek {self.gameweek}',
-        #     halign = 'center'
-        # )
-        # self.ids.header.add_widget(header)
-        self.ids.bet_layout.ids.header_label.text = f'Gameweek {self.gameweek}'
-
-        # Main gridlayout that will hold three other gridlayouts 
-        grid = MDGridLayout(
-            cols = 3,
-            size_hint_y = None,
-            adaptive_height = True
-        )
-        layout.add_widget(grid)
-
-        # Leaving space below widgets to make
-        # keyboard management easier (on a mobile)
-        layout.add_widget(
-            MDBoxLayout(
-                size_hint_y = None,
-                height = app.root.height / 2
-            )
-        )
-        
-        # For team1 and goal1
-        grid_layout1 = MDGridLayout(
-            size_hint_y = None,
-            adaptive_height = True,
-            cols = 2,
-            spacing = 10
-            )
-
-        # For prediction1 and prediction2
-        self.grid_layout2 = MDGridLayout(
-            size_hint_y = None,
-            adaptive_height = True,
-            cols = 2,
-            spacing = 10,
-            padding = [60, 0, 60, 0]
-            )
-
-        # For team2 and goal2
-        grid_layout3 = MDGridLayout(
-            size_hint_y = None,
-            adaptive_height = True,
-            cols = 2,
-            spacing = 10
-            )
-
-        for game in self.codes_list:
-
-            self.team1 = MyLabel(
-                text = str(pl.teams[pl.matches[self.gameweek][game]["team1"]]["name"]), # team name
-                size_hint = (0.3, None),
-                height = layout_height / 10,
-                valign = "bottom",
-                halign = "center"
-                )
-            grid_layout1.add_widget(self.team1)
-
-            self.goal1 = MyLabel(
-                text = str(pl.matches[self.gameweek][game]["goals1"]), # goals scored by team1
-                size_hint = (0.1, None),
-                height = layout_height / 10,
-                valign = "middle",
-                halign = "center"
-                )
-            grid_layout1.add_widget(self.goal1)
-
-            # Putting textfields in a grid layout so that it 
-            # is easier to align with other widgets
-            another_layout = MDGridLayout(
-                size_hint_y = None,
-                height = layout_height / 10,
-                cols = 1,
-                padding = [0, 20, 0, 0]
-            )
-            self.guess1 = MDTextField(
-                multiline = False,
-                input_type = 'number'
-                )
-            another_layout.add_widget(self.guess1)
-            self.grid_layout2.add_widget(another_layout)
-            
-            # Putting textfields in a grid layout so that it 
-            # is easier to align with other widgets
-            another_layout2 = MDGridLayout(
-                size_hint_y = None,
-                height = layout_height / 10,
-                cols = 1,
-                padding = [0, 20, 0, 0]
-            )
-            self.guess2 = MDTextField(
-                multiline = False,
-                input_type = 'number'
-                )
-            another_layout2.add_widget(self.guess2)
-            self.grid_layout2.add_widget(another_layout2)
-
-            self.goal2 = MyLabel(
-                text = str(pl.matches[self.gameweek][game]["goals2"]), # goals scored by team2
-                size_hint = (0.1, None),
-                height = layout_height / 10,
-                valign = "middle",
-                halign = "center"
-                )
-            grid_layout3.add_widget(self.goal2)
-
-            self.team2 = MyLabel(
-                text=str(pl.teams[pl.matches[self.gameweek][game]["team2"]]["name"]), # team2 name
-                size_hint = (0.3, None),
-                height = layout_height / 10,
-                valign = "middle",
-                halign = "center"
-                )
-            grid_layout3.add_widget(self.team2)
-
-            # Assigning the textfield widgets to a match code in a dictionary
-            # so I can access it when submitting the score guesses
-            self.codes[game] = {}
-            self.codes[game]["guess1"] = self.guess1
-            self.codes[game]["guess2"] = self.guess2
-
-        grid.add_widget(grid_layout1)
-        grid.add_widget(self.grid_layout2)
-        grid.add_widget(grid_layout3)
-
-        self.when_text_validate()
-        self.display_previous_guesses()
-    
-    def when_text_validate(self):
-
-        def next(value, instance):
-            # This focuses on the next widget
-            widget = self.grid_layout2.children[value].children[0]
-            widget.focus = True
-            self.ids.the_scroll.scroll_to(widget, padding = 180)
-
-        # grid_layout2 contains layouts that contain text fields
-        # when 'enter' is pressed the focus will move to the next widget
-        i = 0
-        for layout in self.grid_layout2.children:
-            if i == 0:
-                # last widget
-                pass
-            else:
-                layout.children[0].bind(on_text_validate=partial(next, i - 1))
-            i = i + 1
-    
-    def display_previous_guesses(self):
-        
-        app = MDApp.get_running_app()
-        does_exist = False
-        bets = get_all_bets_by_user_id(app.access_token)
-        if bets["status_code"] == 200:
-            for bet in bets["list"]:
-                code = bet['match_id']
-                if code in self.codes_list:
-                    does_exist = True
-                    break
-            if does_exist == True:
-                for bet in bets["list"]:
-                    try:
-                        code = bet['match_id']
-                        guess1 = bet['goal1']
-                        guess2 = bet['goal2']
-                        self.codes[code]["guess1"].text = str(guess1)
-                        self.codes[code]["guess2"].text = str(guess2)
-                    except KeyError:
-                        pass
-        else:
+                        self.gameweek = week
+                        raise Found
+        except Found:
             pass
+    
+    def store_widgets(self):
+
+        # storing all box_layouts in a dict for easier access
+        self.widgets = {}
+
+        i = 19
+        for box_layout in self.ids.bet_layout.ids.main.children:
+            self.widgets[i] = {}
+            self.widgets[i]['box'] = box_layout
+            self.widgets[i]['hour'] = box_layout.children[0]
+
+            self.widgets[i]['team1'] = box_layout.children[1].children[5]
+            self.widgets[i]['goals1'] = box_layout.children[1].children[4]
+            self.widgets[i]['prediction1'] = box_layout.children[1].children[3]
+            self.widgets[i]['prediction2'] = box_layout.children[1].children[2]
+            self.widgets[i]['goals2'] = box_layout.children[1].children[1]
+            self.widgets[i]['team2'] = box_layout.children[1].children[0]
+            
+            i -= 1
+    
+    def bind_textfields(self):
+
+        for i in range(0, len(self.match_id_list)):
+            self.widgets[i]['prediction1'].bind(on_text_validate=partial(self.store_text_input, i))
+            self.widgets[i]['prediction2'].bind(on_text_validate=partial(self.store_text_input, i))
 
     def previous_gameweek(self):
 
@@ -456,7 +282,6 @@ class MainWindow(Screen):
             pass
         else:
             self.gameweek -= 1
-            self.bets(self.gameweek)
 
 
     def next_gameweek(self):
@@ -465,31 +290,112 @@ class MainWindow(Screen):
             pass
         else:
             self.gameweek += 1
-            self.bets(self.gameweek)
-
     
-    def do_bets(self):
+    def handle_header(self):
+        self.ids.bet_layout.ids.header.text = f'Gameweek {self.gameweek}'
+    
+    def show_games(self):
+        # show all games and their scores
 
-        #Sending input to the server
+        for i, match_id in enumerate(self.match_id_list):
+            match = pl.matches[self.gameweek][match_id]
+
+            self.widgets[i]['hour'].text = f"{match['kickoff_time'][0:-3]} {convert_date(match['kickoff_date'])}"
+            self.widgets[i]['team1'].text = pl.teams[match['team1']]["name"]
+            self.widgets[i]['goals1'].text = str(match['goals1'])
+            self.widgets[i]['goals2'].text = str(match['goals2'])
+            self.widgets[i]['team2'].text = pl.teams[match['team2']]["name"]
+        
+        # clearing the rest of the widgets
+        for j in range(i + 1, 20):
+            self.widgets[j]['hour'].text = ''
+            self.widgets[j]['team1'].text = ''
+            self.widgets[j]['goals1'].text = ''
+            self.widgets[j]['goals2'].text = ''
+            self.widgets[j]['team2'].text = ''
+
+    # has to be on main thread to update Kivy graphics
+    @mainthread
+    def show_previous_predictions(self):
+        
         app = MDApp.get_running_app()
+
+        if not self.bets:
+            self.bets = get_all_bets_by_user_id(app.access_token)
+
+        if self.bets["status_code"] != 200:
+            return
+        
+        # clearing the textfields
+        for i in range(20):
+            self.widgets[i]["prediction1"].text = ''
+            self.widgets[i]["prediction2"].text = ''
+        
+        # displaying the previous predictions
+        for i, match_id in enumerate(self.match_id_list):
+            self.widgets[i]["prediction1"].disabled = False
+            self.widgets[i]["prediction2"].disabled = False
+            for bet in self.bets["list"]:
+                if match_id == bet['match_id']:
+                    self.widgets[i]["prediction1"].text = str(bet['goal1'])
+                    self.widgets[i]["prediction2"].text = str(bet['goal2'])
+    
+    def store_text_input(self, i, instance):
+        
+        if not self.bets or not self.match_id_list:
+            return
+    
+        for bet in self.bets["list"]:
+            if self.match_id_list[i] == bet['match_id']:
+                if instance == self.widgets[i]['prediction1']:
+                    bet["goal1"] = instance.text
+                else:
+                    bet["goal2"] = instance.text
+                return
+        
+        if instance == self.widgets[i]['prediction1']:
+            self.bets["list"].append({"match_id": self.match_id_list[i], "goal1": instance.text})
+        else:
+            self.bets["list"].append({"match_id": self.match_id_list[i], "goal1": instance.text})
+
+    def submit(self):
+
+        app = MDApp.get_running_app()
+
         matches = []
         list_guess1 = []
         list_guess2 = []
-        for code in self.codes.keys():
-            guess1 = self.codes[code]["guess1"].text
-            guess2 = self.codes[code]["guess2"].text
-            if guess1 == "":
-                self.codes[code]["guess1"].text = "0"
-                guess1 = 0
-            if guess2 == "":
-                self.codes[code]["guess2"].text = "0"
-                guess2 = 0
-            matches.append(code)
-            list_guess1.append(guess1)
-            list_guess2.append(guess2)
 
-        update_bets = update_multiple_bets(str(app.access_token), matches, list_guess1, list_guess2)
-        print(update_bets)
+        for i, match_code in enumerate(self.match_id_list):
+
+            prediction1 = self.widgets[i]["prediction1"].text
+            prediction2 = self.widgets[i]["prediction2"].text
+            if prediction1 == "":
+                self.widgets[i]["prediction1"].text = "0"
+                prediction1 = 0
+            if prediction2 == "":
+                self.widgets[i]["prediction2"].text = "0"
+                prediction2 = 0
+
+            matches.append(match_code)
+            list_guess1.append(prediction1)
+            list_guess2.append(prediction2)
+
+            for match in self.bets["list"]:
+                if match["match_id"] == match_code:
+                    match["goal1"] = prediction1
+                    match["goal2"] = prediction2
+                    continue
+            
+            # if the match code doesn't exist in self.bets yet then:
+            self.bets["list"].append(
+                {"match_id": match_code,
+                 "goal1": prediction1,
+                 "goal2": prediction2}
+                )
+
+
+        update_bets = update_multiple_bets(app.access_token, matches, list_guess1, list_guess2)
 
         if update_bets["status_code"] == 200:
             self.open_dialog("Your predictions were submitted successfully!", "Submitted")
@@ -508,7 +414,7 @@ class MainWindow(Screen):
             self.dialog = MDDialog(
                 title='',
                 type='custom',
-                content_cls = BetDialog(),
+                content_cls = Submission_Dialog(),
                 buttons=[
                     okay_button
                 ]
@@ -530,10 +436,14 @@ class MainWindow(Screen):
     
     def logout(self):
 
+        # These are different for different users so clearing them
+        self.table_dialog = None
+        self.bets = None
+
+        # change screen and revoke the access token
         self.manager.current = "LoginWindow"
         app = MDApp.get_running_app()
         revoke_jwt(app.access_token)
-        self.table_dialog = None
     
     def delete_account(self):
         pass
