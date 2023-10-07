@@ -23,6 +23,9 @@
             size_hint_x: None
             width: root.width * 0.7
             pos_hint: {"center_x": 0.5, "top": 0.75}
+            
+            on_text_validate:
+                password.focus = True
         
         MDTextField:
             id: password
@@ -36,6 +39,7 @@
             password: True
             on_text_validate:
                 root.do_they_match()
+                password2.focus = True
         
         MDTextField:
             id: password2

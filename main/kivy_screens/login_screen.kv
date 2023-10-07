@@ -21,9 +21,12 @@
             pos_hint: {"center_x": 0.5}
             icon_left: 'account'
             hint_text: 'Username'
-            text: ''
+            text: 'adam'
             halign: 'left'
             pos_hint: {"center_x": 0.5, "top": 0.75}
+            
+            on_text_validate:
+                password.focus = True
         
         MDTextField:
             id: password
@@ -35,7 +38,7 @@
             icon_left: 'eye-off'
             hint_text: 'Password'
             password: True
-            text: ''
+            text: '1234'
             halign: 'left'
             pos_hint: {"center_x": 0.5, "top": 0.65}
             on_text_validate:

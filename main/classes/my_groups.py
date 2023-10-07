@@ -13,12 +13,11 @@ class MyGroupsWindow(Screen):
 
         if self.ids.carousel.children:
             return
-
-        self.ids.carousel.clear_widgets()
+        
         app = MDApp.get_running_app()
-        my_group = my_groups(app.access_token)
+        self.my_group = my_groups(app.access_token)
 
-        if my_group["list"] == None:
+        if not self.my_group["list"]:
              self.ids.carousel.add_widget(
                   MDBoxLayout(
                     MDLabel(
@@ -29,7 +28,7 @@ class MyGroupsWindow(Screen):
              )
              return 0
 
-        for group in my_group["list"]:  
+        for group in self.my_group["list"]:  
 
             box_layout = MDBoxLayout(orientation = 'vertical', padding = 30, spacing = 5)
             
