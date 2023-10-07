@@ -1,8 +1,7 @@
 from api.pl_api import *
 from api.db_api import *
-from db import *
 
-from kivy.properties import NumericProperty
+from kivy.properties import NumericProperty, ListProperty
 from kivy.uix.screenmanager import Screen
 from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog
@@ -29,12 +28,13 @@ class GlobalTable(MDBoxLayout):
 
 class MainWindow(Screen):
 
-    padding = NumericProperty(40)
-    spacing = NumericProperty(2)
+    padding = ListProperty([20, 100, 20, 100])
+    spacing = NumericProperty(20)
 
     dialog = None
     widgets = None
     gameweek = None
+    name_widgets = None
 
     table_dialog = None
     bets = None
@@ -155,14 +155,17 @@ class MainWindow(Screen):
 
     def pl_table(self):
         # add the widgets first and then use threading to add info
+
+        if self.name_widgets:
+            return
         
         # for holding the widgets
         self.name_widgets = {}
         self.stats_widgets = {}
 
         # dealing with headings
-        self.ids.my_layout.ids.gridlayout.add_widget(MDLabel(text = 'Pos'))
-        self.ids.my_layout.ids.gridlayout.add_widget(MDLabel(text = 'Club'))
+        self.ids.my_layout.ids.gridlayout.add_widget(MDLabel(text = 'Pos', size_hint_x = 0.3))
+        self.ids.my_layout.ids.gridlayout.add_widget(MDLabel(text = 'Club', size_hint_x = 0.7))
         for heading in ['MP', 'W', 'D', 'L', 'Pts', 'GA', 'GF', 'GD']:
             self.ids.my_layout.ids.gridlayout2.add_widget(MDLabel(text = heading))
 
@@ -172,8 +175,8 @@ class MainWindow(Screen):
         # creating widgets for position and name of club, then storing them in a dict
         for position in range(1, 21):
             self.name_widgets[position] = {}
-            self.name_widgets[position]['POS'] = MDLabel(text = str(position))
-            self.name_widgets[position]['CLUB'] = MDLabel()
+            self.name_widgets[position]['POS'] = MDLabel(text = str(position), size_hint_x = 0.3)
+            self.name_widgets[position]['CLUB'] = MDLabel(size_hint_x = 0.7)
             self.ids.my_layout.ids.gridlayout.add_widget(self.name_widgets[position]['POS'])
             self.ids.my_layout.ids.gridlayout.add_widget(self.name_widgets[position]['CLUB'])
         

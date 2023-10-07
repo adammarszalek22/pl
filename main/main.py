@@ -6,7 +6,6 @@ from kivy.uix.screenmanager import NoTransition
 
 from api.pl_api import *
 from api.db_api import *
-from db import *
 from classes.login import LoginWindow
 from classes.create_user import CreateUser
 from classes.groups import GroupsWindow

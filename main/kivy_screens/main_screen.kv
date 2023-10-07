@@ -30,6 +30,7 @@
                 id: bet_layout
                 size: root.width, root.height
                 padding: root.padding
+                spacing: root.spacing
 
                 MDFloatLayout:
                     id: float_layout
@@ -55,7 +56,7 @@
                             root.submit()
 
                     MDFillRoundFlatButton:
-                        text: 'Next'
+                        text: '  Next  '
                         pos_hint: {"center_x": 0.85, "center_y": 0.5}
                         size_hint_x: 0.2
                         on_press:
@@ -68,59 +69,60 @@
             icon: 'view-list'
 
             MDBoxLayout:
-                id: main
                 orientation: 'vertical'
-                size_hint_y: 0.9
-                pos_hint: {"top": 1}
                 padding: root.padding
+                spacing: root.spacing
 
-                MDGridLayout:
-                    id: header
-                    cols: 5
-                    padding: 5
-                    size_hint_y: None
-                    height: root.height * 0.1
+                MDBoxLayout:
+                    id: main
+                    orientation: 'vertical'
+                    size_hint_y: 0.9
+                    pos_hint: {"top": 1}
 
-                    MDLabel:
-                        text: "Position"
-                        font_size: "12dp"
+                    MDGridLayout:
+                        id: header
+                        cols: 5
+                        padding: 5
+                        size_hint_y: None
+                        height: root.height * 0.1
 
-                    MDLabel:
-                        text: "Username"
-                        font_size: "12dp"
+                        MDLabel:
+                            text: "Position"
+                            font_size: "12dp"
 
-                    MDLabel:
-                        text: "Points"
-                        font_size: "12dp"
+                        MDLabel:
+                            text: "Username"
+                            font_size: "12dp"
 
-                    MDLabel:
-                        text: "3-pointers"
-                        font_size: "12dp"
+                        MDLabel:
+                            text: "Points"
+                            font_size: "12dp"
 
-                    MDLabel:
-                        text: "1-pointers"
-                        font_size: "12dp"
+                        MDLabel:
+                            text: "3-pointers"
+                            font_size: "12dp"
 
-                MDGridLayout:
-                    id: grid
-                    cols: 5
-                    padding: 5
+                        MDLabel:
+                            text: "1-pointers"
+                            font_size: "12dp"
+
+                    MDGridLayout:
+                        id: grid
+                        cols: 5
+                        padding: 5
             
-            MDFloatLayout:
-                id: float
-                size_hint_y: 0.1
-                pos_hint: {"top": 0.1}
-                spacing: 40
-                padding: 20
-                md_bg_color: 0, 1, 0, 0.1
+                MDFloatLayout:
+                    id: float
+                    size_hint_y: 0.1
+                    pos_hint: {"top": 0.1}
 
-                MDFillRoundFlatButton:
-                    text: 'Show full table'
-                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                    size_hint_x: None
-                    width: root.width * 0.35
-                    on_press:
-                        root.show_full()
+                    MDFillRoundFlatButton:
+                        text: 'Show full table'
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                        size_hint_x: None
+                        width: root.width * 0.35
+                        on_press:
+                            root.show_full()
 
         MDBottomNavigationItem:
             name: 'More'
@@ -129,7 +131,7 @@
 
             MDBoxLayout:
                 orientation: 'vertical'
-                padding: 20
+                padding: root.padding
                 spacing: 5
 
                 MoreButton:
