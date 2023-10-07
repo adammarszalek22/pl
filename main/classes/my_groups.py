@@ -1,5 +1,5 @@
 from api.pl_api import *
-from api.db_api import *
+from api.db_api import my_groups, my_user_info
 
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -15,9 +15,9 @@ class MyGroupsWindow(Screen):
             return
         
         app = MDApp.get_running_app()
-        self.my_group = my_groups(app.access_token)
+        self.my_groups = my_groups(app.access_token)
 
-        if not self.my_group["list"]:
+        if not self.my_groups["list"]:
              self.ids.carousel.add_widget(
                   MDBoxLayout(
                     MDLabel(
@@ -28,7 +28,7 @@ class MyGroupsWindow(Screen):
              )
              return 0
 
-        for group in self.my_group["list"]:  
+        for group in self.my_groups["list"]:  
 
             box_layout = MDBoxLayout(orientation = 'vertical', padding = 30, spacing = 5)
             

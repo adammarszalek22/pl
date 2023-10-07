@@ -1,20 +1,23 @@
 from api.pl_api import *
-from api.db_api import *
+from api.db_api import create_user, login
 
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock, mainthread
 from threading import Thread
+from functools import partial
 
 class CreateUser(Screen):
 
     def do_create_user(self):
-        
+
+        # clearing previous error messages, if any
         self.ids.info.text = ''
 
-        # using threading to allow the spinner to work
+        # starting the spinner which will stop once the login is successful (or not)
         self.ids.spinner.active = True
 
+        # using a different thread for creating the user (otherwise the spinner doesn't work)
         thread = Thread(target=self.create_the_user)
         thread.start()
 
@@ -26,80 +29,65 @@ class CreateUser(Screen):
         password = self.ids.password.text
         password2 = self.ids.password2.text
 
-        # Trying to get data from fantasy premier league API. Cannot login if there is no data
-        pl.get_data()
-
         if not pl.connection:
-            self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
-            self.is_thread_finished = 2
+            # Trying to get data from fantasy premier league API. Cannot create user/login if there is no data.
+            pl.get_data()
+            if not pl.connection:
+                self.ids.info.text = 'Please make sure you\'re connected to the internet. Then try again.'
+                self.is_thread_finished = 2
 
         try:
+
             new_user = create_user(username, password, password2)
             status_code = new_user["status_code"]
+
             if status_code == 201:
                 login_details = login(username, password)
+                # saving details to the app that will be needed for calling other functions
                 app.access_token = login_details["access_token"]
                 app.refresh_token = login_details["refresh_token"]
                 app.user_id = login_details["user_id"]
+                # proceed to the app
                 self.change_screen()
             elif status_code == 401:
                 self.ids.password2.error = True
-                self.ids.spinner.active = False
             else:
-                self.ids.login.helper_text = 'User already exists.'
                 self.ids.login.error = True
-                self.ids.spinner.active = False
+
         except requests.exceptions.ConnectionError:
             # Same as in login window. If this error comes up then internet works fine 
             # but there's another problem (probably server not working)
             self.ids.info.text = "There is a problem on our end. We are working hard to fix it"
-            self.ids.spinner.active = False
+
         except json.decoder.JSONDecodeError:
             self.ids.info.text = 'Unknown error'
-            self.ids.spinner.active = False
+            
+        self.ids.spinner.active = False
 
     @mainthread
     def change_screen(self):
-            
-        # self.manager.get_screen('MainWindow').show_gameweek_games()
-        # self.manager.get_screen('MainWindow').pl_table()
-        # self.manager.get_screen('MainWindow').users_table()
+        
         self.manager.current = 'MainWindow'
-        self.ids.spinner.active = False
 
-    def password(self):
+    def password(self, textfield):
 
-        if self.ids.password.password == True:
-            self.ids.password.password = False
-            self.ids.password.icon_left = "eye"
-            Clock.schedule_once(self.focus1, 0.05)
-        else:
-            self.ids.password.password = True
-            self.ids.password.icon_left = "eye-off"
-            Clock.schedule_once(self.focus1, 0.05)
+        icon_names = {
+            'eye': 'eye-off',
+            'eye-off': 'eye'
+        }
+
+        # showing or hiding the password and changing the icon
+        textfield.password = not textfield.password
+        textfield.icon_left = icon_names[textfield.icon_left]
+        # the textfield loses focus after the above lines so restoring it
+        Clock.schedule_once(partial(self.focus, textfield), 0.05)
     
-    def focus1(self, dt):
+    def focus(self, textfield, dt):
 
-        self.ids.password.focus = True
+        textfield.focus = True
     
-    def password2(self):
+    def do_they_match(self, password1, password2):
 
-        if self.ids.password2.password == True:
-            self.ids.password2.password = False
-            self.ids.password2.icon_left = "eye"
-            Clock.schedule_once(self.focus2, 0.05)
-        else:
-            self.ids.password2.password = True
-            self.ids.password2.icon_left = "eye-off"
-            Clock.schedule_once(self.focus2, 0.05)
-    
-    def focus2(self, dt):
-
-        self.ids.password2.focus = True
-    
-    def do_they_match(self, instance):
-
-        password = self.ids.password.text
-        password2 = self.ids.password2.text
-        if instance.focus == False and password != password2:
-            self.ids.password2.error = True
+        # show error message after both passwords have been entered and they do not match
+        if not password2.focus and password1.text != password2.text:
+            password2.error = True

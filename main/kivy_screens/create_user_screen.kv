@@ -17,13 +17,12 @@
             icon_left: 'account'
             text: ''
             hint_text: 'Username'
-            helper_text: ""
+            helper_text: "User already exists"
             helper_text_mode: "on_error"
             halign: 'left'
             size_hint_x: None
             width: root.width * 0.7
             pos_hint: {"center_x": 0.5, "top": 0.75}
-            
             on_text_validate:
                 password.focus = True
         
@@ -38,7 +37,6 @@
             pos_hint: {"center_x": 0.5, "top": 0.65}
             password: True
             on_text_validate:
-                root.do_they_match()
                 password2.focus = True
         
         MDTextField:
@@ -56,7 +54,7 @@
             on_text_validate:
                 root.do_create_user()
             on_focus:
-                root.do_they_match(self)
+                root.do_they_match(password, self)
 
         MDRectangleFlatButton:
             id: icon1
@@ -69,7 +67,7 @@
             size_hint_y: None
             height: password.height * 0.75
             on_release:
-                root.password()
+                root.password(password)
         
         MDRectangleFlatButton:
             id: icon2
@@ -80,9 +78,9 @@
             size_hint_x: None
             width: dp(25)
             size_hint_y: None
-            height: password.height * 0.75
+            height: password2.height * 0.75
             on_release:
-                root.password2()
+                root.password(password2)
         
         MDLabel:
             id: info
@@ -122,7 +120,6 @@
             size_hint_x: 0.6
             pos_hint: {"center_x": 0.5, "top": 0.17}
             on_release:
-                root.manager.transition = NoTransition()
                 app.root.current = 'LoginWindow'
 
         MDLabel:

@@ -1,5 +1,5 @@
 from api.pl_api import *
-from api.db_api import *
+from api.db_api import first_ten, my_user_info, get_all_users, get_all_bets_by_user_id, revoke_jwt, update_multiple_bets
 
 from kivy.properties import NumericProperty, ListProperty
 from kivy.uix.screenmanager import Screen
@@ -35,6 +35,7 @@ class MainWindow(Screen):
     widgets = None
     gameweek = None
     name_widgets = None
+    first10 = None
 
     table_dialog = None
     bets = None
@@ -57,10 +58,13 @@ class MainWindow(Screen):
 
     def users_table(self):
 
+        if self.first10:
+            return
+
         app = MDApp.get_running_app()
 
         # getting the 10 best users
-        first10 = first_ten(app.access_token)
+        self.first10 = first_ten(app.access_token)
 
         # headers/keys
         self.list = ["position", "username", "points", "three_pointers", "one_pointers"]
@@ -74,7 +78,7 @@ class MainWindow(Screen):
         self.my_pos = int(me["position"])
 
         # adding the 10 users to the table
-        for i in first10:
+        for i in self.first10:
             t_t_c = 'Custom' if i["username"] == me["username"] else None
             t_c = self.colour if i["username"] == me["username"] else None
             for header in self.list:
@@ -98,9 +102,10 @@ class MainWindow(Screen):
             self._add_me(grid, me)
     
     def show_full(self):
-        app = MDApp.get_running_app()
 
         if not self.table_dialog:
+
+            app = MDApp.get_running_app()
 
             self.box = GlobalTable()
             self.scroll_box = self.box.children[0].children[0]
