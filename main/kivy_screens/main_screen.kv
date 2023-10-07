@@ -7,6 +7,10 @@
 
 <MainWindow>
     name: 'MainWindow'
+    on_enter:
+        root.pl_table()
+        root.show_gameweek_games()
+        root.users_table()
 
     MDBottomNavigation:
         id: bottom_nav

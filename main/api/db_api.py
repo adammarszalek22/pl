@@ -13,17 +13,17 @@ def create_user(username, password, password2):
                          json={"username": username,
                                "password": password,
                                "password2": password2})
-    return {"code": user.status_code, **json.loads(user.text)}
+    return {"status_code": user.status_code, **json.loads(user.text)}
 
 def login(username, password):
     request = requests.post(url + '/login', 
                             json={"username": username, "password": password})
-    return {"code": request.status_code, **json.loads(request.text)}
+    return {"status_code": request.status_code, **json.loads(request.text)}
 
 def get_all_users(access_token):
     users = requests.get(url + '/get_all',
                          headers={"Authorization": "Bearer " + access_token})
-    return {"code": users.status_code, "users": json.loads(users.text)}
+    return {"status_code": users.status_code, "users": json.loads(users.text)}
 
 # print(login("adam", "1234"))
 # print(get_all_users(login('adam', '1234')["access_token"]))

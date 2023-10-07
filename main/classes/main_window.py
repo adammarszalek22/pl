@@ -108,8 +108,6 @@ class MainWindow(Screen):
             all_users = get_all_users(app.access_token)
             users = [v for v in sorted(all_users['users'], key = lambda item: item['position'])]
 
-
-
             for i, user in enumerate(users):
                 
                 t_t_c = 'Custom' if self.my_pos == i + 1 else None
