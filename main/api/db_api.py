@@ -15,6 +15,9 @@ def create_user(username, password, password2):
                                "password2": password2})
     return {"status_code": user.status_code, **json.loads(user.text)}
 
+# for i in range(3cd00, 1000):
+#     create_user('test' + str(i), '1', '1')
+
 def login(username, password):
     request = requests.post(url + '/login', 
                             json={"username": username, "password": password})
