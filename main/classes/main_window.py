@@ -86,7 +86,7 @@ class MainWindow(Screen):
                 self.label.font_size = "12dp"
                 grid.add_widget(self.label)
        
-        # if the user is 11th in the table then we add him
+        # if the user is 11th in the table then we add them
         if me["position"] == 11:
             self._add_me(grid, me)
         # else we leave one row empty ('...') and add the user on next line
