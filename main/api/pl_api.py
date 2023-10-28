@@ -1,5 +1,6 @@
 import requests
 import json
+from threading import Thread
 
 '''
 Will find api with league positions and stats so I dont have to calculate it
@@ -113,4 +114,7 @@ class PremierLeague:
 
 
 pl = PremierLeague()
-pl.get_data()
+
+thread = Thread(target = pl.get_data)
+thread.start()
+#pl.get_data()
