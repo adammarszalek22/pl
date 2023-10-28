@@ -1,54 +1,53 @@
 <GRID@MDGridLayout>
     cols: 8
-
     MDLabel:
-        text: ''
-
     MDLabel:
-        text: ''
-
     MDLabel:
-        text: ''
-
     MDLabel:
-        text: ''
-
     MDLabel:
-        text: ''
-
     MDLabel:
-        text: ''
-
     MDLabel:
-        text: ''
-
     MDLabel:
-        text: ''
 
+<LEFTGRID@MDGridLayout>
+    cols: 2
+    MDLabel:
+        size_hint_x: 0.3
+    MDLabel:
+        size_hint_x: 0.7
 
 <PL_LAYOUT@MDBoxLayout>
     orientation: 'horizontal'
 
     MDBoxLayout:
+        id: left_layout
         orientation: 'vertical'
-        spacing: root.spacing
+        spacing: 5
         size_hint_y: 1
         size_hint_x: 0.55
 
-        MDGridLayout:
-            id: gridlayout
-            cols: 2
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
+        LEFTGRID:
 
-            MDLabel:
-                text: 'Pos'
-                size_hint_x: 0.3
-
-            MDLabel:
-                text: 'Club'
-                size_hint_x: 0.7
-
-
-    
     ScrollView:
         do_scroll_y: False
         do_scroll_x: True
@@ -58,34 +57,31 @@
         size_hint_x: 0.45
 
         MDBoxLayout:
+            id: main_layout
             orientation: 'vertical'
-            spacing: root.spacing
+            spacing: 5
             size_hint_x: 1.5
 
-            MDGridLayout:
-                id: gridlayout2
-                cols: 1
-
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
-                GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
+            GRID:
 
                 

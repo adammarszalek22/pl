@@ -174,56 +174,34 @@ class MainWindow(Screen):
 
     def pl_table(self):
         # add the widgets first and then use threading to add info
+        self.first_grid = list(reversed(self.ids.my_layout.ids.left_layout.children))
+        self.main_grid = list(reversed(self.ids.my_layout.ids.main_layout.children))
 
-        if self.name_widgets:
-            return
-        
-        # for holding the widgets
-        self.name_widgets = {}
-        self.stats_widgets = {}
 
-        # dealing with headings
-        self.ids.my_layout.ids.gridlayout.add_widget(MDLabel(text = 'Pos', size_hint_x = 0.3))
-        self.ids.my_layout.ids.gridlayout.add_widget(MDLabel(text = 'Club', size_hint_x = 0.7))
+        self.first_grid[0].children[1].text = 'Pos'
+        self.first_grid[0].children[0].text = 'Club'
+        i = 7
         for heading in ['MP', 'W', 'D', 'L', 'Pts', 'GA', 'GF', 'GD']:
-            self.ids.my_layout.ids.gridlayout2.add_widget(MDLabel(text = heading))
-
+            self.main_grid[0].children[i].text = heading
+            i -= 1
+        self.main_grid[0].children[3].bold = True #pos
 
         self.headers = ["matches_played", "wins", "draws", "losses",
                  "points", "goals_scored", "goals_conceded", "goals_balance"]
-        # creating widgets for position and name of club, then storing them in a dict
-        for position in range(1, 21):
-            self.name_widgets[position] = {}
-            self.name_widgets[position]['POS'] = MDLabel(text = str(position), size_hint_x = 0.3)
-            self.name_widgets[position]['CLUB'] = MDLabel(size_hint_x = 0.7)
-            self.ids.my_layout.ids.gridlayout.add_widget(self.name_widgets[position]['POS'])
-            self.ids.my_layout.ids.gridlayout.add_widget(self.name_widgets[position]['CLUB'])
         
-        # creating widgets for the club stats, then storing them in a dict
-        for position in range(1, 21):
-            self.stats_widgets[position] = {}
-            for header in self.headers:
-                self.stats_widgets[position][header] = MDLabel()
-                self.ids.my_layout.ids.gridlayout2.add_widget(self.stats_widgets[position][header])
-        
-        # adding the info in a separate thread for smoother experience
-        thread = Thread(target = self.show_info)
-        thread.start()
-    
-    def show_info(self):
-        
-        position = 1
-        for club in pl.positions.values():
+        for pos, club in enumerate(pl.positions.values(), start = 1):
+
+            self.first_grid[pos].children[1].text = str(pos)
 
             # showing the club name
-            self.name_widgets[position]['CLUB'].text = str(club["name"])
+            self.first_grid[pos].children[0].text = str(club["name"])
 
             # showing the stats info
-            for header in self.headers:
-                self.stats_widgets[position][header].text = str(club[header])
-                self.stats_widgets[position][header].bold = True if header == "points" else False
+            for i, header in enumerate(self.headers):
+                list(reversed(self.main_grid[pos].children))[i].text = str(club[header])
+                list(reversed(self.main_grid[pos].children))[i].bold = True if header == "points" else False
 
-            position += 1        
+    
     
     '''
     NavItem - 'PostBet'
