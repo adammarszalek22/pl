@@ -16,6 +16,7 @@ from threading import Thread
 from datetime import datetime
 
 import copy
+import time
 
 def convert_date(date):
     months = {
@@ -59,26 +60,41 @@ class MainWindow(Screen):
 
     colour = (0, 0, 1, 1)
 
+    def enter(self):
+        anim = Animation(md_bg_color=(0.5, 0.5, 0.5, 0.4)) + Animation(md_bg_color=(0.5, 0.5, 0.5, 0.6), duration=1)
+        anim.repeat = True
+        for i in range(0, 20):
+            anim.start(self.ids.my_layout.ids.left_layout.children[i])
+
+        thread1 = Thread(target = self.display_pl_table)
+        thread1.start()
+
+        thread2 = Thread(target = self.display_gameweek_games)
+        thread2.start()
+
+        thread3 = Thread(target = self.display_users_table)
+        thread3.start()
+
     '''
     NavItem - 'Table'
     '''
 
-    def _add_me(self, grid, me):
+    def __add_me(self, num):
+        # used in users_table function
+        j = 4
         for header in self.list:
-            self.label = MDLabel(
-                    text = str(me[header]),
-                    theme_text_color = 'Custom',
-                    text_color = self.colour
-                    )
-            self.label.font_size = "12dp"
-            grid.add_widget(self.label)
+            self.main_grid[num].children[j].text = str(self.me[header])
+            # self.label = MDLabel(text = str(i[header]), theme_text_color = t_t_c, text_color = t_c)
+            j -= 1
 
-    def users_table(self):
+    def display_users_table(self):
 
         if self.first10:
             return
-
+        
         app = MDApp.get_running_app()
+
+        self.main_grid = list(reversed(self.ids.main.ids.grid.children))
 
         # getting the 10 best users
         self.first10 = first_ten(app.access_token)
@@ -86,37 +102,27 @@ class MainWindow(Screen):
         # headers/keys
         self.list = ["position", "username", "points", "three_pointers", "one_pointers"]
 
-        # main container
-        grid = self.ids.grid
-        grid.clear_widgets()
-
         # getting the actual user and their position
-        me = my_user_info(app.access_token, app.user_id)
-        self.my_pos = int(me["position"])
+        self.me = my_user_info(app.access_token, app.user_id)
+        self.my_pos = int(self.me["position"])
 
         # adding the 10 users to the table
-        for i in self.first10:
-            t_t_c = 'Custom' if i["username"] == me["username"] else None
-            t_c = self.colour if i["username"] == me["username"] else None
+        for i, user in enumerate(self.first10):
+            # t_t_c = 'Custom' if i["username"] == me["username"] else None
+            # t_c = self.colour if i["username"] == me["username"] else None
+            j = 4
             for header in self.list:
-                self.label = MDLabel(text = str(i[header]), theme_text_color = t_t_c, text_color = t_c)
-                self.label.font_size = "12dp"
-                grid.add_widget(self.label)
-       
+                self.main_grid[i].children[j].text = str(user[header])
+                # self.label = MDLabel(text = str(i[header]), theme_text_color = t_t_c, text_color = t_c)
+                j -= 1
+        
         # if the user is 11th in the table then we add them
-        if me["position"] == 11:
-            self._add_me(grid, me)
+        if self.me["position"] == 11:
+            self.__add_me(10)
         # else we leave one row empty ('...') and add the user on next line
-        elif me["position"] > 11:
-            grid.add_widget(
-                MDLabel(
-                text = '...',
-                font_size = "12dp"
-                )
-            )
-            for j in range(4):
-                grid.add_widget(MDLabel())
-            self._add_me(grid, me)
+        elif self.me["position"] > 11:
+            self.main_grid[10].children[4].text = '...'
+            self.__add_me(11)      
     
     def show_full(self):
 
@@ -173,17 +179,10 @@ class MainWindow(Screen):
     NavItem - 'Premier League Table'
     '''
 
-    def pl_table(self):
+    def display_pl_table(self):
 
-        anim = Animation(md_bg_color=[0.9, 0.9, 0.9, 0], duration=0.2)
-        for i in self.ids.my_layout.ids.main_layout.children:
-            anim.start(i)
+        time.sleep(5)
 
-        thread = Thread(target=self.show_table)
-        thread.start()
-    
-    def show_table(self):
-        # add the widgets first and then use threading to add info
         self.first_grid = list(reversed(self.ids.my_layout.ids.left_layout.children))
         self.main_grid = list(reversed(self.ids.my_layout.ids.main_layout.children))
 
@@ -217,12 +216,7 @@ class MainWindow(Screen):
     NavItem - 'PostBet'
     '''
 
-    def show_gameweek_games(self):
-
-        thread = Thread(target = self.display)
-        thread.start()
-
-    def display(self):
+    def display_gameweek_games(self):
 
         # find out what gameweek it is if the function is run for the first time
         if not self.gameweek:

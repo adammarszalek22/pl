@@ -4,13 +4,12 @@
 #: include ./kv_others/submission_dialog.kv
 #: include ./kv_others/bet_layout.kv
 #: include ./kv_others/bet_layout2.kv
+#: include ./kv_others/table.kv
 
 <MainWindow>
     name: 'MainWindow'
     on_enter:
-        root.pl_table()
-        root.show_gameweek_games()
-        root.users_table()
+        root.enter()
 
     MDBottomNavigation:
         id: bottom_nav
@@ -49,7 +48,7 @@
                         size_hint_x: 0.2
                         on_press:
                             root.previous_gameweek()
-                            root.show_gameweek_games()
+                            root.display_gameweek_games()
 
                     MDFillRoundFlatButton:
                         text: 'SUBMIT'
@@ -65,7 +64,7 @@
                         size_hint_x: 0.2
                         on_press:
                             root.next_gameweek()
-                            root.show_gameweek_games()
+                            root.display_gameweek_games()
 
         MDBottomNavigationItem:
             name: 'Users Table'
@@ -77,43 +76,10 @@
                 padding: root.padding
                 spacing: root.spacing
 
-                MDBoxLayout:
+                MainLayout:
                     id: main
-                    orientation: 'vertical'
                     size_hint_y: 0.9
                     pos_hint: {"top": 1}
-
-                    MDGridLayout:
-                        id: header
-                        cols: 5
-                        padding: 5
-                        size_hint_y: None
-                        height: root.height * 0.1
-
-                        MDLabel:
-                            text: "Position"
-                            font_size: "12dp"
-
-                        MDLabel:
-                            text: "Username"
-                            font_size: "12dp"
-
-                        MDLabel:
-                            text: "Points"
-                            font_size: "12dp"
-
-                        MDLabel:
-                            text: "3-pointers"
-                            font_size: "12dp"
-
-                        MDLabel:
-                            text: "1-pointers"
-                            font_size: "12dp"
-
-                    MDGridLayout:
-                        id: grid
-                        cols: 5
-                        padding: 5
             
                 MDFloatLayout:
                     id: float
