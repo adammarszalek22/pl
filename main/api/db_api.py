@@ -15,9 +15,6 @@ def create_user(username, password, password2):
                                "password2": password2})
     return {"status_code": user.status_code, **json.loads(user.text)}
 
-# for i in range(3cd00, 1000):
-#     create_user('test' + str(i), '1', '1')
-
 def login(username, password):
     request = requests.post(url + '/login', 
                             json={"username": username, "password": password})
@@ -27,9 +24,6 @@ def get_all_users(access_token):
     users = requests.get(url + '/get_all',
                          headers={"Authorization": "Bearer " + access_token})
     return {"status_code": users.status_code, "users": json.loads(users.text)}
-
-# print(login("adam", "1234"))
-# print(get_all_users(login('adam', '1234')["access_token"]))
 
 def get_non_fresh_token(refresh_token, username, password):
     request = requests.post(url + '/refresh',
@@ -152,9 +146,6 @@ def update_multiple_bets(access_token, list_match_id, list_goal1, list_goal2):
     # else:
     #     return {"status_code": 200, **json.loads(new_bets.text)}
     return {"status_code": new_bets.status_code, **json.loads(new_bets.text)}
-
-#a = login("adam", "1234")[0]
-#post_bet(a, "2293058", 3, 4, 1)
 
 '''
 GROUPS
