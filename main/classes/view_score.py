@@ -1,5 +1,4 @@
-from api.pl_api import *
-from api.db_api import *
+from api.db_api import my_user_info
 
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen

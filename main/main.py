@@ -13,7 +13,6 @@ from classes.my_groups import MyGroupsWindow
 from classes.groups_im_in import GroupsImIn
 from classes.view_others import ViewOtherScoreWindow
 
-
 class WindowManager(ScreenManager):
 
     def __init__(self, **kwargs):

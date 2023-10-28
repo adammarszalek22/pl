@@ -1,5 +1,4 @@
-from api.pl_api import *
-from api.db_api import *
+from api.db_api import get_by_username
 
 from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog

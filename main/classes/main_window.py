@@ -33,7 +33,7 @@ def convert_date(date):
         11 : 'November',
         12 : 'December'
     }
-    return f"{date[8:10]}, {months[int(date[5:7])]} {date[0:4]}"
+    return f"{date[8:10]} {months[int(date[5:7])]} {date[0:4]}"
 
 def has_passed(start_time):
     return start_time < datetime.now()
@@ -61,10 +61,6 @@ class MainWindow(Screen):
     colour = (0, 0, 1, 1)
 
     def enter(self):
-        anim = Animation(md_bg_color=(0.5, 0.5, 0.5, 0.4)) + Animation(md_bg_color=(0.5, 0.5, 0.5, 0.6), duration=1)
-        anim.repeat = True
-        for i in range(0, 20):
-            anim.start(self.ids.my_layout.ids.left_layout.children[i])
 
         thread1 = Thread(target = self.display_pl_table)
         thread1.start()
@@ -181,8 +177,6 @@ class MainWindow(Screen):
 
     def display_pl_table(self):
 
-        time.sleep(5)
-
         self.first_grid = list(reversed(self.ids.my_layout.ids.left_layout.children))
         self.main_grid = list(reversed(self.ids.my_layout.ids.main_layout.children))
 
@@ -297,7 +291,7 @@ class MainWindow(Screen):
         for i, match_id in enumerate(self.match_id_list):
             match = pl.matches[self.gameweek][match_id]
 
-            self.widgets[i]['time'].text = f"{match['kickoff_time'][0:-3]} {convert_date(match['kickoff_date'])}"
+            self.widgets[i]['time'].text = f"{match['kickoff_time'][0:-3]}, {convert_date(match['kickoff_date'])}"
             self.widgets[i]['team1'].text = pl.teams[match['team1']]["name"]
             self.widgets[i]['goals1'].text = str(match['goals1'])
             self.widgets[i]['goals2'].text = str(match['goals2'])

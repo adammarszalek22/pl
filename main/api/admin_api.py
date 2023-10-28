@@ -32,7 +32,7 @@ def update(access_token, user_id, points, three_pointers, one_pointers):
             )
     return json.loads(request.text)
 
-access_token = login("adam1234", "SIGNUP77//88")["access_token"]
+# access_token = login("adam1234", "SIGNUP77//88")["access_token"]
 #print(update(access_token, 1, -5, 0, 0))
 
 def delete_user(access_token, user_id):
@@ -43,4 +43,3 @@ def delete_user(access_token, user_id):
         )
     return {"code": request.status_code, **json.loads(request.text)}
 
-print(delete_user(access_token, 14))

@@ -1,11 +1,3 @@
-#: include ./kv_others/buttons.kv
-#: include ./kv_others/pl_table.kv
-#: include ./kv_others/global_table.kv
-#: include ./kv_others/submission_dialog.kv
-#: include ./kv_others/bet_layout.kv
-#: include ./kv_others/bet_layout2.kv
-#: include ./kv_others/table.kv
-
 <MainWindow>
     name: 'MainWindow'
     on_enter:
@@ -21,7 +13,6 @@
 
             PL_LAYOUT:
                 id: my_layout
-                size: root.width, root.height
                 padding: root.padding
 
         MDBottomNavigationItem:
@@ -29,9 +20,8 @@
             text: 'Predictions'
             icon: 'notebook-edit'
 
-            BetLayout2:
+            BetLayout:
                 id: bet_layout
-                size: root.width, root.height
                 padding: root.padding
                 spacing: root.spacing
 
@@ -39,8 +29,6 @@
                     id: float_layout
                     size_hint_y: 0.1
                     pos_hint: {"top": 0.1}
-                    spacing: 40
-                    padding: 20
 
                     MDFillRoundFlatButton:
                         text: 'Previous'
@@ -107,7 +95,6 @@
                 MoreButton:
                     text: 'Groups'
                     icon: 'account-group'
-                    size_hint_x: .4
                     size_hint_y: None
                     height: root.height / 10
                     halign: 'left'
@@ -117,7 +104,6 @@
                 MoreButton:
                     text: 'View your score'
                     icon: 'account'
-                    size_hint_x: .4
                     size_hint_y: None
                     height: root.height / 10
                     halign: 'left'
@@ -127,7 +113,6 @@
                 MoreButton:
                     text: 'View other users\' scores'
                     icon: 'account-multiple-outline'
-                    size_hint_x: .4
                     size_hint_y: None
                     height: root.height / 10
                     halign: 'left'
@@ -137,7 +122,6 @@
                 MoreButton:
                     text: 'Log out'
                     icon: 'logout'
-                    size_hint_x: .4
                     size_hint_y: None
                     height: root.height / 10
                     halign: 'left'
@@ -147,7 +131,6 @@
                 MoreButton:
                     text: 'Delete my account'
                     icon: 'logout'
-                    size_hint_x: .4
                     size_hint_y: None
                     height: root.height / 10
                     halign: 'left'

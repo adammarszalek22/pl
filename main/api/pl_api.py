@@ -117,4 +117,3 @@ pl = PremierLeague()
 
 thread = Thread(target = pl.get_data)
 thread.start()
-#pl.get_data()
