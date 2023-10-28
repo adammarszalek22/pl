@@ -8,32 +8,32 @@
 
         MDLabel:
             halign: 'center'
-            size_hint_x: 0.3
+            size_hint_x: 0.25
 
         MDLabel:
             halign: 'center'
-            size_hint_x: 0.1
+            size_hint_x: 0.2
 
         MDTextField:
             disabled: True
             on_text_validate:
                 next.focus = True
-            size_hint_x: 0.1
+            size_hint_x: 0.05
 
         MDTextField:
             disabled: True
             id: next
-            size_hint_x: 0.1
+            size_hint_x: 0.05
             on_text_validate:
                 self.parent.parent.parent.children[self.parent.parent.parent.children.index(self.parent.parent) - 1].children[1].children[3].focus = True
 
         MDLabel:
             halign: 'center'
-            size_hint_x: 0.1
+            size_hint_x: 0.2
         
         MDLabel:
             halign: 'center'
-            size_hint_x: 0.3
+            size_hint_x: 0.25
     
     MDLabel:
         halign: 'center'
