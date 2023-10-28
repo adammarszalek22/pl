@@ -9,6 +9,7 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.clock import mainthread
+from kivy.animation import Animation
 
 from functools import partial
 from threading import Thread
@@ -173,6 +174,15 @@ class MainWindow(Screen):
     '''
 
     def pl_table(self):
+
+        anim = Animation(md_bg_color=[0.9, 0.9, 0.9, 0], duration=0.2)
+        for i in self.ids.my_layout.ids.main_layout.children:
+            anim.start(i)
+
+        thread = Thread(target=self.show_table)
+        thread.start()
+    
+    def show_table(self):
         # add the widgets first and then use threading to add info
         self.first_grid = list(reversed(self.ids.my_layout.ids.left_layout.children))
         self.main_grid = list(reversed(self.ids.my_layout.ids.main_layout.children))
