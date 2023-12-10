@@ -359,7 +359,7 @@ class MainWindow(Screen):
 
         # clearing/disabling the rest of textfields
         for j in range(i + 1, 20):
-            self.disable_textfields(j)
+            self.disable_textfields(j)#a
         
     def disable_textfields(self, j):
         self.widgets[j]["prediction1"].disabled = True
