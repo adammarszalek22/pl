@@ -215,20 +215,34 @@ class MainWindow(Screen):
     '''
 
     def display_gameweek_games(self):
-        # find out what gameweek it is if the function is run for the first time
-        if not self.gameweek:
+
+        app = MDApp.get_running_app()           
+
+        # if the function is run for the first time
+        if not self.gameweek or not self.bets:
+
+            # this dict holds users predictions and will be updated 
+            # every time the user makes a change
+            self.bets = get_all_bets_by_user_id(app.access_token)
+
+            # this is the original that the bets dict will be compared to
+            # when choosing what colour the textfield should be
+            # (green if the text has been changed, black otherwise)
+            self.original = copy.deepcopy(self.bets)
+
+            # find out what gameweek it is
             self.what_gameweek()
 
             # store widgets in a dict for easier access
             self.store_widgets()
 
             # bind 'on_focus' function to each textfield
-            self.bind_textfields()
+            self.bind_functions_to_textfields()
         
         # list with all match ids from current gameweek
         # the index of each item in this list corresponds to index in self.widgets
-        self.match_id_list = [match_id for match_id in pl.matches[self.gameweek].keys()]
-
+        self.match_id_list = list(pl.matches[self.gameweek].keys()) 
+        
         # display the gameweek header
         self.display_header()
         
@@ -283,7 +297,7 @@ class MainWindow(Screen):
             
             i -= 1
     
-    def bind_textfields(self):
+    def bind_functions_to_textfields(self):
 
         for i in range(0, 20):
             self.widgets[i]['prediction1'].bind(focus=partial(self.store_text_input, i))
@@ -319,19 +333,6 @@ class MainWindow(Screen):
     def show_previous_predictions(self):
         # if predicted scores were already submitted by user, show them
 
-        app = MDApp.get_running_app()
-
-        if not self.bets:
-
-            # this dict holds users predictions and will be updated 
-            # every time the user makes a change
-            self.bets = get_all_bets_by_user_id(app.access_token)
-
-            # this is the original that the bets dict will be compared to
-            # when choosing what colour the textfield should be
-            # (green if the text has been changed, black otherwise)
-            self.original = copy.deepcopy(self.bets)
-
         if self.bets["status_code"] != 200:                               
             return # TODO create a popup
         
@@ -342,24 +343,24 @@ class MainWindow(Screen):
         # displaying the previous predictions
         for i, match_id in enumerate(self.match_id_list):
             self.enable_textfields(i)
-            
-            for bet in self.bets["list"]:
-                
-                if match_id == bet['match_id']:
 
-                    index = self.bets["list"].index(bet)
-                    guess = self.original["list"][index]
+            dict = self.bets["dict"]
 
-                    self.widgets[i]["prediction1"].text = str(bet['goal1'])
-                    self.widgets[i]["prediction2"].text = str(bet['goal2'])
+            if match_id in dict.keys():
+                bet = dict[match_id]
 
-                    # if the score has been amended then display it as green
-                    self.widgets[i]["prediction1"].text_color_normal = [0, 1, 0, 0.7] if str(bet['goal1']) != str(guess['goal1']) else [0, 0, 0, 1]
-                    self.widgets[i]["prediction2"].text_color_normal = [0, 1, 0, 0.7] if str(bet['goal2']) != str(guess['goal2']) else [0, 0, 0, 1]
+                guess = self.original["dict"][match_id]
+
+                self.widgets[i]["prediction1"].text = str(bet['goal1'])
+                self.widgets[i]["prediction2"].text = str(bet['goal2'])
+
+                # if the score has been amended then display it as green
+                self.widgets[i]["prediction1"].text_color_normal = [0, 1, 0, 0.7] if str(bet['goal1']) != str(guess['goal1']) else [0, 0, 0, 1]
+                self.widgets[i]["prediction2"].text_color_normal = [0, 1, 0, 0.7] if str(bet['goal2']) != str(guess['goal2']) else [0, 0, 0, 1]
 
         # clearing/disabling the rest of textfields
         for j in range(i + 1, 20):
-            self.disable_textfields(j)#a
+            self.disable_textfields(j)
         
     def disable_textfields(self, j):
         self.widgets[j]["prediction1"].disabled = True
@@ -385,33 +386,37 @@ class MainWindow(Screen):
         if instance.disabled:
             # function only runs for non-disabled textfields
             return
-
-        if not self.bets or not self.match_id_list:
-            return
         
-        one_or_two = "goal1" if (instance == self.widgets[i]['prediction1']) else "goal2"
-        one_or_two_prediction = "prediction1" if (instance == self.widgets[i]['prediction1']) else "prediction2"
+        # this needs some work TODO
+        self.ids.bet_layout.ids.my_scroll.scroll_to(self.widgets[i + 1]["box"])
+
+        if (instance == self.widgets[i]['prediction1']):
+            one_or_two = "goal1"
+            one_or_two_prediction = "prediction1"
+        else:
+            one_or_two = "goal2"
+            one_or_two_prediction = "prediction2"
+
         match_code = self.match_id_list[i]
 
-        for bet in self.bets["list"]:
+        dict = self.bets["dict"]
 
-            # if the prediction already exists
-            if match_code == bet['match_id']:
+        if match_code in dict.keys():
+            bet = dict[match_code]
 
-                index = self.bets["list"].index(bet)
-                guess = self.original["list"][index]
-                
-                # update to new prediction
-                bet[one_or_two] = instance.text
+            guess = self.original["dict"][match_code]
+            
+            # update to new prediction
+            bet[one_or_two] = instance.text
 
-                # update colours
-                self.widgets[i][one_or_two_prediction].text_color_normal = [0, 1, 0, 0.7] if str(bet[one_or_two]) != str(guess[one_or_two]) else [0, 0, 0, 1]
+            # update colours
+            self.widgets[i][one_or_two_prediction].text_color_normal = [0, 1, 0, 0.7] if str(bet[one_or_two]) != str(guess[one_or_two]) else [0, 0, 0, 1]
 
-                return
+            return
             
         # if it's a new prediction then add it to self.bets
-        self.bets["list"].append({"match_id": match_code, one_or_two: instance.text})
-        self.original["list"].append({"match_id": match_code, "goal1": None, "goal2": None})
+        dict[match_code] = {one_or_two: instance.text}
+        self.original["dict"][match_code] = {"goal1": None, "goal2": None}
 
         # update colours
         self.widgets[i][one_or_two_prediction].text_color_normal = [0, 1, 0, 0.7]
@@ -420,39 +425,33 @@ class MainWindow(Screen):
 
         app = MDApp.get_running_app()
 
+        # these will hold match codes and predictions to be submitted
         matches = []
-        list_guess1 = []
-        list_guess2 = []
+        predictions1 = []
+        predictions2 = []
 
         for i, match_code in enumerate(self.match_id_list):
 
+            # get the actual user's predictions or '0' if there isn't one
             prediction1 = self.widgets[i]["prediction1"].text = self.widgets[i]["prediction1"].text or "0"
             prediction2 = self.widgets[i]["prediction2"].text = self.widgets[i]["prediction2"].text or "0"
 
             matches.append(match_code)
-            list_guess1.append(prediction1)
-            list_guess2.append(prediction2)
+            predictions1.append(prediction1)
+            predictions2.append(prediction2)
 
-            found = False
-            for match in self.original["list"]:
-                if match["match_id"] == match_code:
-                    match["goal1"] = prediction1
-                    match["goal2"] = prediction2
-                    self.widgets[i]["prediction1"].text_color_normal = [0, 0, 0, 1]
-                    self.widgets[i]["prediction2"].text_color_normal = [0, 0, 0, 1]
-                    found = True
-            
-            if found:
-                continue
+            original = self.original["dict"]
+            if match_code in original.keys():
+                self.widgets[i]["prediction1"].text_color_normal = [0, 0, 0, 1]
+                self.widgets[i]["prediction2"].text_color_normal = [0, 0, 0, 1]
 
-            # if the match code doesn't exist in self.original then add it on
-            self.original["list"].append(
-                {"match_id": match_code,
+            # update the original dict with the new predictions
+            self.original["dict"][match_code] = {
                  "goal1": prediction1,
-                 "goal2": prediction2}
-                )
+                 "goal2": prediction2
+                 }
 
-        update_bets = update_multiple_bets(app.access_token, matches, list_guess1, list_guess2)
+        update_bets = update_multiple_bets(app.access_token, matches, predictions1, predictions2)
 
         if update_bets["status_code"] == 200:
             self.open_dialog("Your predictions were submitted successfully!", "Submitted")
