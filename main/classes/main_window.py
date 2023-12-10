@@ -390,7 +390,7 @@ class MainWindow(Screen):
             return
         
         # this needs some work TODO
-        self.ids.bet_layout.ids.my_scroll.scroll_to(self.widgets[i + 1]["box"])
+        self.ids.bet_layout.ids.my_scroll.scroll_to(self.widgets[i + 2]["box"])
 
         if (instance == self.widgets[i]['prediction1']):
             one_or_two = "goal1"

@@ -8,32 +8,33 @@
 
         MDLabel:
             halign: 'center'
-            size_hint_x: 0.25
+            size_hint_x: 0.3
 
         MDLabel:
             halign: 'center'
-            size_hint_x: 0.2
+            size_hint_x: 0.1
 
         MDTextField:
             disabled: True
             on_text_validate:
                 next.focus = True
-            size_hint_x: 0.05
+            size_hint_x: 0.1
 
         MDTextField:
             disabled: True
             id: next
-            size_hint_x: 0.05
+            size_hint_x: 0.1
             on_text_validate:
+                # I CAN'T BELIEVE THIS WORKS LOL
                 self.parent.parent.parent.children[self.parent.parent.parent.children.index(self.parent.parent) - 1].children[1].children[3].focus = True
 
         MDLabel:
             halign: 'center'
-            size_hint_x: 0.2
+            size_hint_x: 0.1
         
         MDLabel:
             halign: 'center'
-            size_hint_x: 0.25
+            size_hint_x: 0.3
     
     MDLabel:
         halign: 'center'
