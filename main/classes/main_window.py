@@ -124,6 +124,8 @@ class MainWindow(Screen):
     
     def show_full(self):
 
+        # Not using this function for now. Too slow for large number of users
+
         if self.table_dialog:
             self.table_dialog.open()
             return
