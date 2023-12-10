@@ -60,6 +60,8 @@ class MainWindow(Screen):
 
     colour = (0, 0, 1, 1)
 
+    funcs = []
+
     def enter(self):
 
         thread1 = Thread(target = self.display_pl_table)
@@ -122,48 +124,50 @@ class MainWindow(Screen):
     
     def show_full(self):
 
-        if not self.table_dialog:
+        if self.table_dialog:
+            self.table_dialog.open()
+            return
 
-            app = MDApp.get_running_app()
+        app = MDApp.get_running_app()
 
-            self.box = GlobalTable()
-            self.scroll_box = self.box.children[0].children[0]
+        self.box = GlobalTable()
+        self.scroll_box = self.box.children[0].children[0]
 
-            all_users = get_all_users(app.access_token)
-            users = [v for v in sorted(all_users['users'], key = lambda item: item['position'])]
+        all_users = get_all_users(app.access_token)
+        users = [v for v in sorted(all_users['users'], key = lambda item: item['position'])]
 
-            for i, user in enumerate(users):
-                
-                t_t_c = 'Custom' if self.my_pos == i + 1 else None
-                t_c = self.colour if self.my_pos == i + 1 else None
-
-                self.headers = {}
-
-                self.headers["position"] = MDLabel(text = str(i + 1), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
-                self.headers["username"] = MDLabel(text = user["username"], size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
-                self.headers["points"] = MDLabel(text = str(user["points"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
-                self.headers["three_pointers"] = MDLabel(text = str(user["three_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
-                self.headers["one_pointers"] = MDLabel(text = str(user["one_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
-
-                for key in self.headers.keys():
-                    self.headers[key].font_size = '12dp'
-                    self.scroll_box.add_widget(self.headers[key])
-
-            okay_button = MDFlatButton(
-                        text="Back",
-                        theme_text_color="Custom",
-                        text_color=app.theme_cls.primary_color,
-                    )
+        for i, user in enumerate(users):
             
-            self.table_dialog = MDDialog(
-                title='',
-                type='custom',
-                content_cls = self.box,
-                buttons=[
-                    okay_button
-                ]
-            )
-            okay_button.bind(on_release=self.exit_full_table)
+            t_t_c = 'Custom' if self.my_pos == i + 1 else None
+            t_c = self.colour if self.my_pos == i + 1 else None
+
+            self.headers = {}
+
+            self.headers["position"] = MDLabel(text = str(i + 1), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+            self.headers["username"] = MDLabel(text = user["username"], size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+            self.headers["points"] = MDLabel(text = str(user["points"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+            self.headers["three_pointers"] = MDLabel(text = str(user["three_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+            self.headers["one_pointers"] = MDLabel(text = str(user["one_pointers"]), size_hint_y = None, adaptive_height = True, theme_text_color = t_t_c, text_color = t_c)
+
+            for key in self.headers.keys():
+                self.headers[key].font_size = '12dp'
+                self.scroll_box.add_widget(self.headers[key])
+
+        okay_button = MDFlatButton(
+                    text="Back",
+                    theme_text_color="Custom",
+                    text_color=app.theme_cls.primary_color,
+                )
+        
+        self.table_dialog = MDDialog(
+            title='',
+            type='custom',
+            content_cls = self.box,
+            buttons=[
+                okay_button
+            ]
+        )
+        okay_button.bind(on_release=self.exit_full_table)
             
         self.table_dialog.open()
     
@@ -211,17 +215,19 @@ class MainWindow(Screen):
     '''
 
     def display_gameweek_games(self):
-
         # find out what gameweek it is if the function is run for the first time
         if not self.gameweek:
             self.what_gameweek()
+
+            # store widgets in a dict for easier access
+            self.store_widgets()
+
+            # bind 'on_focus' function to each textfield
+            self.bind_textfields()
         
         # list with all match ids from current gameweek
+        # the index of each item in this list corresponds to index in self.widgets
         self.match_id_list = [match_id for match_id in pl.matches[self.gameweek].keys()]
-
-        # # store widgets in a dict for easier access
-        if not self.widgets:
-            self.store_widgets()
 
         # display the gameweek header
         self.display_header()
@@ -231,14 +237,13 @@ class MainWindow(Screen):
 
         # if predictions were already made, display them
         self.show_previous_predictions()
-
-        # bind 'on_text' function to each textfield
-        self.bind_textfields()
+        
 
     def what_gameweek(self):
 
         class Found(Exception):
             pass
+
         try:
             for week in pl.matches.keys():
                 for match_id in pl.matches[week].keys():
@@ -278,12 +283,16 @@ class MainWindow(Screen):
             
             i -= 1
     
+    def bind_textfields(self):
+
+        for i in range(0, 20):
+            self.widgets[i]['prediction1'].bind(focus=partial(self.store_text_input, i))
+            self.widgets[i]['prediction2'].bind(focus=partial(self.store_text_input, i))
+    
     def display_header(self):
+
         self.ids.bet_layout.ids.header.text = f'Gameweek {self.gameweek}'
-        if self.gameweek == self.current_gameweek:
-            self.ids.bet_layout.ids.header.bold = True
-        else:
-            self.ids.bet_layout.ids.header.bold = False
+        self.ids.bet_layout.ids.header.bold = (self.gameweek == self.current_gameweek)
 
     def show_games(self):
         # show all games and their scores
@@ -309,6 +318,7 @@ class MainWindow(Screen):
     @mainthread
     def show_previous_predictions(self):
         # if predicted scores were already submitted by user, show them
+
         app = MDApp.get_running_app()
 
         if not self.bets:
@@ -322,18 +332,16 @@ class MainWindow(Screen):
             # (green if the text has been changed, black otherwise)
             self.original = copy.deepcopy(self.bets)
 
-        if self.bets["status_code"] != 200:
+        if self.bets["status_code"] != 200:                               
             return # TODO create a popup
         
-        # clearing the textfields
-        for i in range(20):
+        for i in range(0, 20):
             self.widgets[i]["prediction1"].text = ''
             self.widgets[i]["prediction2"].text = ''
         
         # displaying the previous predictions
         for i, match_id in enumerate(self.match_id_list):
-            self.widgets[i]["prediction1"].disabled = False
-            self.widgets[i]["prediction2"].disabled = False
+            self.enable_textfields(i)
             
             for bet in self.bets["list"]:
                 
@@ -348,50 +356,65 @@ class MainWindow(Screen):
                     # if the score has been amended then display it as green
                     self.widgets[i]["prediction1"].text_color_normal = [0, 1, 0, 0.7] if str(bet['goal1']) != str(guess['goal1']) else [0, 0, 0, 1]
                     self.widgets[i]["prediction2"].text_color_normal = [0, 1, 0, 0.7] if str(bet['goal2']) != str(guess['goal2']) else [0, 0, 0, 1]
+
+        # clearing/disabling the rest of textfields
+        for j in range(i + 1, 20):
+            self.disable_textfields(j)
+        
+    def disable_textfields(self, j):
+        self.widgets[j]["prediction1"].disabled = True
+        self.widgets[j]["prediction2"].disabled = True
+        
+        self.widgets[j]["prediction1"].line_color_normal = [1, 0, 1, 1]
+        self.widgets[j]["prediction2"].line_color_normal = [1, 0, 1, 1]
     
-    def bind_textfields(self):
+    def enable_textfields(self, j):
+        self.widgets[j]["prediction1"].disabled = False
+        self.widgets[j]["prediction2"].disabled = False
+        
+        self.widgets[j]["prediction1"].line_color_normal = [0.1, 0.1, 0.1, 1]
+        self.widgets[j]["prediction2"].line_color_normal = [0.1, 0.1, 0.1, 1]
 
-        for i in range(0, len(self.match_id_list)):
-            self.widgets[i]['prediction1'].bind(on_text_validate=partial(self.store_text_input, i))
-            self.widgets[i]['prediction2'].bind(on_text_validate=partial(self.store_text_input, i))
-
-            self.widgets[i]['prediction1'].bind(focus=partial(self.store_text_input, i))
-            self.widgets[i]['prediction2'].bind(focus=partial(self.store_text_input, i))
     
     def store_text_input(self, i, instance, focus = False):
-
-        if instance.focus == True:
-            return
         
+        if instance.focus:
+            # function only runs on unfocus
+            return
+
+        if instance.disabled:
+            # function only runs for non-disabled textfields
+            return
+
         if not self.bets or not self.match_id_list:
             return
-    
+        
+        one_or_two = "goal1" if (instance == self.widgets[i]['prediction1']) else "goal2"
+        one_or_two_prediction = "prediction1" if (instance == self.widgets[i]['prediction1']) else "prediction2"
+        match_code = self.match_id_list[i]
+
         for bet in self.bets["list"]:
-            
+
             # if the prediction already exists
-            if self.match_id_list[i] == bet['match_id']:
+            if match_code == bet['match_id']:
 
                 index = self.bets["list"].index(bet)
                 guess = self.original["list"][index]
                 
-                if instance == self.widgets[i]['prediction1']:
-                    # update to new prediction
-                    bet["goal1"] = instance.text
-                else:
-                    # update to new prediction
-                    bet["goal2"] = instance.text
+                # update to new prediction
+                bet[one_or_two] = instance.text
 
                 # update colours
-                self.widgets[i]["prediction1"].text_color_normal = [0, 1, 0, 0.7] if str(bet['goal1']) != str(guess['goal1']) else [0, 0, 0, 1]
-                self.widgets[i]["prediction2"].text_color_normal = [0, 1, 0, 0.7] if str(bet['goal2']) != str(guess['goal2']) else [0, 0, 0, 1]
+                self.widgets[i][one_or_two_prediction].text_color_normal = [0, 1, 0, 0.7] if str(bet[one_or_two]) != str(guess[one_or_two]) else [0, 0, 0, 1]
 
                 return
-        
+            
         # if it's a new prediction then add it to self.bets
-        if instance == self.widgets[i]['prediction1']:
-            self.bets["list"].append({"match_id": self.match_id_list[i], "goal1": instance.text})
-        else:
-            self.bets["list"].append({"match_id": self.match_id_list[i], "goal1": instance.text})
+        self.bets["list"].append({"match_id": match_code, one_or_two: instance.text})
+        self.original["list"].append({"match_id": match_code, "goal1": None, "goal2": None})
+
+        # update colours
+        self.widgets[i][one_or_two_prediction].text_color_normal = [0, 1, 0, 0.7]
 
     def submit(self):
 
@@ -403,14 +426,8 @@ class MainWindow(Screen):
 
         for i, match_code in enumerate(self.match_id_list):
 
-            prediction1 = self.widgets[i]["prediction1"].text
-            prediction2 = self.widgets[i]["prediction2"].text
-            if prediction1 == "":
-                self.widgets[i]["prediction1"].text = "0"
-                prediction1 = 0
-            if prediction2 == "":
-                self.widgets[i]["prediction2"].text = "0"
-                prediction2 = 0
+            prediction1 = self.widgets[i]["prediction1"].text = self.widgets[i]["prediction1"].text or "0"
+            prediction2 = self.widgets[i]["prediction2"].text = self.widgets[i]["prediction2"].text or "0"
 
             matches.append(match_code)
             list_guess1.append(prediction1)
@@ -435,7 +452,6 @@ class MainWindow(Screen):
                  "goal2": prediction2}
                 )
 
-        print(self.original)
         update_bets = update_multiple_bets(app.access_token, matches, list_guess1, list_guess2)
 
         if update_bets["status_code"] == 200:
@@ -445,8 +461,9 @@ class MainWindow(Screen):
     
     def open_dialog(self, message, title):
 
-        app = MDApp.get_running_app()
         if not self.dialog:
+            app = MDApp.get_running_app()
+            
             okay_button = MDFlatButton(
                         text="OK",
                         theme_text_color="Custom",

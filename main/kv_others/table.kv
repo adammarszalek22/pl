@@ -1,0 +1,51 @@
+<ROW@MDGridLayout>
+    cols: 5
+    MDLabel:
+    MDLabel:
+    MDLabel:
+    MDLabel:
+    MDLabel:
+
+
+<MainLayout@MDBoxLayout>
+    orientation: 'vertical'
+
+    MDGridLayout:
+        id: header
+        cols: 5
+        padding: 5
+        size_hint_y: None
+        height: root.height * 0.1
+
+        MDLabel:
+            text: "Pos"
+
+        MDLabel:
+            text: "Username"
+
+        MDLabel:
+            text: "Pts"
+
+        MDLabel:
+            text: "3-pts"
+
+        MDLabel:
+            text: "1-pts"
+
+    MDGridLayout:
+        id: grid
+        cols: 1
+        padding: 5
+
+        ROW:
+        ROW:
+        ROW:
+        ROW:
+        ROW:
+        ROW:
+        ROW:
+        ROW:
+        ROW:
+        ROW:
+        ROW:
+        ROW:

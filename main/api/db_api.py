@@ -97,7 +97,10 @@ def get_all_bets_by_user_id(access_token):
     try:
         bets = requests.get(url + '/bet_by_user_id',
                             headers={"Authorization": "Bearer " + access_token})
-        return {"status_code": 200, "list": json.loads(bets.text)}
+        dict = {}
+        for dict2 in json.loads(bets.text):
+            dict[dict2["match_id"]] = dict2
+        return {"status_code": 200, "list": json.loads(bets.text), "dict": dict}
     except json.decoder.JSONDecodeError:
         return {"status_code": 500}
 
